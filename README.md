@@ -8,13 +8,14 @@ prices, collect it on an order memo, and send the memo.
 them and no sitemap is written.
 
 ```
+index.html, en/      the built pages GitHub Pages serves (generated: do not edit by hand)
 site.json            brand name, contacts, every price and offer
 templates/           base.html, partials/, pages/home.html  ({{ t("বাংলা", "English") }})
 assets/              css/khata.css, js/khata.js, fonts/, img/ (published as-is)
 assets-source/logo/  the chosen logo artwork (not published)
-tools/build.py       renders the page in both languages into _site/
+tools/build.py       renders the page in both languages into _site/ and copies the pages to the root
 scripts/check_links.py   fails on any broken internal link
-.github/workflows/pages.yml   build and check on every push; publish only when run by hand
+.github/workflows/pages.yml   checks every push: builds, no broken links, built pages are committed
 ```
 
 ## Work on it locally
@@ -27,10 +28,15 @@ python3 -m http.server 8000 -d _site     # http://localhost:8000/  (English: /en
 
 ## Publishing
 
-Pushes and pull requests only build and check. To publish: once, set **Settings → Pages → Build and
-deployment → Source: GitHub Actions**; then **Actions → Build and publish site → Run workflow** on `main`.
-The site appears at `https://oasisnextbd.github.io/paperloop/`. If it moves to its own domain, change
-`site.json → base_url`.
+GitHub Pages serves the `main` branch as it is (**Settings → Pages → Deploy from a branch → main, / root**),
+at `https://oasisnextbd.github.io/paperloop/`. So a change is live a minute or two after it reaches `main`:
+
+1. Edit the sources (`site.json`, `templates/`, `assets/`).
+2. Run `python3 tools/build.py && python3 scripts/check_links.py`.
+3. Commit the sources **and** the rebuilt `index.html` and `en/index.html` together, then push.
+
+The check workflow fails if the committed pages do not match the sources. If the site moves to its own
+domain, change `site.json → base_url`.
 
 ## Common edits
 

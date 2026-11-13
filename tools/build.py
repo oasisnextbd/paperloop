@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""Build the Paperloop website (Bangla default, English) into _site/, exactly what GitHub Pages publishes.
+"""Build the Paperloop website (Bangla default, English).
 
     pip install -r requirements.txt
-    python3 tools/build.py [OUTPUT_DIR]       # default: _site
+    python3 tools/build.py
     python3 scripts/check_links.py
     python3 -m http.server 8000 -d _site      # preview at http://localhost:8000/
+
+GitHub Pages serves this repository straight from the main branch ("Deploy from a branch", / root),
+so the built pages are committed. The build writes the whole site to _site/ (for preview and the link
+check) and then copies the pages in PUBLISHED to the repository root, next to assets/. Commit them
+together with the source change that produced them.
 
 Sources:
     site.json        settings: brand name, contacts, every price
@@ -16,18 +21,18 @@ Output:
     <out>/en/<page>/index.html   English
     <out>/sitemap.xml            only once site.json says launched
 """
-import datetime
 import json
 import pathlib
 import shutil
-import subprocess
 import sys
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from markupsafe import Markup
 
 SRC = pathlib.Path(__file__).resolve().parent.parent          # repository root
-OUT = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else SRC / "_site"
+OUT = SRC / "_site"
+# Built files copied to the repository root, where GitHub Pages serves them.
+PUBLISHED = ["index.html", "en/index.html", ".nojekyll", "sitemap.xml"]
 SITE = json.loads((SRC / "site.json").read_text(encoding="utf-8"))
 
 # The numbers the calculators need (site.json without its _readme notes).
@@ -117,26 +122,15 @@ def render_all():
     return built
 
 
-def last_changed(slug):
-    """Date a page last changed (its template or site.json), for <lastmod>."""
-    paths = [str(SRC / "templates/pages" / PAGES[slug]), str(SRC / "site.json")]
-    try:
-        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", *paths], cwd=SRC, capture_output=True, text=True, check=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        out = ""
-    return out or datetime.date.today().isoformat()
-
-
 def write_sitemap():
     rows = []
     for slug in PAGES:
-        changed = last_changed(slug)
         for lang in LANGS:
             loc = SITE["base_url"] + "/" + ("en/" if lang == "en" else "") + (slug + "/" if slug else "")
             bn = SITE["base_url"] + "/" + (slug + "/" if slug else "")
             en = SITE["base_url"] + "/en/" + (slug + "/" if slug else "")
             rows.append(
-                f"  <url><loc>{loc}</loc><lastmod>{changed}</lastmod>"
+                f"  <url><loc>{loc}</loc>"
                 f'<xhtml:link rel="alternate" hreflang="bn" href="{bn}"/>'
                 f'<xhtml:link rel="alternate" hreflang="en" href="{en}"/></url>'
             )
@@ -156,4 +150,11 @@ if __name__ == "__main__":
     if SITE["launched"]:
         write_sitemap()
     (OUT / ".nojekyll").write_text("")  # serve files as-is (no Jekyll processing)
-    print(f"Built {len(built)} pages into {OUT}")
+    for name in PUBLISHED:
+        src, dest = OUT / name, SRC / name
+        if src.exists():
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dest)
+        elif dest.exists():
+            dest.unlink()
+    print(f"Built {len(built)} pages into {OUT} and copied them to the repository root")

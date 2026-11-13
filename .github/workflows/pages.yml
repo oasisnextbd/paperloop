@@ -1,29 +1,21 @@
-# Builds and checks the site on every push and pull request.
-# Publishing to GitHub Pages happens only when this workflow is started by hand from main
-# (Actions → Build and publish site → Run workflow), so nothing goes public by accident.
-# Requires once: Settings → Pages → Build and deployment → Source: "GitHub Actions".
-name: Build and publish site
+# Checks every push and pull request: the site builds, no internal link is broken, and the built pages
+# committed at the repository root match the sources. Publishing is done by GitHub Pages itself
+# (Settings → Pages → Deploy from a branch → main, / root), not by this workflow.
+name: Check site
 
 on:
   push:
     branches: [main]
   pull_request:
-  workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # full history: the sitemap's <lastmod> dates come from git
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -33,21 +25,5 @@ jobs:
         run: python tools/build.py
       - name: Check internal links
         run: python scripts/check_links.py
-      - uses: actions/upload-pages-artifact@v3
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        with:
-          path: _site
-
-  deploy:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Built pages are committed
+        run: git diff --exit-code -- index.html en .nojekyll sitemap.xml
