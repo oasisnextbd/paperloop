@@ -24,6 +24,7 @@
         <a href="{{ url(slug, 'bn') }}?lang=bn" hreflang="bn" lang="bn" data-lang-switch="bn" aria-current="{{ 'true' if lang == 'bn' else 'false' }}">বাংলা</a>
         <a href="{{ url(slug, 'en') }}" hreflang="en" lang="en" data-lang-switch="en" aria-current="{{ 'true' if lang == 'en' else 'false' }}">EN</a>
       </div>
+      <button class="icon-btn icon-btn--show mode-toggle" type="button" data-mode-toggle data-label-night="{{ t('রাতের মোড চালু করুন', 'Switch to night mode') }}" data-label-day="{{ t('দিনের মোড চালু করুন', 'Switch to day mode') }}" aria-label="{{ t('রাতের মোড চালু করুন', 'Switch to night mode') }}">{{ icon("moon", "i-moon") }}{{ icon("sun", "i-sun") }}</button>
       <button class="btn btn--primary btn--sm memo-open" type="button" data-memo-open>{{ icon("memo") }}<span>{{ t("মেমো", "Memo") }}</span><b class="memo-count" data-memo-count>{{ n("0") }}</b></button>
       <button class="icon-btn menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="{{ t('মেনু', 'Menu') }}">{{ icon("menu") }}</button>
     </div>

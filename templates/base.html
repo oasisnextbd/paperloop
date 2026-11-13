@@ -28,6 +28,12 @@
 <link rel="preload" href="{{ root }}assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ root }}assets/fonts/baloo-da-2-{{ 'bengali' if lang == 'bn' else 'latin' }}.woff2" as="font" type="font/woff2" crossorigin>
 <script>
+/* Day or night: the visitor's saved choice (key kh_mode), otherwise the device setting. Set before the page paints. */
+(function(){var m;try{m=localStorage.getItem("kh_mode");}catch(e){}
+if(m!=="day"&&m!=="night")m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"night":"day";
+document.documentElement.dataset.mode=m;})();
+</script>
+<script>
 /* Language memory (key kh_lang). Bangla is the default; a saved English choice takes the visitor to the English page. */
 (function(){try{
 var l=localStorage.getItem("kh_lang");

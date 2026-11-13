@@ -58,7 +58,7 @@ domain, change `site.json → base_url`.
   (`templates/partials/logo.html`, `assets/img/favicon.svg`) is redrawn from that artwork and the wordmark
   is set in Jost; replace them with the designer's vector master when there is one.
 - **Colours:** navy `#14213d`, gold `#d9ae5a` (`#b8892f` for the loop on light backgrounds), white.
-  All colours are tokens at the top of `assets/css/khata.css`; the site follows the device's light or dark setting.
+  All colours are tokens at the top of `assets/css/khata.css`; the header button switches day and night; with no choice saved, the site follows the device setting.
 
 ## Rules
 

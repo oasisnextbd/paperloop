@@ -219,7 +219,15 @@
   var waBtn = $("[data-memo-wa]");
   if (waBtn) waBtn.addEventListener("click", function (e) { if (!memo.length) { e.preventDefault(); toast(S.emptyWarn); } });
 
-  /* ---- header: mobile menu, language memory ---- */
+  /* ---- header: day and night, mobile menu, language memory ---- */
+  var modeBtn = $("[data-mode-toggle]"), root = document.documentElement;
+  function labelMode() { modeBtn.setAttribute("aria-label", root.dataset.mode === "night" ? modeBtn.dataset.labelDay : modeBtn.dataset.labelNight); }
+  modeBtn.addEventListener("click", function () {
+    root.dataset.mode = root.dataset.mode === "night" ? "day" : "night";
+    try { localStorage.setItem("kh_mode", root.dataset.mode); } catch (e) {}
+    labelMode();
+  });
+  labelMode();
   var menuBtn = $(".menu-toggle"), nav = $("#site-nav");
   menuBtn.addEventListener("click", function () {
     menuBtn.setAttribute("aria-expanded", nav.classList.toggle("open") ? "true" : "false");

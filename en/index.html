@@ -25,6 +25,12 @@
 <link rel="preload" href="../assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/baloo-da-2-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>
+/* Day or night: the visitor's saved choice (key kh_mode), otherwise the device setting. Set before the page paints. */
+(function(){var m;try{m=localStorage.getItem("kh_mode");}catch(e){}
+if(m!=="day"&&m!=="night")m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"night":"day";
+document.documentElement.dataset.mode=m;})();
+</script>
+<script>
 /* Language memory (key kh_lang). Bangla is the default; a saved English choice takes the visitor to the English page. */
 (function(){try{
 var l=localStorage.getItem("kh_lang");
@@ -57,6 +63,7 @@ localStorage.setItem("kh_lang",document.documentElement.lang);
         <a href="../?lang=bn" hreflang="bn" lang="bn" data-lang-switch="bn" aria-current="false">বাংলা</a>
         <a href="../en/" hreflang="en" lang="en" data-lang-switch="en" aria-current="true">EN</a>
       </div>
+      <button class="icon-btn icon-btn--show mode-toggle" type="button" data-mode-toggle data-label-night="Switch to night mode" data-label-day="Switch to day mode" aria-label="Switch to night mode"><svg class="i i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.500A8 8 0 0 1 9.500 4a8 8 0 1 0 10.500 10.500z"/></svg><svg class="i i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
       <button class="btn btn--primary btn--sm memo-open" type="button" data-memo-open><svg class="i " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Memo</span><b class="memo-count" data-memo-count>0</b></button>
       <button class="icon-btn menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Menu"><svg class="i " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     </div>

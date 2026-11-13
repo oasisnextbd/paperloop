@@ -2,6 +2,8 @@
 {% macro icon(name, cls="") -%}
 <svg class="i {{ cls }}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
 {%- if name == "arrow" %}<path d="M5 12h14M13 6l6 6-6 6"/>
+{%- elif name == "moon" %}<path d="M20 14.500A8 8 0 0 1 9.500 4a8 8 0 1 0 10.500 10.500z"/>
+{%- elif name == "sun" %}<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>
 {%- elif name == "check" %}<path d="M20 6L9 17l-5-5"/>
 {%- elif name == "plus" %}<path d="M12 5v14M5 12h14"/>
 {%- elif name == "minus" %}<path d="M5 12h14"/>
