@@ -21,6 +21,7 @@ Output:
     <out>/en/<page>/index.html   English
     <out>/sitemap.xml            only once site.json says launched
 """
+import hashlib
 import json
 import pathlib
 import shutil
@@ -55,6 +56,13 @@ def page_dir(lang, slug):
 def rel_root(lang, slug):
     depth = (1 if lang == "en" else 0) + (slug.count("/") + 1 if slug else 0)
     return "../" * depth or "./"
+
+
+def asset(path):
+    """assets/<path> with a short fingerprint of the file, so browsers fetch a changed stylesheet or script
+    at once instead of pairing a new page with an old cached copy."""
+    digest = hashlib.sha256((SRC / "assets" / path).read_bytes()).hexdigest()[:10]
+    return f"assets/{path}?v={digest}"
 
 
 def rate_ranges():
@@ -109,7 +117,7 @@ def render_all():
                 return _root + path
 
             html = env.get_template("pages/" + tpl).render(
-                lang=lang, slug=slug, root=root, site=SITE, t=t, n=n, url=url, rates=rate_ranges(), calc=CALC,
+                lang=lang, slug=slug, root=root, site=SITE, t=t, n=n, url=url, rates=rate_ranges(), calc=CALC, asset=asset,
                 brand=SITE["brand"]["name_bn" if lang == "bn" else "name_en"],
                 canonical=SITE["base_url"] + "/" + ("en/" if lang == "en" else "") + (slug + "/" if slug else ""),
                 alt_bn=SITE["base_url"] + "/" + (slug + "/" if slug else ""),
