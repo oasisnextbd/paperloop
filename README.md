@@ -40,10 +40,14 @@ domain, change `site.json → base_url`.
 
 ## Smart diary (`diary/`)
 
-A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.io/paperloop/diary/`:
-parents sign in with School Code + Class + Roll, class teachers post homework and take the morning
-attendance, the principal sees class-wise attendance and marks teacher attendance. Every name and number in
-it is sample data (the page says so), it keeps nothing after a reload, and it asks search engines not to index it.
+A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.io/paperloop/diary/`.
+It opens on a login page where the person chooses **অভিভাবক** (School Code + Class + Roll), **শিক্ষক** or
+**স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see; the header's
+**প্রোফাইল** button opens their details, settings (text size; absent alerts for parents; another child's
+diary) and logout. The login and settings are remembered on that phone until logout (browser storage).
+
+Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
+resets on reload, and the page asks search engines not to index it.
 
 | File | What it is |
 |---|---|

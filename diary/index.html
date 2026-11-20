@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=dfd7d2f753" />
+  <link rel="stylesheet" href="diary.css?v=04c38ff1b4" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -24,7 +24,7 @@
   </div>
 
   <!-- Demo notice: every name and number in this app is sample data -->
-  <div class="bg-ink-900 text-ink-100 text-[11px] sm:text-xs">
+  <div class="bg-ink-900 text-ink-100 text-[0.6875rem] sm:text-xs">
     <div class="max-w-3xl mx-auto px-4 py-1.5 flex items-center justify-between gap-3">
       <span><strong class="text-gold-300">ডেমো</strong> • সব নাম ও নম্বর নমুনা তথ্য, আসল শিক্ষার্থীর নয়</span>
       <a href="../" class="font-bold text-gold-300 hover:text-gold-200 whitespace-nowrap">Paperloop →</a>
@@ -44,49 +44,16 @@
           <h1 class="text-base sm:text-lg font-bold text-ink-900 leading-tight" id="school-name-display">
             কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি
           </h1>
-          <p class="text-xs text-ink-500">Paperloop স্মার্ট ডায়েরি • কসবা, ব্রাহ্মণবাড়িয়া</p>
+          <p class="text-xs text-ink-500" id="header-subtitle">Paperloop স্মার্ট ডায়েরি • কসবা, ব্রাহ্মণবাড়িয়া</p>
         </div>
       </div>
 
-      <!-- Monochrome Line-Icon Above Text Navigation Bar -->
-      <div class="flex items-center gap-1.5">
-        <button id="tab-btn-login" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
-          <svg class="line-icon mb-1" viewBox="0 0 24 24">
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <span class="text-[11px] font-bold leading-none">লগইন</span>
-        </button>
-
-        <button id="tab-btn-parent" type="button" class="icon-tile tile-active flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 text-ink-900">
-          <svg class="line-icon mb-1" viewBox="0 0 24 24">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-          <span class="text-[11px] font-bold leading-none">অভিভাবক</span>
-        </button>
-
-        <button id="tab-btn-teacher" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
-          <svg class="line-icon mb-1" viewBox="0 0 24 24">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
-          <span class="text-[11px] font-bold leading-none">শিক্ষক</span>
-        </button>
-
-        <button id="tab-btn-school" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
-          <svg class="line-icon mb-1" viewBox="0 0 24 24">
-            <path d="M3 21h18"/>
-            <path d="M5 21V7l7-4 7 4v14"/>
-            <path d="M9 9h1"/><path d="M14 9h1"/>
-            <path d="M9 13h1"/><path d="M14 13h1"/>
-            <path d="M10 21v-4h4v4"/>
-          </svg>
-          <span class="text-[11px] font-bold leading-none">স্কুল</span>
-        </button>
-      </div>
+      <!-- Profile button (only after login): account details, settings and logout -->
+      <button id="btn-profile" type="button" aria-haspopup="dialog" aria-controls="profile-dialog"
+        class="hidden icon-tile flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50">
+        <svg class="line-icon mb-1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span class="text-[0.6875rem] font-bold leading-none">প্রোফাইল</span>
+      </button>
     </div>
   </header>
 
@@ -96,7 +63,7 @@
     <!-- ==========================================
          0. DEDICATED LOGIN PAGE (PARENT / TEACHER / SCHOOL SECTIONS)
          ========================================== -->
-    <section id="view-login" class="hidden space-y-5">
+    <section id="view-login" class="space-y-5">
       <div class="bg-white rounded-2xl border border-ink-200 p-6 shadow-sm space-y-6">
         <div class="text-center space-y-1.5">
           <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-300 text-ink-800 flex items-center justify-center mx-auto">
@@ -120,7 +87,7 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
             <span class="text-xs sm:text-sm font-bold">অভিভাবক লগইন</span>
-            <span class="text-[11px] text-ink-500 mt-0.5">স্কুল কোড ও রোল</span>
+            <span class="text-[0.6875rem] text-ink-500 mt-0.5">স্কুল কোড ও রোল</span>
           </button>
 
           <button type="button" data-login-role="teacher" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
@@ -129,7 +96,7 @@
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
             </svg>
             <span class="text-xs sm:text-sm font-bold">শিক্ষক লগইন</span>
-            <span class="text-[11px] text-ink-500 mt-0.5">শিক্ষক আইডি ও পিন</span>
+            <span class="text-[0.6875rem] text-ink-500 mt-0.5">শিক্ষক আইডি ও পিন</span>
           </button>
 
           <button type="button" data-login-role="school" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
@@ -141,7 +108,7 @@
               <path d="M10 21v-4h4v4"/>
             </svg>
             <span class="text-xs sm:text-sm font-bold">স্কুল লগইন</span>
-            <span class="text-[11px] text-ink-500 mt-0.5">প্রিন্সিপাল ও অ্যাডমিন</span>
+            <span class="text-[0.6875rem] text-ink-500 mt-0.5">প্রিন্সিপাল ও অ্যাডমিন</span>
           </button>
         </div>
 
@@ -154,7 +121,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="login-p-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড (খাতার পেছনে লেখা)</label>
-              <input id="login-p-code" type="text" value="KSB" placeholder="যেমন: KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase focus:outline-none focus:border-ink-800" />
+              <input id="login-p-code" type="text" value="KSB" placeholder="যেমন: KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase focus:outline-none focus:border-ink-800" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
             </div>
             <div>
               <label for="login-p-class" class="block text-xs font-bold text-ink-700 mb-1">শ্রেণি নির্বাচন করুন</label>
@@ -170,7 +137,7 @@
             </div>
             <div>
               <label for="login-p-roll" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষার্থীর রোল নম্বর</label>
-              <input id="login-p-roll" type="text" value="07" placeholder="যেমন: 07" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold focus:outline-none focus:border-ink-800" />
+              <input id="login-p-roll" type="text" value="07" placeholder="যেমন: 07" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold focus:outline-none focus:border-ink-800" required pattern="[0-9০-৯]{1,3}" maxlength="3" inputmode="numeric" autocomplete="off" data-invalid="শিক্ষার্থীর রোল নম্বর দিন (শুধু সংখ্যা)" />
             </div>
           </div>
           <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
@@ -188,15 +155,15 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="login-t-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড</label>
-              <input id="login-t-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
+              <input id="login-t-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
             </div>
             <div>
               <label for="login-t-phone" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষকের মোবাইল / আইডি</label>
-              <input id="login-t-phone" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+              <input id="login-t-phone" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="মোবাইল নম্বর বা শিক্ষক আইডি দিন" />
             </div>
             <div>
               <label for="login-t-pin" class="block text-xs font-bold text-ink-700 mb-1">৪-সংখ্যার পিন</label>
-              <input id="login-t-pin" type="password" value="1234" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+              <input id="login-t-pin" type="password" value="1234" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" autocomplete="current-password" data-invalid="৪ সংখ্যার পিন দিন" />
             </div>
           </div>
           <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
@@ -214,15 +181,15 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="login-s-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড / EIIN</label>
-              <input id="login-s-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
+              <input id="login-s-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" required pattern="[A-Za-z]{3}|[0-9]{6}" maxlength="6" autocomplete="off" data-invalid="৩ অক্ষরের স্কুল কোড বা ৬ সংখ্যার EIIN দিন" />
             </div>
             <div>
               <label for="login-s-admin" class="block text-xs font-bold text-ink-700 mb-1">প্রিন্সিপাল / অ্যাডমিন আইডি</label>
-              <input id="login-s-admin" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+              <input id="login-s-admin" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="প্রিন্সিপাল বা অ্যাডমিন আইডি দিন" />
             </div>
             <div>
               <label for="login-s-pin" class="block text-xs font-bold text-ink-700 mb-1">অ্যাডমিন পিন</label>
-              <input id="login-s-pin" type="password" value="2026" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+              <input id="login-s-pin" type="password" value="2026" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" autocomplete="current-password" data-invalid="৪ সংখ্যার পিন দিন" />
             </div>
           </div>
           <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
@@ -236,7 +203,7 @@
     <!-- ==========================================
          1. PARENT & STUDENT SECTION (4 FLOATING CARDS ARCHITECTURE)
          ========================================== -->
-    <section id="view-parent" class="space-y-5">
+    <section id="view-parent" class="hidden space-y-5">
 
       <!-- Student Profile Strip + Quick Roll Switcher + Chat Shortcut -->
       <div class="bg-white rounded-2xl border border-ink-200 p-4 shadow-sm">
@@ -247,7 +214,7 @@
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
               </svg>
-              <span class="text-[11px] font-extrabold">রোল <span id="student-roll-badge">০৭</span></span>
+              <span class="text-[0.6875rem] font-extrabold">রোল <span id="student-roll-badge">০৭</span></span>
             </div>
             <div>
               <div class="flex flex-wrap items-center gap-2">
@@ -268,49 +235,11 @@
                 <line x1="8" x2="16" y1="9" y2="9"/>
                 <line x1="8" x2="13" y1="13" y2="13"/>
               </svg>
-              <span class="text-[11px] font-bold leading-none">মেসেজ দিন →</span>
-            </button>
-
-            <button id="btn-toggle-login-box" type="button" class="icon-tile flex flex-col items-center justify-center px-3 py-2 rounded-2xl bg-ink-100 hover:bg-ink-200 border border-ink-200 text-ink-700">
-              <svg class="line-icon mb-1" viewBox="0 0 24 24">
-                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                <path d="M3 3v5h5"/>
-                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-                <path d="M16 16h5v5"/>
-              </svg>
-              <span class="text-[11px] font-bold leading-none">রোল পরিবর্তন</span>
+              <span class="text-[0.6875rem] font-bold leading-none">মেসেজ দিন →</span>
             </button>
           </div>
         </div>
 
-        <!-- Collapsible Quick Roll Switcher -->
-        <form id="login-form-box" class="hidden mt-4 pt-4 border-t border-ink-200 grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-          <div>
-            <label for="input-school-code" class="block text-xs font-bold text-ink-600 mb-1">স্কুল কোড</label>
-            <input id="input-school-code" type="text" value="KSB" placeholder="KSB" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
-          </div>
-          <div>
-            <label for="input-student-class" class="block text-xs font-bold text-ink-600 mb-1">শ্রেণি</label>
-            <select id="input-student-class" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold bg-white">
-              <option value="Play">Play / প্লে</option>
-              <option value="KG">KG / কেজি</option>
-              <option value="১ম শ্রেণি">১ম শ্রেণি</option>
-              <option value="২য় শ্রেণি">২য় শ্রেণি</option>
-              <option value="৩য় শ্রেণি" selected>৩য় শ্রেণি</option>
-              <option value="৪র্থ শ্রেণি">৪র্থ শ্রেণি</option>
-              <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
-            </select>
-          </div>
-          <div>
-            <label for="input-student-roll" class="block text-xs font-bold text-ink-600 mb-1">রোল নম্বর</label>
-            <input id="input-student-roll" type="text" value="07" placeholder="07" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold" />
-          </div>
-          <div class="flex items-end">
-            <button type="submit" class="w-full py-2 px-4 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">
-              ড্যাশবোর্ড দেখুন
-            </button>
-          </div>
-        </form>
       </div>
 
       <!-- ==========================================
@@ -336,8 +265,8 @@
               </svg>
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">অ্যাসাইনমেন্ট</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Assignments</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="stat-hw-progress">
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Assignments</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-hw-progress">
               ১ / ৩ সম্পন্ন
             </div>
           </button>
@@ -350,8 +279,8 @@
               </svg>
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">গ্রেড ও নম্বর</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Grades & Marks</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Grades & Marks</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
               গড়: A+ (৯২%)
             </div>
           </button>
@@ -366,8 +295,8 @@
               </svg>
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">উন্নতি রিপোর্ট</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Improvement</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Improvement</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
               +১৪% অগ্রগতি
             </div>
           </button>
@@ -384,8 +313,8 @@
               </svg>
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">পঠিত বিষয়সমূহ</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Weekly & Monthly</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Weekly & Monthly</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
               ১২টি অধ্যায়
             </div>
           </button>
@@ -394,8 +323,8 @@
           <button type="button" data-parent-panel="attendance" class="parent-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">হাজিরা</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Attendance</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="stat-att-month">—</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Attendance</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-att-month">—</div>
           </button>
         </div>
       </div>
@@ -469,21 +398,21 @@
               <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
-              <div class="text-[11px] text-ink-500 font-semibold">প্রাপ্ত গ্রেড</div>
+              <div class="text-[0.6875rem] text-ink-500 font-semibold">প্রাপ্ত গ্রেড</div>
               <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-letter">A+ (৯২%)</div>
             </div>
             <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
               <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
                 <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
               </svg>
-              <div class="text-[11px] text-ink-500 font-semibold">মেধাক্রম (Rank)</div>
+              <div class="text-[0.6875rem] text-ink-500 font-semibold">মেধাক্রম (Rank)</div>
               <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-rank">৩য় স্থান (৩০ জনে)</div>
             </div>
             <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
               <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/>
               </svg>
-              <div class="text-[11px] text-ink-500 font-semibold">মোট নম্বর</div>
+              <div class="text-[0.6875rem] text-ink-500 font-semibold">মোট নম্বর</div>
               <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-marks">৯২ / ১০০</div>
             </div>
           </div>
@@ -587,10 +516,10 @@
           </div>
           <div id="p-att-summary" class="grid grid-cols-3 gap-3"></div>
           <div>
-            <div id="p-att-weekhead" class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-bold text-ink-500 mb-1.5"></div>
+            <div id="p-att-weekhead" class="grid grid-cols-7 gap-1.5 text-center text-[0.6875rem] font-bold text-ink-500 mb-1.5"></div>
             <div id="p-att-calendar" class="grid grid-cols-7 gap-1.5"></div>
           </div>
-          <div id="p-att-legend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-ink-600"></div>
+          <div id="p-att-legend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[0.6875rem] text-ink-600"></div>
         </div>
       </div>
 
@@ -669,7 +598,7 @@
           </div>
         </div>
         <div class="bg-white/10 px-3.5 py-2 rounded-xl border border-white/15 text-center">
-          <div class="text-[11px] text-ink-300">মোট শিক্ষার্থী</div>
+          <div class="text-[0.6875rem] text-ink-300">মোট শিক্ষার্থী</div>
           <div class="text-base font-bold">৩০ জন</div>
         </div>
       </div>
@@ -679,14 +608,14 @@
         <button type="button" data-teacher-panel="attendance" class="teacher-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">সকালের হাজিরা</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Attendance</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="t-stat-att">—</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Attendance</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-att">—</div>
           </button>
         <button type="button" data-teacher-panel="homework" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বাড়ির কাজ</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Homework</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="t-stat-hw">—</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Homework</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-hw">—</div>
           </button>
       </div>
 
@@ -727,7 +656,7 @@
 
           <div id="t-att-month" class="hidden space-y-2">
             <div id="t-att-table" class="overflow-x-auto rounded-xl border border-ink-200"></div>
-            <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-ink-600">
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-[0.6875rem] text-ink-600">
               <span><span class="text-ink-400 font-bold">•</span> উপস্থিত</span>
               <span><span class="text-gold-700 font-extrabold">অ</span> অনুপস্থিত</span>
               <span><span class="text-ink-600 font-bold">ছু</span> ছুটি</span>
@@ -846,19 +775,19 @@
               <svg class="line-icon mb-1" viewBox="0 0 24 24">
                 <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
               </svg>
-              <span class="text-[11px] font-bold leading-tight">+ পৃষ্ঠা ১২: ১–৫ নং প্রশ্ন লেখা</span>
+              <span class="text-[0.6875rem] font-bold leading-tight">+ পৃষ্ঠা ১২: ১–৫ নং প্রশ্ন লেখা</span>
             </button>
             <button type="button" data-preset="১ থেকে ১০ পর্যন্ত ঘরের নামতা খাতায় ১ বার লিখে মুখস্থ করবে।" class="teacher-preset-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-ink-50 hover:bg-ink-100 border border-ink-200 text-ink-700 text-center">
               <svg class="line-icon mb-1" viewBox="0 0 24 24">
                 <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
               </svg>
-              <span class="text-[11px] font-bold leading-tight">+ নামতা লেখা ও মুখস্থ</span>
+              <span class="text-[0.6875rem] font-bold leading-tight">+ নামতা লেখা ও মুখস্থ</span>
             </button>
             <button type="button" data-preset="Lesson 4-এর ১০টি Word Meaning ইংরেজি ৪-দাগ খাতায় ২ বার করে লিখবে।" class="teacher-preset-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-ink-50 hover:bg-ink-100 border border-ink-200 text-ink-700 text-center">
               <svg class="line-icon mb-1" viewBox="0 0 24 24">
                 <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
               </svg>
-              <span class="text-[11px] font-bold leading-tight">+ ১০টি Word Meaning লেখা</span>
+              <span class="text-[0.6875rem] font-bold leading-tight">+ ১০টি Word Meaning লেখা</span>
             </button>
           </div>
 
@@ -899,9 +828,6 @@
             <h2 class="text-lg font-bold text-ink-900" id="admin-school-title">কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি (কোড: KSB)</h2>
           </div>
         </div>
-        <button id="btn-logout-to-login" type="button" class="px-3.5 py-2 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-700 text-xs font-bold border border-ink-200">
-          লগআউট / অ্যাকাউন্ট পরিবর্তন
-        </button>
       </div>
 
       <div class="grid grid-cols-3 gap-3">
@@ -933,32 +859,32 @@
         <button type="button" data-school-panel="students" class="school-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী হাজিরা</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Students</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-att">—</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Students</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-att">—</div>
           </button>
         <button type="button" data-school-panel="staff" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষক হাজিরা</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Teachers</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-staff">—</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Teachers</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-staff">—</div>
           </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Diary</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-diary">৩টি গ্রুপ</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Diary</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-diary">৩টি গ্রুপ</div>
           </button>
         <button type="button" data-school-panel="cctv" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">CCTV</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Monitoring</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
         <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
-            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Live class</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-live">চাহিদা অনুযায়ী</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-live">চাহিদা অনুযায়ী</div>
           </button>
       </div>
 
@@ -1053,6 +979,95 @@
 
   </main>
 
+
+  <!-- ==========================================
+       PROFILE PANEL: account details, settings, logout (opened from the header's প্রোফাইল button)
+       ========================================== -->
+  <dialog id="profile-dialog" class="profile-sheet" aria-labelledby="profile-title">
+    <div class="flex flex-col h-full">
+      <div class="p-5 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="profile-avatar" class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"></div>
+          <div class="min-w-0">
+            <h2 id="profile-title" class="text-lg font-bold text-ink-900 leading-tight"></h2>
+            <p id="profile-subtitle" class="text-xs text-ink-500 mt-0.5"></p>
+          </div>
+        </div>
+        <button type="button" data-profile-close aria-label="বন্ধ করুন" class="icon-tile w-10 h-10 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50 flex items-center justify-center shrink-0">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        <section class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">আমার তথ্য</h3>
+          <dl id="profile-info" class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200"></dl>
+        </section>
+
+        <section id="profile-child-section" class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">অন্য সন্তানের ডায়েরি</h3>
+          <form id="login-form-box" class="bg-white rounded-2xl border border-ink-200 p-4 grid grid-cols-2 gap-2.5">
+            <p class="col-span-2 text-xs text-ink-500">একই স্কুলে দুই সন্তান থাকলে এখান থেকে অন্যজনের ডায়েরি খুলুন।</p>
+            <div>
+              <label for="input-school-code" class="block text-xs font-bold text-ink-600 mb-1">স্কুল কোড</label>
+              <input id="input-school-code" type="text" value="KSB" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold uppercase" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
+            </div>
+            <div>
+              <label for="input-student-roll" class="block text-xs font-bold text-ink-600 mb-1">রোল নম্বর</label>
+              <input id="input-student-roll" type="text" value="" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold" required pattern="[0-9০-৯]{1,3}" maxlength="3" inputmode="numeric" autocomplete="off" data-invalid="শিক্ষার্থীর রোল নম্বর দিন (শুধু সংখ্যা)" />
+            </div>
+            <div class="col-span-2">
+              <label for="input-student-class" class="block text-xs font-bold text-ink-600 mb-1">শ্রেণি</label>
+              <select id="input-student-class" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold bg-white">
+                <option value="Play">Play / প্লে</option>
+                <option value="KG">KG / কেজি</option>
+                <option value="১ম শ্রেণি">১ম শ্রেণি</option>
+                <option value="২য় শ্রেণি">২য় শ্রেণি</option>
+                <option value="৩য় শ্রেণি" selected>৩য় শ্রেণি</option>
+                <option value="৪র্থ শ্রেণি">৪র্থ শ্রেণি</option>
+                <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
+              </select>
+            </div>
+            <button type="submit" class="col-span-2 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">এই সন্তানের ডায়েরি খুলুন</button>
+          </form>
+        </section>
+
+        <section class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">সেটিংস</h3>
+          <div class="bg-white rounded-2xl border border-ink-200 p-4 space-y-4">
+            <div>
+              <div class="text-sm font-bold text-ink-900 mb-2">লেখার আকার</div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button type="button" data-text-size="normal" class="text-size-btn icon-tile flex flex-col items-center justify-center py-2.5 rounded-2xl border border-ink-200 bg-white text-ink-700">
+                  <svg class="line-icon-sm mb-1" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+                  <span class="text-xs font-bold">স্বাভাবিক</span>
+                </button>
+                <button type="button" data-text-size="large" class="text-size-btn icon-tile flex flex-col items-center justify-center py-2.5 rounded-2xl border border-ink-200 bg-white text-ink-700">
+                  <svg class="line-icon-lg mb-1" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+                  <span class="text-xs font-bold">বড়</span>
+                </button>
+              </div>
+            </div>
+            <div id="setting-absent-alert-row" class="flex items-center justify-between gap-3 pt-4 border-t border-ink-200">
+              <div>
+                <div class="text-sm font-bold text-ink-900">অনুপস্থিতির বার্তা</div>
+                <div class="text-xs text-ink-500">সন্তান স্কুলে না এলে ড্যাশবোর্ডের ওপরে জানানো হবে</div>
+              </div>
+              <button type="button" role="switch" aria-checked="true" id="setting-absent-alert" class="switch" aria-label="অনুপস্থিতির বার্তা"></button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="p-5 border-t border-ink-200">
+        <button id="btn-logout" type="button" class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>লগআউট</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
   <script>
     // ==========================================
     // MONOCHROME LINE-ICON SVG HELPERS
@@ -1070,7 +1085,7 @@
     };
 
     const appState = {
-      activeView: 'parent', // Open directly on Parent section so the 4 Floating Cards are immediately visible
+      activeView: 'login', // The app always starts on the login page; a saved session reopens its own dashboard
       loginSection: 'parent',
       activeParentPanel: 'assignments', // 'assignments', 'grades', 'improvement', 'topics'
       gradeTerm: 'weekly', // 'weekly', 'monthly'
@@ -1246,7 +1261,7 @@
     function renderParentDashboard() {
       document.getElementById('school-name-display').textContent = appState.schoolName;
       document.getElementById('admin-school-title').textContent = `${appState.schoolName} (কোড: ${appState.schoolCode})`;
-      document.getElementById('student-roll-badge').textContent = appState.studentRoll;
+      document.getElementById('student-roll-badge').textContent = bn(toAsciiDigits(appState.studentRoll));
       document.getElementById('student-name-display').textContent = appState.studentName;
       document.getElementById('student-class-display').textContent = appState.studentClass;
       document.getElementById('student-code-display').textContent = appState.schoolCode;
@@ -1290,7 +1305,7 @@
                   </div>
                   <div class="w-20 py-2 px-2 rounded-xl bg-white border border-ink-200 text-ink-600 flex flex-col items-center justify-center text-center">
                     <div class="mb-1">${kMeta.svg}</div>
-                    <span class="text-[10px] font-bold leading-none">${kMeta.shortLabel}</span>
+                    <span class="text-[0.625rem] font-bold leading-none">${kMeta.shortLabel}</span>
                   </div>
                 </div>
 
@@ -1370,7 +1385,7 @@
             <div class="flex items-center gap-3">
               <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
                 <div class="mb-1">${sMeta.svg}</div>
-                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+                <span class="text-[0.6875rem] font-extrabold leading-none">${item.subject}</span>
               </div>
               <div>
                 <div class="text-sm font-bold text-ink-900">${item.exam}</div>
@@ -1426,10 +1441,10 @@
             <div class="flex items-start gap-3">
               <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
                 <div class="mb-1">${sMeta.svg}</div>
-                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+                <span class="text-[0.6875rem] font-extrabold leading-none">${item.subject}</span>
               </div>
               <div class="space-y-1">
-                <span class="text-[11px] font-bold text-ink-500">${item.week}</span>
+                <span class="text-[0.6875rem] font-bold text-ink-500">${item.week}</span>
                 <h4 class="text-xs sm:text-sm font-bold text-ink-900 leading-snug">${item.topic}</h4>
               </div>
             </div>
@@ -1448,14 +1463,14 @@
         if (m.sender === 'teacher') {
           return `
             <div class="bg-ink-100 rounded-xl p-2.5 text-xs sm:text-sm text-ink-800 max-w-md">
-              <div class="font-bold text-ink-900 text-[11px] mb-0.5">${m.name} • ${m.time}</div>
+              <div class="font-bold text-ink-900 text-[0.6875rem] mb-0.5">${m.name} • ${m.time}</div>
               <div>${m.text}</div>
             </div>
           `;
         }
         return `
           <div class="bg-ink-900 text-white rounded-xl p-2.5 text-xs sm:text-sm max-w-md ml-auto">
-            <div class="font-bold text-ink-300 text-[11px] mb-0.5">অভিভাবক (রোল ${appState.studentRoll}) • ${m.time}</div>
+            <div class="font-bold text-ink-300 text-[0.6875rem] mb-0.5">অভিভাবক (রোল ${appState.studentRoll}) • ${m.time}</div>
             <div>${m.text}</div>
           </div>
         `;
@@ -1475,7 +1490,7 @@
             <div class="flex items-center gap-3 max-w-lg">
               <div class="w-14 py-2 px-1.5 rounded-xl border border-ink-300 bg-white text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
                 <div class="mb-1">${sMeta.svg}</div>
-                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+                <span class="text-[0.6875rem] font-extrabold leading-none">${item.subject}</span>
               </div>
               <div class="space-y-0.5">
                 <div class="text-xs font-semibold text-ink-500">${item.khata}</div>
@@ -1498,11 +1513,7 @@
     // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
       // Top Navigation Buttons
-      document.getElementById('tab-btn-login').addEventListener('click', () => switchMainView('login'));
-      document.getElementById('tab-btn-parent').addEventListener('click', () => switchMainView('parent'));
-      document.getElementById('tab-btn-teacher').addEventListener('click', () => switchMainView('teacher'));
-      document.getElementById('tab-btn-school').addEventListener('click', () => switchMainView('school'));
-      document.getElementById('btn-logout-to-login').addEventListener('click', () => switchMainView('login'));
+      // No role tabs: the login page decides the role, and the profile panel logs out (see LOGIN & PROFILE below).
 
       // 4 Floating Cards Navigation inside Parent View
       document.querySelectorAll('.parent-floating-card').forEach(card => {
@@ -1583,11 +1594,8 @@
         showToast(`${appState.schoolName} অ্যাডমিন প্যানেলে স্বাগতম!`);
       });
 
-      // Quick Roll Switcher inside Parent Dashboard
+      // "Another child" switcher, inside the profile panel (parents only)
       const loginBox = document.getElementById('login-form-box');
-      document.getElementById('btn-toggle-login-box').addEventListener('click', () => {
-        loginBox.classList.toggle('hidden');
-      });
 
       loginBox.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1601,7 +1609,6 @@
         appState.studentRoll = rawRoll;
         appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
 
-        loginBox.classList.add('hidden');
         renderParentDashboard();
         showToast(`${appState.studentName} (${cls}, রোল ${rawRoll})-এর ড্যাশবোর্ড খোলা হয়েছে!`);
       });
@@ -1809,7 +1816,7 @@
     const countTile = (icon, label, value, accent = false) => `
       <div class="p-3 rounded-2xl ${accent ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'} flex flex-col items-center text-center">
         <span class="text-ink-700 mb-1">${svg(icon, 'line-icon')}</span>
-        <div class="text-[11px] text-ink-500 font-semibold">${label}</div>
+        <div class="text-[0.6875rem] text-ink-500 font-semibold">${label}</div>
         <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5">${value}</div>
       </div>`;
 
@@ -1895,8 +1902,8 @@
           <button type="button" data-att-roll="${r}" aria-label="রোল ${rollLabel(r)} ${esc(name)}: ${m.label}। বদলাতে ট্যাপ করুন"
             class="icon-tile rounded-xl py-2 px-1 flex flex-col items-center justify-center text-center min-w-0 ${m.tile}">
             <span class="text-base font-extrabold leading-none">${rollLabel(r)}</span>
-            <span class="text-[10px] font-semibold leading-tight mt-1 w-full truncate">${esc(name.split(' ')[0])}</span>
-            <span class="text-[10px] font-bold leading-none mt-0.5">${m.label}</span>
+            <span class="text-[0.625rem] font-semibold leading-tight mt-1 w-full truncate">${esc(name.split(' ')[0])}</span>
+            <span class="text-[0.625rem] font-bold leading-none mt-0.5">${m.label}</span>
           </button>`;
       }).join('');
 
@@ -1913,7 +1920,7 @@
               <span class="px-2 py-0.5 rounded-md bg-white border border-dashed border-ink-400 font-bold">${bnDate(new Date(y, mo - 1, da))}</span>
             </div>`;
           }).join('')}
-          <p class="text-[11px] text-ink-500">সেদিনের হাজিরায় আগে থেকেই ছুটি বসানো থাকবে; দরকার হলে বদলাতে পারবেন।</p>
+          <p class="text-[0.6875rem] text-ink-500">সেদিনের হাজিরায় আগে থেকেই ছুটি বসানো থাকবে; দরকার হলে বদলাতে পারবেন।</p>
         </div>` : '';
 
       const absentRolls = classRoster.map((_, i) => i + 1).filter(r => draft[r] === 'absent');
@@ -1964,7 +1971,7 @@
         </tr>`;
       }).join('');
       document.getElementById('t-att-table').innerHTML = `
-        <table class="text-[11px] min-w-full">
+        <table class="text-[0.6875rem] min-w-full">
           <thead class="bg-ink-50"><tr>
             <th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap">রোল • ${BN_MONTHS[m]}</th>
             ${head}
@@ -1998,7 +2005,7 @@
         ? `${svg(ATT_META[todayStatus].icon)}<span>${label}: ${ATT_META[todayStatus].label}</span>`
         : `${svg('clock')}<span>${label}: হাজিরা এখনো নেওয়া হয়নি</span>`;
 
-      if (todayStatus === 'absent') {
+      if (todayStatus === 'absent' && diarySettings.absentAlerts) {
         alertBox.className = 'floating-card rounded-2xl p-4 border-gold-300 bg-gold-50/60 flex flex-wrap items-center justify-between gap-3';
         alertBox.innerHTML = `
           <div class="flex items-center gap-3">
@@ -2047,9 +2054,9 @@
           cls = s === 'present' ? 'bg-white border border-ink-200 text-ink-800'
             : s === 'absent' ? 'bg-gold-50 border-2 border-gold-600 text-gold-900'
             : 'bg-ink-50 border-2 border-dashed border-ink-400 text-ink-700';
-          inner = s === 'present' ? svg('check') : s === 'absent' ? svg('x') : '<span class="text-[9px] leading-none">ছুটি</span>';
-        } else if (requested) { cls = 'border-2 border-dashed border-ink-400 text-ink-700'; inner = '<span class="text-[9px] leading-none">আবেদন</span>'; }
-        else if (k === attKey) { cls = 'border-2 border-ink-900 text-ink-900'; inner = '<span class="text-[9px] leading-none">বাকি</span>'; }
+          inner = s === 'present' ? svg('check') : s === 'absent' ? svg('x') : '<span class="text-[0.5625rem] leading-none">ছুটি</span>';
+        } else if (requested) { cls = 'border-2 border-dashed border-ink-400 text-ink-700'; inner = '<span class="text-[0.5625rem] leading-none">আবেদন</span>'; }
+        else if (k === attKey) { cls = 'border-2 border-ink-900 text-ink-900'; inner = '<span class="text-[0.5625rem] leading-none">বাকি</span>'; }
         else { cls = 'border border-ink-100 text-ink-400'; }
         cells += `<div class="${base} ${cls}"><span>${bn(day)}</span>${inner}</div>`;
       }
@@ -2161,13 +2168,13 @@
           const active = draft[i] === s;
           return `<button type="button" data-staff="${i}" data-staff-status="${s}" aria-pressed="${active}"
             class="icon-tile py-1.5 rounded-xl flex flex-col items-center justify-center ${active ? (s === 'absent' ? 'border-2 border-gold-600 bg-gold-50 text-gold-900' : 'tile-active border') : 'border border-ink-200 bg-white text-ink-500 hover:bg-ink-50'}">
-            ${svg(ATT_META[s].icon)}<span class="text-[10px] font-bold mt-0.5">${ATT_META[s].label}</span></button>`;
+            ${svg(ATT_META[s].icon)}<span class="text-[0.625rem] font-bold mt-0.5">${ATT_META[s].label}</span></button>`;
         }).join('');
         return `
           <div class="p-3 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
             <div class="flex items-center justify-between gap-2">
               <div><span class="text-sm font-bold text-ink-900">${esc(st.name)}</span> <span class="text-xs text-ink-500">• ${st.role}</span></div>
-              <span class="text-[11px] font-bold text-ink-600">এ মাসে ${bn(came)}/${bn(monthKeys.length)} দিন</span>
+              <span class="text-[0.6875rem] font-bold text-ink-600">এ মাসে ${bn(came)}/${bn(monthKeys.length)} দিন</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5">${pills}</div>
           </div>`;
@@ -2263,6 +2270,178 @@
       });
 
       renderAllAttendance();
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // LOGIN & PROFILE
+    // The app always starts on the login page. The role chosen there decides the only dashboard the person
+    // can see; there are no tabs to jump between roles. The header's প্রোফাইল button opens the profile panel
+    // (account details, settings, logout). The session is remembered on this phone until logout.
+    // ==========================================
+    const SESSION_KEY = 'pl_diary_session';
+    const SETTINGS_KEY = 'pl_diary_settings';
+    const readStore = key => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
+    const writeStore = (key, value) => { try { value === null ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* private mode: works for this visit only */ } };
+
+    const diarySettings = Object.assign({ textSize: 'normal', absentAlerts: true }, readStore(SETTINGS_KEY) || {});
+    let session = null; // { role: 'parent' | 'teacher' | 'school', code, cls, roll, userId }
+
+    const ROLE_META = {
+      parent: { label: 'অভিভাবক', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+      teacher: { label: 'শ্রেণি শিক্ষক', icon: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' },
+      school: { label: 'প্রিন্সিপাল / অ্যাডমিন', icon: '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M14 9h1"/><path d="M9 13h1"/><path d="M14 13h1"/><path d="M10 21v-4h4v4"/>' }
+    };
+    const TEACHER_NAME = 'রাশেদা বেগম';   // the only teacher account in this demo
+    const schoolNameFor = code => schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+
+    function applySettings() {
+      document.documentElement.style.fontSize = diarySettings.textSize === 'large' ? '112.5%' : '';
+      document.querySelectorAll('.text-size-btn').forEach(btn => {
+        btn.classList.toggle('tile-active', btn.getAttribute('data-text-size') === diarySettings.textSize);
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-text-size') === diarySettings.textSize);
+      });
+      document.getElementById('setting-absent-alert').setAttribute('aria-checked', diarySettings.absentAlerts ? 'true' : 'false');
+    }
+
+    function updateHeader() {
+      const title = document.getElementById('school-name-display');
+      const subtitle = document.getElementById('header-subtitle');
+      const btn = document.getElementById('btn-profile');
+      if (!session) {
+        title.textContent = 'Paperloop স্মার্ট ডায়েরি';
+        subtitle.textContent = 'অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি';
+        btn.classList.add('hidden'); btn.classList.remove('flex');
+        return;
+      }
+      title.textContent = appState.schoolName;
+      subtitle.textContent = `Paperloop স্মার্ট ডায়েরি • ${ROLE_META[session.role].label}`;
+      btn.classList.remove('hidden'); btn.classList.add('flex');
+    }
+
+    function renderProfile() {
+      if (!session) return;
+      const role = session.role, meta = ROLE_META[role];
+      document.getElementById('profile-avatar').innerHTML = `<svg class="line-icon-lg" viewBox="0 0 24 24">${meta.icon}</svg>`;
+      const rows = [];
+      if (role === 'parent') {
+        document.getElementById('profile-title').textContent = `${appState.studentName}-এর অভিভাবক`;
+        rows.push(['শিক্ষার্থী', appState.studentName], ['শ্রেণি', appState.studentClass], ['রোল', bn(toAsciiDigits(appState.studentRoll))], ['শ্রেণি শিক্ষক', TEACHER_NAME]);
+      } else if (role === 'teacher') {
+        document.getElementById('profile-title').textContent = TEACHER_NAME;
+        rows.push(['শ্রেণি', '৩য় শ্রেণি'], ['মোবাইল / আইডি', session.userId]);
+      } else {
+        document.getElementById('profile-title').textContent = 'প্রিন্সিপাল / অ্যাডমিন';
+        rows.push(['অ্যাডমিন আইডি', session.userId]);
+      }
+      rows.push(['স্কুল', appState.schoolName], ['স্কুল কোড', appState.schoolCode]);
+      document.getElementById('profile-subtitle').textContent = meta.label;
+      document.getElementById('profile-info').innerHTML = rows.map(([k, v]) => `
+        <div class="flex items-start justify-between gap-3 px-4 py-3">
+          <dt class="text-xs text-ink-500 pt-0.5">${k}</dt>
+          <dd class="text-sm font-bold text-ink-900 text-right">${esc(v)}</dd>
+        </div>`).join('');
+      document.getElementById('profile-child-section').classList.toggle('hidden', role !== 'parent');
+      document.getElementById('setting-absent-alert-row').classList.toggle('hidden', role !== 'parent');
+      if (role === 'parent') {
+        document.getElementById('input-school-code').value = appState.schoolCode;
+        document.getElementById('input-student-class').value = appState.studentClass;
+        document.getElementById('input-student-roll').value = '';
+      }
+      applySettings();
+    }
+
+    // Put a saved or fresh session into the app state and open that role's dashboard.
+    function startSession(s, { restoring = false } = {}) {
+      session = s;
+      writeStore(SESSION_KEY, s);
+      appState.schoolCode = s.code;
+      appState.schoolName = schoolNameFor(s.code);
+      if (s.role === 'parent') {
+        appState.studentClass = s.cls;
+        appState.studentRoll = s.roll;
+        appState.studentName = rollNames[s.roll] || `শিক্ষার্থী (রোল ${bn(s.roll)})`;
+      }
+      if (restoring) {
+        renderParentDashboard();
+        renderTeacherDashboard();
+        switchMainView(s.role);
+      }
+      updateHeader();
+      renderProfile();
+      window.scrollTo(0, 0);
+    }
+
+    function logout() {
+      session = null;
+      writeStore(SESSION_KEY, null);
+      document.getElementById('profile-dialog').close();
+      switchMainView('login');
+      updateHeader();
+      window.scrollTo(0, 0);
+      showToast('লগআউট হয়েছে');
+    }
+
+    const normaliseRoll = v => toAsciiDigits(String(v).trim()).padStart(2, '0');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Bangla error messages for the login fields, and Bangla digits accepted in roll numbers.
+      document.querySelectorAll('input[data-invalid]').forEach(input => {
+        input.addEventListener('invalid', () => input.setCustomValidity(input.getAttribute('data-invalid')));
+        input.addEventListener('input', () => input.setCustomValidity(''));
+      });
+      document.addEventListener('submit', e => {
+        e.target.querySelectorAll('input[inputmode="numeric"]').forEach(inp => { inp.value = toAsciiDigits(inp.value).trim(); });
+      }, true);
+
+      // These run after the original login handlers (registered earlier) and remember who logged in.
+      document.getElementById('form-login-parent').addEventListener('submit', () => {
+        startSession({ role: 'parent', code: document.getElementById('login-p-code').value.trim().toUpperCase(),
+          cls: document.getElementById('login-p-class').value, roll: normaliseRoll(document.getElementById('login-p-roll').value) });
+      });
+      document.getElementById('form-login-teacher').addEventListener('submit', () => {
+        startSession({ role: 'teacher', code: document.getElementById('login-t-code').value.trim().toUpperCase(),
+          userId: document.getElementById('login-t-phone').value.trim() });
+        document.getElementById('login-t-pin').value = '';
+      });
+      document.getElementById('form-login-school').addEventListener('submit', () => {
+        startSession({ role: 'school', code: document.getElementById('login-s-code').value.trim().toUpperCase(),
+          userId: document.getElementById('login-s-admin').value.trim() });
+        document.getElementById('login-s-pin').value = '';
+      });
+      // "Another child" inside the profile panel: same parent session, different roll
+      document.getElementById('login-form-box').addEventListener('submit', () => {
+        startSession({ role: 'parent', code: document.getElementById('input-school-code').value.trim().toUpperCase(),
+          cls: document.getElementById('input-student-class').value, roll: normaliseRoll(document.getElementById('input-student-roll').value) });
+        document.getElementById('profile-dialog').close();
+      });
+
+      // Profile panel
+      const dialog = document.getElementById('profile-dialog');
+      document.getElementById('btn-profile').addEventListener('click', () => { renderProfile(); dialog.showModal(); });
+      dialog.querySelector('[data-profile-close]').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); }); // tap outside the panel
+      document.getElementById('btn-logout').addEventListener('click', logout);
+
+      document.querySelectorAll('.text-size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          diarySettings.textSize = btn.getAttribute('data-text-size');
+          writeStore(SETTINGS_KEY, diarySettings);
+          applySettings();
+        });
+      });
+      document.getElementById('setting-absent-alert').addEventListener('click', () => {
+        diarySettings.absentAlerts = !diarySettings.absentAlerts;
+        writeStore(SETTINGS_KEY, diarySettings);
+        applySettings();
+        renderParentAttendance();
+      });
+
+      applySettings();
+      const saved = readStore(SESSION_KEY);
+      if (saved && ROLE_META[saved.role] && saved.code) startSession(saved, { restoring: true });
+      else { switchMainView('login'); updateHeader(); }
     });
 
   </script>
