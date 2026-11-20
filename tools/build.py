@@ -23,6 +23,7 @@ Output:
 """
 import hashlib
 import json
+import re
 import pathlib
 import shutil
 import sys
@@ -150,6 +151,21 @@ def write_sitemap():
     )
 
 
+def build_diary():
+    """The smart diary (diary/) is a hand-written page with a Tailwind-built stylesheet; it is served from
+    diary/ as it is. This keeps its stylesheet link fingerprinted, so phones never pair a new page with an
+    old cached diary.css, and copies it into _site/ for preview and the link check."""
+    page = SRC / "diary" / "index.html"
+    html = page.read_text(encoding="utf-8")
+    digest = hashlib.sha256((SRC / "diary" / "diary.css").read_bytes()).hexdigest()[:10]
+    fixed = re.sub(r'diary\.css\?v=[0-9a-f]+', f"diary.css?v={digest}", html)
+    if fixed != html:
+        page.write_text(fixed, encoding="utf-8")
+    (OUT / "diary").mkdir(parents=True, exist_ok=True)
+    for name in ("index.html", "diary.css"):
+        shutil.copyfile(SRC / "diary" / name, OUT / "diary" / name)
+
+
 if __name__ == "__main__":
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -158,6 +174,7 @@ if __name__ == "__main__":
     if SITE["launched"]:
         write_sitemap()
     (OUT / ".nojekyll").write_text("")  # serve files as-is (no Jekyll processing)
+    build_diary()
     for name in PUBLISHED:
         src, dest = OUT / name, SRC / name
         if src.exists():

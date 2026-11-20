@@ -38,6 +38,30 @@ at `https://oasisnextbd.github.io/paperloop/`. So a change is live a minute or t
 The check workflow fails if the committed pages do not match the sources. If the site moves to its own
 domain, change `site.json → base_url`.
 
+## Smart diary (`diary/`)
+
+A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.io/paperloop/diary/`:
+parents sign in with School Code + Class + Roll, class teachers post homework and take the morning
+attendance, the principal sees class-wise attendance and marks teacher attendance. Every name and number in
+it is sample data (the page says so), it keeps nothing after a reload, and it asks search engines not to index it.
+
+| File | What it is |
+|---|---|
+| `diary/index.html` | the app: one page, markup and JavaScript (edit this) |
+| `diary/diary.input.css` | fonts, base styles and the floating-card / active-tile styles (edit this) |
+| `diary/tailwind.config.js` | the Paperloop palette as Tailwind colours: `ink-*` (navy neutrals), `gold-*` (accent), `white` = paper |
+| `diary/diary.css` | built by Tailwind: never edit by hand |
+
+After changing classes in `diary/index.html` or anything in `diary.input.css`:
+
+```bash
+npx --yes tailwindcss@3.4.17 -c diary/tailwind.config.js -i diary/diary.input.css -o diary/diary.css --minify
+python3 tools/build.py && python3 scripts/check_links.py   # also refreshes the diary.css?v= fingerprint
+```
+
+Commit `diary/index.html` and `diary/diary.css` together. Diary rules: monochrome line icons only (no emoji),
+icon above a short label, floating cards, Bangla first, no QR or camera scanning, no made-up contact details.
+
 ## Common edits
 
 | Task | Where |

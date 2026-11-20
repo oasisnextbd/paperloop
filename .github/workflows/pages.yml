@@ -1,5 +1,5 @@
-# Checks every push and pull request: the site builds, no internal link is broken, and the built pages
-# committed at the repository root match the sources. Publishing is done by GitHub Pages itself
+# Checks every push and pull request: the site builds, no internal link is broken, and the built files
+# committed in the repository (root pages, diary/diary.css) match the sources. Publishing is done by GitHub Pages itself
 # (Settings → Pages → Deploy from a branch → main, / root), not by this workflow.
 name: Check site
 
@@ -21,9 +21,14 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build the smart diary stylesheet
+        run: npx --yes tailwindcss@3.4.17 -c diary/tailwind.config.js -i diary/diary.input.css -o diary/diary.css --minify
       - name: Build site
         run: python tools/build.py
       - name: Check internal links
         run: python scripts/check_links.py
       - name: Built pages are committed
-        run: git diff --exit-code -- index.html en .nojekyll sitemap.xml
+        run: git diff --exit-code -- index.html en .nojekyll sitemap.xml diary/index.html diary/diary.css

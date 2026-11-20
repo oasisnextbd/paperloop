@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paperloop স্মার্ট ডায়েরি (ডেমো)</title>
+  <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন। এটি নমুনা তথ্যসহ ডেমো।" />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#14213d" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
+  <link rel="stylesheet" href="diary.css?v=dfd7d2f753" />
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Monochrome Toast Notification -->
+  <div id="app-toast" class="fixed bottom-5 right-5 z-50 hidden bg-ink-900 text-white px-4 py-3 rounded-2xl shadow-xl text-sm font-semibold flex items-center gap-2.5">
+    <span id="toast-icon" class="inline-flex items-center">
+      <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </span>
+    <span id="toast-text">সম্পন্ন হয়েছে</span>
+  </div>
+
+  <!-- Demo notice: every name and number in this app is sample data -->
+  <div class="bg-ink-900 text-ink-100 text-[11px] sm:text-xs">
+    <div class="max-w-3xl mx-auto px-4 py-1.5 flex items-center justify-between gap-3">
+      <span><strong class="text-gold-300">ডেমো</strong> • সব নাম ও নম্বর নমুনা তথ্য, আসল শিক্ষার্থীর নয়</span>
+      <a href="../" class="font-bold text-gold-300 hover:text-gold-200 whitespace-nowrap">Paperloop →</a>
+    </div>
+  </div>
+
+  <!-- Top Header with Single-Color Line-Icon Navigation -->
+  <header class="bg-white border-b border-ink-200 sticky top-0 z-30">
+    <div class="max-w-3xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand & School Name -->
+      <div class="flex items-center gap-3">
+        <a href="../" class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex items-center justify-center" aria-label="Paperloop ওয়েবসাইট">
+          <!-- Paperloop symbol: two loops, radii in the golden ratio (same artwork as the main site's logo) -->
+          <svg class="paperloop-mark" viewBox="-51.3 -35.4 132.4 70.7" aria-hidden="true" focusable="false"><path class="pl-a" d="M0 0L-14.14 -14.14A20.00 20.00 0 1 0 -14.14 14.14Z"/><path class="pl-b" d="M0 0L22.88 -22.88A32.36 32.36 0 1 1 22.88 22.88Z"/></svg>
+        </a>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-ink-900 leading-tight" id="school-name-display">
+            কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি
+          </h1>
+          <p class="text-xs text-ink-500">Paperloop স্মার্ট ডায়েরি • কসবা, ব্রাহ্মণবাড়িয়া</p>
+        </div>
+      </div>
+
+      <!-- Monochrome Line-Icon Above Text Navigation Bar -->
+      <div class="flex items-center gap-1.5">
+        <button id="tab-btn-login" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
+          <svg class="line-icon mb-1" viewBox="0 0 24 24">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span class="text-[11px] font-bold leading-none">লগইন</span>
+        </button>
+
+        <button id="tab-btn-parent" type="button" class="icon-tile tile-active flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 text-ink-900">
+          <svg class="line-icon mb-1" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span class="text-[11px] font-bold leading-none">অভিভাবক</span>
+        </button>
+
+        <button id="tab-btn-teacher" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
+          <svg class="line-icon mb-1" viewBox="0 0 24 24">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span class="text-[11px] font-bold leading-none">শিক্ষক</span>
+        </button>
+
+        <button id="tab-btn-school" type="button" class="icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50">
+          <svg class="line-icon mb-1" viewBox="0 0 24 24">
+            <path d="M3 21h18"/>
+            <path d="M5 21V7l7-4 7 4v14"/>
+            <path d="M9 9h1"/><path d="M14 9h1"/>
+            <path d="M9 13h1"/><path d="M14 13h1"/>
+            <path d="M10 21v-4h4v4"/>
+          </svg>
+          <span class="text-[11px] font-bold leading-none">স্কুল</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-5">
+
+    <!-- ==========================================
+         0. DEDICATED LOGIN PAGE (PARENT / TEACHER / SCHOOL SECTIONS)
+         ========================================== -->
+    <section id="view-login" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl border border-ink-200 p-6 shadow-sm space-y-6">
+        <div class="text-center space-y-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-300 text-ink-800 flex items-center justify-center mx-auto">
+            <svg class="line-icon-lg" viewBox="0 0 24 24">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" x2="3" y1="12" y2="12"/>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-ink-900">Paperloop স্মার্ট ডায়েরিতে লগইন করুন</h2>
+          <p class="text-xs sm:text-sm text-ink-500">আপনার ভূমিকা (অভিভাবক, শিক্ষক অথবা স্কুল কর্তৃপক্ষ) নির্বাচন করুন</p>
+        </div>
+
+        <!-- 3 Role Selector Tiles -->
+        <div class="grid grid-cols-3 gap-3">
+          <button type="button" data-login-role="parent" class="login-role-card icon-tile tile-active flex flex-col items-center justify-center p-4 rounded-2xl border-2 text-center">
+            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="text-xs sm:text-sm font-bold">অভিভাবক লগইন</span>
+            <span class="text-[11px] text-ink-500 mt-0.5">স্কুল কোড ও রোল</span>
+          </button>
+
+          <button type="button" data-login-role="teacher" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
+            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <span class="text-xs sm:text-sm font-bold">শিক্ষক লগইন</span>
+            <span class="text-[11px] text-ink-500 mt-0.5">শিক্ষক আইডি ও পিন</span>
+          </button>
+
+          <button type="button" data-login-role="school" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
+            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
+              <path d="M3 21h18"/>
+              <path d="M5 21V7l7-4 7 4v14"/>
+              <path d="M9 9h1"/><path d="M14 9h1"/>
+              <path d="M9 13h1"/><path d="M14 13h1"/>
+              <path d="M10 21v-4h4v4"/>
+            </svg>
+            <span class="text-xs sm:text-sm font-bold">স্কুল লগইন</span>
+            <span class="text-[11px] text-ink-500 mt-0.5">প্রিন্সিপাল ও অ্যাডমিন</span>
+          </button>
+        </div>
+
+        <!-- SECTION A: PARENT LOGIN FORM -->
+        <form id="form-login-parent" class="space-y-4 pt-2 border-t border-ink-100">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">অভিভাবক ও শিক্ষার্থী প্রবেশ</span>
+            <span class="text-xs text-ink-500">পাসওয়ার্ডের প্রয়োজন নেই</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label for="login-p-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড (খাতার পেছনে লেখা)</label>
+              <input id="login-p-code" type="text" value="KSB" placeholder="যেমন: KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase focus:outline-none focus:border-ink-800" />
+            </div>
+            <div>
+              <label for="login-p-class" class="block text-xs font-bold text-ink-700 mb-1">শ্রেণি নির্বাচন করুন</label>
+              <select id="login-p-class" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold bg-white focus:outline-none focus:border-ink-800">
+                <option value="Play">Play / প্লে</option>
+                <option value="KG">KG / কেজি</option>
+                <option value="১ম শ্রেণি">১ম শ্রেণি</option>
+                <option value="২য় শ্রেণি">২য় শ্রেণি</option>
+                <option value="৩য় শ্রেণি" selected>৩য় শ্রেণি</option>
+                <option value="৪র্থ শ্রেণি">৪র্থ শ্রেণি</option>
+                <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
+              </select>
+            </div>
+            <div>
+              <label for="login-p-roll" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষার্থীর রোল নম্বর</label>
+              <input id="login-p-roll" type="text" value="07" placeholder="যেমন: 07" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold focus:outline-none focus:border-ink-800" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
+            <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span>অভিভাবক ড্যাশবোর্ডে প্রবেশ করুন</span>
+          </button>
+        </form>
+
+        <!-- SECTION B: TEACHER LOGIN FORM -->
+        <form id="form-login-teacher" class="hidden space-y-4 pt-2 border-t border-ink-100">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">শ্রেণি শিক্ষক প্রবেশ</span>
+            <span class="text-xs text-ink-500">ডেমো পিন: 1234</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label for="login-t-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড</label>
+              <input id="login-t-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
+            </div>
+            <div>
+              <label for="login-t-phone" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষকের মোবাইল / আইডি</label>
+              <input id="login-t-phone" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+            </div>
+            <div>
+              <label for="login-t-pin" class="block text-xs font-bold text-ink-700 mb-1">৪-সংখ্যার পিন</label>
+              <input id="login-t-pin" type="password" value="1234" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
+            <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span>শিক্ষক ড্যাশবোর্ডে প্রবেশ করুন</span>
+          </button>
+        </form>
+
+        <!-- SECTION C: SCHOOL ADMIN / PRINCIPAL LOGIN FORM -->
+        <form id="form-login-school" class="hidden space-y-4 pt-2 border-t border-ink-100">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">স্কুল প্রিন্সিপাল ও অ্যাডমিন প্রবেশ</span>
+            <span class="text-xs text-ink-500">ডেমো পাসকোড: 2026</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label for="login-s-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড / EIIN</label>
+              <input id="login-s-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
+            </div>
+            <div>
+              <label for="login-s-admin" class="block text-xs font-bold text-ink-700 mb-1">প্রিন্সিপাল / অ্যাডমিন আইডি</label>
+              <input id="login-s-admin" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+            </div>
+            <div>
+              <label for="login-s-pin" class="block text-xs font-bold text-ink-700 mb-1">অ্যাডমিন পিন</label>
+              <input id="login-s-pin" type="password" value="2026" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
+            <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span>স্কুল অ্যাডমিন প্যানেলে প্রবেশ করুন</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         1. PARENT & STUDENT SECTION (4 FLOATING CARDS ARCHITECTURE)
+         ========================================== -->
+    <section id="view-parent" class="space-y-5">
+
+      <!-- Student Profile Strip + Quick Roll Switcher + Chat Shortcut -->
+      <div class="bg-white rounded-2xl border border-ink-200 p-4 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3.5">
+            <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-300 text-ink-800 flex flex-col items-center justify-center">
+              <svg class="line-icon-sm mb-0.5" viewBox="0 0 24 24">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span class="text-[11px] font-extrabold">রোল <span id="student-roll-badge">০৭</span></span>
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-ink-900" id="student-name-display">তাসনিম জারিন</h2>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-ink-100 text-ink-800 border border-ink-300" id="student-class-display">৩য় শ্রেণি</span>
+              </div>
+              <p class="text-xs text-ink-500 mt-0.5">
+                স্কুল কোড: <strong id="student-code-display" class="text-ink-700">KSB</strong> • শ্রেণি শিক্ষিকা: রাশেদা বেগম
+              </p>
+              <p id="parent-today-att" class="text-xs font-bold text-ink-700 mt-1 flex items-center gap-1.5"></p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="tile-open-chat-shortcut" type="button" class="icon-tile flex flex-col items-center justify-center px-3 py-2 rounded-2xl bg-ink-100 hover:bg-ink-200 border border-ink-200 text-ink-700">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <line x1="8" x2="16" y1="9" y2="9"/>
+                <line x1="8" x2="13" y1="13" y2="13"/>
+              </svg>
+              <span class="text-[11px] font-bold leading-none">মেসেজ দিন →</span>
+            </button>
+
+            <button id="btn-toggle-login-box" type="button" class="icon-tile flex flex-col items-center justify-center px-3 py-2 rounded-2xl bg-ink-100 hover:bg-ink-200 border border-ink-200 text-ink-700">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 16h5v5"/>
+              </svg>
+              <span class="text-[11px] font-bold leading-none">রোল পরিবর্তন</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Collapsible Quick Roll Switcher -->
+        <form id="login-form-box" class="hidden mt-4 pt-4 border-t border-ink-200 grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+          <div>
+            <label for="input-school-code" class="block text-xs font-bold text-ink-600 mb-1">স্কুল কোড</label>
+            <input id="input-school-code" type="text" value="KSB" placeholder="KSB" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold uppercase" />
+          </div>
+          <div>
+            <label for="input-student-class" class="block text-xs font-bold text-ink-600 mb-1">শ্রেণি</label>
+            <select id="input-student-class" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold bg-white">
+              <option value="Play">Play / প্লে</option>
+              <option value="KG">KG / কেজি</option>
+              <option value="১ম শ্রেণি">১ম শ্রেণি</option>
+              <option value="২য় শ্রেণি">২য় শ্রেণি</option>
+              <option value="৩য় শ্রেণি" selected>৩য় শ্রেণি</option>
+              <option value="৪র্থ শ্রেণি">৪র্থ শ্রেণি</option>
+              <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
+            </select>
+          </div>
+          <div>
+            <label for="input-student-roll" class="block text-xs font-bold text-ink-600 mb-1">রোল নম্বর</label>
+            <input id="input-student-roll" type="text" value="07" placeholder="07" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold" />
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 px-4 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">
+              ড্যাশবোর্ড দেখুন
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==========================================
+           4 FLOATING CARDS NAVIGATION GRID (ICON ON TOP + TEXT BELOW)
+           1. Assignments  2. Grades  3. Improvement Reports  4. Weekly & Monthly Topics
+           ========================================== -->
+      <!-- Absent alert (in-app): shown only when today's register marks the child absent -->
+      <div id="parent-absent-alert" class="hidden"></div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-ink-500">শিক্ষার্থীর মূল ড্যাশবোর্ড কার্ডসমূহ (কার্ডে ট্যাপ করুন)</span>
+          <span class="text-xs font-semibold text-ink-500" id="today-date-label">বুধবার, ১৮ নভেম্বর</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+          <!-- Floating Card 1: Assignments -->
+          <button type="button" data-parent-panel="assignments" class="parent-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
+              <svg class="line-icon-lg" viewBox="0 0 24 24">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">অ্যাসাইনমেন্ট</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Assignments</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="stat-hw-progress">
+              ১ / ৩ সম্পন্ন
+            </div>
+          </button>
+
+          <!-- Floating Card 2: Grades -->
+          <button type="button" data-parent-panel="grades" class="parent-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
+              <svg class="line-icon-lg" viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">গ্রেড ও নম্বর</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Grades & Marks</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+              গড়: A+ (৯২%)
+            </div>
+          </button>
+
+          <!-- Floating Card 3: Improvement Reports -->
+          <button type="button" data-parent-panel="improvement" class="parent-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
+              <svg class="line-icon-lg" viewBox="0 0 24 24">
+                <line x1="18" x2="18" y1="20" y2="10"/>
+                <line x1="12" x2="12" y1="20" y2="4"/>
+                <line x1="6" x2="6" y1="20" y2="14"/>
+              </svg>
+            </div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">উন্নতি রিপোর্ট</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Improvement</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+              +১৪% অগ্রগতি
+            </div>
+          </button>
+
+          <!-- Floating Card 4: Weekly & Monthly Topics Covered -->
+          <button type="button" data-parent-panel="topics" class="parent-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
+              <svg class="line-icon-lg" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                <line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/>
+                <line x1="3" x2="21" y1="10" y2="10"/>
+                <path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/>
+                <path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>
+              </svg>
+            </div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">পঠিত বিষয়সমূহ</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Weekly & Monthly</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800">
+              ১২টি অধ্যায়
+            </div>
+          </button>
+
+          <!-- Floating Card 5: Attendance -->
+          <button type="button" data-parent-panel="attendance" class="parent-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">হাজিরা</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Attendance</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="stat-att-month">—</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 1: ASSIGNMENTS (অ্যাসাইনমেন্ট ও বাড়ির কাজ)
+           ========================================== -->
+      <div id="panel-parent-assignments" class="parent-subpanel space-y-3.5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">আজকের অ্যাসাইনমেন্ট ও খাতার কাজ</h3>
+            <p class="text-xs text-ink-500">খাতায় লেখা শেষ হলে ডানপাশের বাটনে ট্যাপ করে সম্পন্ন করুন</p>
+          </div>
+        </div>
+
+        <!-- 3 Monochrome Line-Icon Filter Cards -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <button type="button" data-filter="all" class="hw-filter-btn icon-tile tile-active flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border border-ink-200">
+            <svg class="line-icon mb-1" viewBox="0 0 24 24">
+              <line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/>
+              <line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>
+            </svg>
+            <span class="text-xs font-bold">সবগুলো</span>
+          </button>
+
+          <button type="button" data-filter="pending" class="hw-filter-btn icon-tile flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl bg-white text-ink-600 border border-ink-200">
+            <svg class="line-icon mb-1" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="text-xs font-bold">বাকি আছে</span>
+          </button>
+
+          <button type="button" data-filter="done" class="hw-filter-btn icon-tile flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl bg-white text-ink-600 border border-ink-200">
+            <svg class="line-icon mb-1" viewBox="0 0 24 24">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <span class="text-xs font-bold">সম্পন্ন হয়েছে</span>
+          </button>
+        </div>
+
+        <!-- Homework Cards List -->
+        <div id="parent-homework-list" class="space-y-3"></div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 2: GRADES (গ্রেড ও পরীক্ষার ফলাফল)
+           ========================================== -->
+      <div id="panel-parent-grades" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">গ্রেড ও পরীক্ষার ফলাফল (Grades & Assessment)</h3>
+              <p class="text-xs text-ink-500">সাপ্তাহিক বৃহস্পতিবার ক্লাস টেস্ট ও সাময়িক পরীক্ষার নম্বরপত্র</p>
+            </div>
+            <!-- Exam Term Selector Pills -->
+            <div class="flex gap-1.5 bg-ink-100 p-1 rounded-xl border border-ink-200">
+              <button type="button" data-grade-term="weekly" class="grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ink-900 text-white">
+                সাপ্তাহিক টেস্ট
+              </button>
+              <button type="button" data-grade-term="monthly" class="grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold text-ink-600 hover:bg-white">
+                মাসিক ও BKA মডেল
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Grade Summary Floating Mini-Cards -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
+              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <div class="text-[11px] text-ink-500 font-semibold">প্রাপ্ত গ্রেড</div>
+              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-letter">A+ (৯২%)</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
+              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+              </svg>
+              <div class="text-[11px] text-ink-500 font-semibold">মেধাক্রম (Rank)</div>
+              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-rank">৩য় স্থান (৩০ জনে)</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
+              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/>
+              </svg>
+              <div class="text-[11px] text-ink-500 font-semibold">মোট নম্বর</div>
+              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-marks">৯২ / ১০০</div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Floating Grade Rows -->
+          <div id="grades-subject-list" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 3: IMPROVEMENT REPORTS (উন্নতি রিপোর্ট)
+           ========================================== -->
+      <div id="panel-parent-improvement" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">শিক্ষার্থীর উন্নতি ও অগ্রগতি রিপোর্ট (Improvement Report)</h3>
+              <p class="text-xs text-ink-500">গত মাসের তুলনায় এই মাসে খাতার লেখা, বানান ও গণিতে অগ্রগতি</p>
+            </div>
+            <span class="px-3 py-1 rounded-xl bg-gold-50 text-gold-900 border border-gold-200 text-xs font-extrabold">
+              সার্বিক উন্নতি: +১৪%
+            </span>
+          </div>
+
+          <!-- Subject Progress Comparison Bars (Last Month vs This Month) -->
+          <div id="improvement-bars-list" class="space-y-3"></div>
+
+          <!-- 2 Floating Actionable Insight Cards: Strengths vs Home Practice Focus -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-4 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
+              <div class="flex items-center gap-2 text-ink-900 font-bold text-xs sm:text-sm">
+                <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>যেসব বিষয়ে দারুণ উন্নতি হয়েছে</span>
+              </div>
+              <ul class="text-xs text-ink-700 space-y-1.5 list-disc list-inside">
+                <li><strong>Paperloop ৪-দাগ খাতায়:</strong> ইংরেজি Capital ও Small অক্ষরের লাইন ঠিক রাখা (+১৮%)।</li>
+                <li><strong>গণিত বক্স খাতায়:</strong> সমহর ভগ্নাংশের যোগ ও ১–১২ ঘরের নামতা নির্ভুলভাবে লেখা।</li>
+                <li><strong>বাংলা যুক্তবর্ণ:</strong> ‘আমার বাংলা বই’-এর শব্দের বানান ভুল আগের চেয়ে অনেক কমেছে।</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-gold-50/60 border border-gold-200 space-y-2">
+              <div class="flex items-center gap-2 text-ink-900 font-bold text-xs sm:text-sm">
+                <svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                <span>বাসায় প্রতিদিন ১০ মিনিট যা দেখবেন</span>
+              </div>
+              <ul class="text-xs text-ink-700 space-y-1.5 list-disc list-inside">
+                <li><strong>ইংরেজি Word Meaning:</strong> প্রতিদিন রাতে ৫টি করে নতুন শব্দের বানান মুখে ধরা।</li>
+                <li><strong>গণিত কথার অংক:</strong> প্রশ্নের ডাক পড়ে যোগ নাকি বিয়োগ হবে তা নিজে বলতে উৎসাহিত করা।</li>
+                <li><strong>বিজ্ঞান চিত্র:</strong> সালোকসংশ্লেষণ ও উদ্ভিদের অংশগুলোর নাম খাতায় লিখে অনুশীলন।</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 4: WEEKLY & MONTHLY TOPICS COVERED (সাপ্তাহিক ও মাসিক পঠিত বিষয়)
+           ========================================== -->
+      <div id="panel-parent-topics" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">সাপ্তাহিক ও মাসিক পঠিত বিষয় (Topics Covered)</h3>
+              <p class="text-xs text-ink-500">ক্লাসে কোন সপ্তাহে ও মাসে কী কী অধ্যায় পড়ানো হয়েছে তার তালিকা</p>
+            </div>
+
+            <!-- Weekly vs Monthly Toggle Buttons (Monochrome Line Icon + Text) -->
+            <div class="flex gap-2">
+              <button type="button" data-topic-scope="weekly" class="topic-scope-btn icon-tile tile-active px-3.5 py-2 rounded-xl border border-ink-200 flex items-center gap-2 text-xs font-bold">
+                <svg class="line-icon-sm" viewBox="0 0 24 24">
+                  <rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                </svg>
+                <span>সাপ্তাহিক (এই সপ্তাহ)</span>
+              </button>
+              <button type="button" data-topic-scope="monthly" class="topic-scope-btn icon-tile px-3.5 py-2 rounded-xl border border-ink-200 bg-white text-ink-600 flex items-center gap-2 text-xs font-bold">
+                <svg class="line-icon-sm" viewBox="0 0 24 24">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                </svg>
+                <span>মাসিক (নভেম্বর সিলেবাস)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Topics Covered Cards Grid -->
+          <div id="topics-covered-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 5: ATTENDANCE (মাসিক হাজিরা)
+           ========================================== -->
+      <div id="panel-parent-attendance" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">মাসিক হাজিরা (Attendance)</h3>
+              <p class="text-xs text-ink-500">শ্রেণি শিক্ষক প্রতিদিন সকালে হাজিরা নেন</p>
+            </div>
+            <span id="p-att-month-label" class="px-3 py-1 rounded-xl bg-ink-100 border border-ink-200 text-xs font-extrabold text-ink-800"></span>
+          </div>
+          <div id="p-att-summary" class="grid grid-cols-3 gap-3"></div>
+          <div>
+            <div id="p-att-weekhead" class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-bold text-ink-500 mb-1.5"></div>
+            <div id="p-att-calendar" class="grid grid-cols-7 gap-1.5"></div>
+          </div>
+          <div id="p-att-legend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-ink-600"></div>
+        </div>
+      </div>
+
+      <!-- Optional Class Teacher Chat Section (Collapsed by Default, Monochrome Line Icons) -->
+      <div id="optional-chat-card" class="bg-white rounded-2xl border border-ink-200 shadow-sm overflow-hidden">
+        <button id="btn-toggle-optional-chat" type="button" class="w-full p-4 flex items-center justify-between text-left hover:bg-ink-50 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 text-ink-700 flex flex-col items-center justify-center border border-ink-200">
+              <svg class="line-icon" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <line x1="8" x2="16" y1="9" y2="9"/>
+                <line x1="8" x2="13" y1="13" y2="13"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-sm sm:text-base font-bold text-ink-900">শ্রেণি শিক্ষকের সাথে মেসেজ (ঐচ্ছিক / Optional)</div>
+              <div class="text-xs text-ink-500">ছুটির আবেদন বা পড়া বুঝতে সমস্যা হলে ১ ট্যাপে জানান</div>
+            </div>
+          </div>
+          <span id="chat-chevron" class="text-xs font-bold text-ink-700 bg-ink-100 px-3 py-1.5 rounded-xl border border-ink-200">
+            মেসেজ খুলুন ▼
+          </span>
+        </button>
+
+        <!-- Collapsible Chat Body -->
+        <div id="optional-chat-panel" class="hidden border-t border-ink-200 p-4 space-y-3.5 bg-ink-50">
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-quick-msg="ম্যাডাম, আজকের সব বাড়ির কাজ খাতায় শেষ করেছে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-xs font-bold leading-tight">আজকের পড়া শেষ করেছে</span>
+            </button>
+            <button type="button" data-quick-msg="ম্যাডাম, অসুস্থতার কারণে আগামীকাল স্কুলে আসতে পারবে না।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+              </svg>
+              <span class="text-xs font-bold leading-tight">আগামীকাল ছুটির আবেদন</span>
+            </button>
+            <button type="button" data-quick-msg="ম্যাডাম, গণিতের বাড়ির কাজটি বুঝতে একটু সাহায্য লাগবে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/>
+              </svg>
+              <span class="text-xs font-bold leading-tight">গণিত পড়াটি বুঝতে সমস্যা হচ্ছে</span>
+            </button>
+          </div>
+
+          <div id="chat-messages-box" class="bg-white rounded-2xl border border-ink-200 p-3.5 h-48 overflow-y-auto space-y-2.5"></div>
+
+          <form id="parent-chat-form" class="flex gap-2">
+            <input id="parent-chat-input" type="text" placeholder="শিক্ষককে ছোট মেসেজ লিখুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm bg-white focus:outline-none focus:border-ink-800" />
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">
+              পাঠান
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         2. TEACHER DASHBOARD VIEW (MONOCHROME LINE-ICON TILES)
+         ========================================== -->
+    <section id="view-teacher" class="hidden space-y-5">
+
+      <div class="bg-ink-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
+            <svg class="line-icon" viewBox="0 0 24 24">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-ink-300">শিক্ষক ড্যাশবোর্ড</span>
+            <h2 class="text-lg font-bold">রাশেদা বেগম (শ্রেণি শিক্ষিকা — ৩য় শ্রেণি)</h2>
+            <p class="text-xs text-ink-300">লাইন-আইকন কার্ডে ট্যাপ করে বিষয় ও খাতা বেছে এক ক্লিকে সবার ড্যাশবোর্ডে পাঠান।</p>
+          </div>
+        </div>
+        <div class="bg-white/10 px-3.5 py-2 rounded-xl border border-white/15 text-center">
+          <div class="text-[11px] text-ink-300">মোট শিক্ষার্থী</div>
+          <div class="text-base font-bold">৩০ জন</div>
+        </div>
+      </div>
+
+      <!-- Teacher floating cards: Morning attendance / Homework -->
+      <div class="grid grid-cols-2 gap-3.5">
+        <button type="button" data-teacher-panel="attendance" class="teacher-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">সকালের হাজিরা</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Attendance</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="t-stat-att">—</div>
+          </button>
+        <button type="button" data-teacher-panel="homework" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বাড়ির কাজ</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Homework</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="t-stat-hw">—</div>
+          </button>
+      </div>
+
+      <!-- ==========================================
+           TEACHER PANEL 1: MORNING ATTENDANCE (সকালের হাজিরা)
+           ========================================== -->
+      <div id="panel-teacher-attendance" class="teacher-subpanel space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">সকালের হাজিরা — ৩য় শ্রেণি</h3>
+              <p class="text-xs text-ink-500" id="t-att-date"></p>
+            </div>
+            <div class="flex gap-1.5 bg-ink-100 p-1 rounded-xl border border-ink-200">
+              <button type="button" data-att-view="today" class="att-view-btn px-3 py-1.5 rounded-lg text-xs font-bold">আজকের হাজিরা</button>
+              <button type="button" data-att-view="month" class="att-view-btn px-3 py-1.5 rounded-lg text-xs font-bold">মাসিক খাতা</button>
+            </div>
+          </div>
+          <p id="t-att-holiday-note" class="hidden text-xs font-semibold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2"></p>
+
+          <div id="t-att-today" class="space-y-4">
+            <div id="t-att-summary" class="grid grid-cols-3 gap-3"></div>
+            <p class="text-xs text-ink-500">সবাই উপস্থিত ধরা আছে। যে আসেনি তার রোলে ট্যাপ করুন; আবার ট্যাপ করলে ছুটি।</p>
+            <div id="t-att-grid" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
+            <div id="t-att-requests"></div>
+            <div id="t-att-status"></div>
+            <div class="grid grid-cols-3 gap-2.5">
+              <button id="t-att-reset" type="button" class="icon-tile py-2.5 rounded-2xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50 flex flex-col items-center justify-center">
+                <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span class="text-xs font-bold">সবাই উপস্থিত</span>
+              </button>
+              <button id="t-att-submit" type="button" class="col-span-2 py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">
+                <svg class="line-icon-sm" viewBox="0 0 24 24"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span id="t-att-submit-label">হাজিরা জমা দিন</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="t-att-month" class="hidden space-y-2">
+            <div id="t-att-table" class="overflow-x-auto rounded-xl border border-ink-200"></div>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-ink-600">
+              <span><span class="text-ink-400 font-bold">•</span> উপস্থিত</span>
+              <span><span class="text-gold-700 font-extrabold">অ</span> অনুপস্থিত</span>
+              <span><span class="text-ink-600 font-bold">ছু</span> ছুটি</span>
+              <span>শু = শুক্রবার (বন্ধ)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           TEACHER PANEL 2: HOMEWORK (বাড়ির কাজ)
+           ========================================== -->
+      <div id="panel-teacher-homework" class="teacher-subpanel hidden space-y-5">
+      <form id="teacher-hw-form" class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-bold text-ink-900">নতুন বাড়ির কাজ পাঠান</h3>
+          <div class="flex items-center gap-2">
+            <label for="t-class-select" class="text-xs font-bold text-ink-500">শ্রেণি:</label>
+            <select id="t-class-select" class="px-3 py-1.5 rounded-xl border border-ink-300 text-xs sm:text-sm font-bold bg-ink-50">
+              <option value="Play">Play / প্লে</option>
+              <option value="KG">KG / কেজি</option>
+              <option value="১ম শ্রেণি">১ম শ্রেণি</option>
+              <option value="২য় শ্রেণি">২য় শ্রেণি</option>
+              <option value="৩য় শ্রেণি" selected>৩য় শ্রেণি (সকল রোল)</option>
+              <option value="৪র্থ শ্রেণি">৪র্থ শ্রেণি</option>
+              <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="t-subject-select" class="block text-xs font-bold text-ink-600">১. বিষয় নির্বাচন করুন</label>
+          <select id="t-subject-select" class="hidden">
+            <option value="বাংলা">বাংলা</option>
+            <option value="ইংরেজি">ইংরেজি</option>
+            <option value="গণিত" selected>গণিত</option>
+            <option value="বিজ্ঞান">বিজ্ঞান</option>
+          </select>
+          <div class="grid grid-cols-4 gap-2.5" id="teacher-subject-tiles">
+            <button type="button" data-subj="বাংলা" class="t-subj-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                <path d="M8 7h6"/>
+              </svg>
+              <span class="text-xs font-bold">বাংলা</span>
+            </button>
+            <button type="button" data-subj="ইংরেজি" class="t-subj-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <polyline points="4 7 4 4 20 4 20 7"/>
+                <line x1="9" x2="15" y1="20" y2="20"/>
+                <line x1="12" x2="12" y1="4" y2="20"/>
+              </svg>
+              <span class="text-xs font-bold">ইংরেজি</span>
+            </button>
+            <button type="button" data-subj="গণিত" class="t-subj-tile icon-tile tile-active flex flex-col items-center justify-center p-3 rounded-2xl border-2">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <rect width="16" height="20" x="4" y="2" rx="2"/>
+                <line x1="8" x2="16" y1="6" y2="6"/>
+                <line x1="16" x2="16" y1="14" y2="18"/>
+                <path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/>
+                <path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>
+              </svg>
+              <span class="text-xs font-bold">গণিত</span>
+            </button>
+            <button type="button" data-subj="বিজ্ঞান" class="t-subj-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/>
+                <path d="M8.5 2h7"/><path d="M7 16h10"/>
+              </svg>
+              <span class="text-xs font-bold">বিজ্ঞান</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="t-khata-select" class="block text-xs font-bold text-ink-600">২. কোন Paperloop খাতায় লিখবে?</label>
+          <select id="t-khata-select" class="hidden">
+            <option value="বাংলা দাগ খাতা">বাংলা দাগ খাতা</option>
+            <option value="ইংরেজি ৪-দাগ খাতা">ইংরেজি ৪-দাগ খাতা</option>
+            <option value="গণিত বক্স খাতা" selected>গণিত বক্স খাতা</option>
+          </select>
+          <div class="grid grid-cols-3 gap-2.5" id="teacher-khata-tiles">
+            <button type="button" data-khata="বাংলা দাগ খাতা" class="t-khata-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/>
+              </svg>
+              <span class="text-xs font-bold">বাংলা দাগ খাতা</span>
+            </button>
+            <button type="button" data-khata="ইংরেজি ৪-দাগ খাতা" class="t-khata-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <line x1="3" x2="21" y1="8" y2="8"/>
+                <line x1="3" x2="21" y1="12" y2="12"/>
+                <line x1="3" x2="21" y1="16" y2="16"/>
+              </svg>
+              <span class="text-xs font-bold">ইংরেজি ৪-দাগ খাতা</span>
+            </button>
+            <button type="button" data-khata="গণিত বক্স খাতা" class="t-khata-tile icon-tile tile-active flex flex-col items-center justify-center p-3 rounded-2xl border-2">
+              <svg class="line-icon mb-1.5" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/>
+                <line x1="9" x2="9" y1="3" y2="21"/><line x1="15" x2="15" y1="3" y2="21"/>
+              </svg>
+              <span class="text-xs font-bold">গণিত বক্স খাতা</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2.5">
+          <label for="t-hw-instruction" class="block text-xs font-bold text-ink-600">৩. বাড়ির কাজের বিবরণ (পৃষ্ঠা নম্বর বা নিচের রেডি কার্ডে ট্যাপ করুন)</label>
+
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-preset="পৃষ্ঠা ১২-এর ১ থেকে ৫ নং প্রশ্নের উত্তর খাতায় সুন্দর করে লিখে আনবে।" class="teacher-preset-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-ink-50 hover:bg-ink-100 border border-ink-200 text-ink-700 text-center">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+              </svg>
+              <span class="text-[11px] font-bold leading-tight">+ পৃষ্ঠা ১২: ১–৫ নং প্রশ্ন লেখা</span>
+            </button>
+            <button type="button" data-preset="১ থেকে ১০ পর্যন্ত ঘরের নামতা খাতায় ১ বার লিখে মুখস্থ করবে।" class="teacher-preset-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-ink-50 hover:bg-ink-100 border border-ink-200 text-ink-700 text-center">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+              </svg>
+              <span class="text-[11px] font-bold leading-tight">+ নামতা লেখা ও মুখস্থ</span>
+            </button>
+            <button type="button" data-preset="Lesson 4-এর ১০টি Word Meaning ইংরেজি ৪-দাগ খাতায় ২ বার করে লিখবে।" class="teacher-preset-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-ink-50 hover:bg-ink-100 border border-ink-200 text-ink-700 text-center">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              </svg>
+              <span class="text-[11px] font-bold leading-tight">+ ১০টি Word Meaning লেখা</span>
+            </button>
+          </div>
+
+          <input id="t-hw-instruction" type="text" placeholder="যেমন: পৃষ্ঠা ১৮-এর অনুশীলনীর ১ থেকে ৫ নং অংক খাতায় করে আনবে।" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm focus:outline-none focus:border-ink-800" />
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>সকল শিক্ষার্থীর ড্যাশবোর্ডে বাড়ির কাজ পাঠান</span>
+        </button>
+      </form>
+
+      <div class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-bold text-ink-900">পাঠানো বাড়ির কাজ ও সম্পন্ন স্ট্যাটাস</h3>
+          <span class="text-xs font-semibold text-ink-700 bg-ink-100 px-2.5 py-1 rounded-lg border border-ink-200" id="teacher-sent-count">৩টি কাজ পাঠানো হয়েছে</span>
+        </div>
+
+        <div id="teacher-homework-list" class="space-y-2.5"></div>
+      </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         3. SCHOOL ADMIN / PRINCIPAL DASHBOARD VIEW
+         ========================================== -->
+    <section id="view-school" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-300 text-ink-800 flex items-center justify-center">
+            <svg class="line-icon" viewBox="0 0 24 24">
+              <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 21v-4h4v4"/>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-ink-500 uppercase">স্কুল কর্তৃপক্ষ ও প্রিন্সিপাল প্যানেল</span>
+            <h2 class="text-lg font-bold text-ink-900" id="admin-school-title">কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি (কোড: KSB)</h2>
+          </div>
+        </div>
+        <button id="btn-logout-to-login" type="button" class="px-3.5 py-2 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-700 text-xs font-bold border border-ink-200">
+          লগআউট / অ্যাকাউন্ট পরিবর্তন
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl border border-ink-200 p-4 text-center flex flex-col items-center">
+          <svg class="line-icon text-ink-700 mb-1.5" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          </svg>
+          <div class="text-xs text-ink-500 font-semibold">সক্রিয় শিক্ষার্থী</div>
+          <div class="text-lg font-extrabold text-ink-900 mt-0.5" id="school-total-students">২৫০ জন</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-200 p-4 text-center flex flex-col items-center">
+          <svg class="line-icon text-ink-700 mb-1.5" viewBox="0 0 24 24">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <div class="text-xs text-ink-500 font-semibold">আজকের ডায়েরি সম্পন্ন</div>
+          <div class="text-lg font-extrabold text-ink-900 mt-0.5">৮৬% অভিভাবক</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-200 p-4 text-center flex flex-col items-center">
+          <svg class="line-icon text-ink-700 mb-1.5" viewBox="0 0 24 24">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          </svg>
+          <div class="text-xs text-ink-500 font-semibold">Paperloop কাস্টম খাতা</div>
+          <div class="text-lg font-extrabold text-ink-900 mt-0.5">২,৫০০ কপি</div>
+        </div>
+      </div>
+
+      <!-- Principal floating cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+        <button type="button" data-school-panel="students" class="school-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী হাজিরা</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Students</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-att">—</div>
+          </button>
+        <button type="button" data-school-panel="staff" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষক হাজিরা</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Teachers</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-staff">—</div>
+          </button>
+        <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Diary</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-diary">৩টি গ্রুপ</div>
+          </button>
+        <button type="button" data-school-panel="cctv" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">CCTV</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Monitoring</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
+          </button>
+        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
+            <div class="text-[11px] text-ink-500 font-medium mt-0.5">Live class</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[11px] font-extrabold text-ink-800" id="s-stat-live">চাহিদা অনুযায়ী</div>
+          </button>
+      </div>
+
+      <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
+      <div id="panel-school-students" class="school-subpanel space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">শ্রেণিভিত্তিক শিক্ষার্থী হাজিরা</h3>
+            <p class="text-xs text-ink-500" id="s-att-date"></p>
+          </div>
+          <div id="s-att-summary" class="grid grid-cols-3 gap-3"></div>
+          <div id="s-att-rows" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- PRINCIPAL PANEL: TEACHER & STAFF ATTENDANCE (marked by the principal) -->
+      <div id="panel-school-staff" class="school-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">শিক্ষক ও স্টাফ হাজিরা</h3>
+            <p class="text-xs text-ink-500" id="s-staff-date"></p>
+          </div>
+          <div id="s-staff-summary" class="grid grid-cols-4 gap-2.5"></div>
+          <div id="s-staff-rows" class="space-y-2.5"></div>
+          <div id="s-staff-status"></div>
+          <button id="s-staff-submit" type="button" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">
+            <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+            <span id="s-staff-submit-label">শিক্ষক হাজিরা জমা দিন</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PRINCIPAL PANEL: CLASS-WISE DIARY UPDATES (existing block) -->
+      <div id="panel-school-diary" class="school-subpanel hidden">
+      <div class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-3">
+        <h3 class="text-base font-bold text-ink-900">শ্রেণিভিত্তিক ডায়েরি ও শিক্ষকের আপডেট</h3>
+        <div class="divide-y divide-ink-200 text-xs sm:text-sm">
+          <div class="py-3 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-ink-900">Play ও KG (প্রাক-প্রাথমিক)</div>
+              <div class="text-xs text-ink-500">শ্রেণি শিক্ষিকা: সালমা আক্তার • আজকের পড়া পাঠানো হয়েছে</div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-ink-100 text-ink-800 font-bold text-xs">৪২ / ৪৫ সম্পন্ন</span>
+          </div>
+          <div class="py-3 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-ink-900">১ম ও ২য় শ্রেণি</div>
+              <div class="text-xs text-ink-500">শ্রেণি শিক্ষক: কামরুল হাসান • আজকের পড়া পাঠানো হয়েছে</div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-ink-100 text-ink-800 font-bold text-xs">৫৪ / ৬০ সম্পন্ন</span>
+          </div>
+          <div class="py-3 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-ink-900">৩য়, ৪র্থ ও ৫ম শ্রেণি (BKA বৃত্তি ব্যাচ)</div>
+              <div class="text-xs text-ink-500">শ্রেণি শিক্ষিকা: রাশেদা বেগম • ৩টি বিষয়ের কাজ সক্রিয়</div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-ink-100 text-ink-800 font-bold text-xs">৬৮ / ৭৫ সম্পন্ন</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div id="panel-school-cctv" class="school-subpanel hidden">
+        <div class="floating-card rounded-2xl p-6 text-center space-y-4">
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
+          <div>
+            <h3 class="text-base font-bold text-ink-900">CCTV মনিটরিং <span class="text-ink-500 font-semibold">(CCTV)</span></h3>
+            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
+          </div>
+          <div class="max-w-sm mx-auto text-left">
+            <div class="text-xs font-bold text-ink-500 mb-2">চালু করতে যা লাগবে</div>
+            <ul class="text-xs sm:text-sm text-ink-700 space-y-2"><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>শ্রেণিকক্ষ ও গেটে ক্যামেরা এবং রেকর্ডার (NVR) বসানো</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>স্কুলে স্থির ইন্টারনেট সংযোগ</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>কে কোন ক্যামেরা দেখতে পারবেন, তার অনুমতি ঠিক করা</span></li></ul>
+          </div>
+          <button type="button" data-feature-interest="CCTV মনিটরিং" class="icon-tile px-5 py-2.5 rounded-2xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">আমাদের স্কুলে দরকার</button>
+        </div>
+      </div>
+      <div id="panel-school-live" class="school-subpanel hidden">
+        <div class="floating-card rounded-2xl p-6 text-center space-y-4">
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
+          <div>
+            <h3 class="text-base font-bold text-ink-900">লাইভ ক্লাস <span class="text-ink-500 font-semibold">(Live class)</span></h3>
+            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
+          </div>
+          <div class="max-w-sm mx-auto text-left">
+            <div class="text-xs font-bold text-ink-500 mb-2">চালু করতে যা লাগবে</div>
+            <ul class="text-xs sm:text-sm text-ink-700 space-y-2"><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>শিক্ষকের জন্য ফোন বা ল্যাপটপ ও ইন্টারনেট</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Google Meet বা Zoom-এর ক্লাস লিংক</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>লাইভ ক্লাসের দিন ও সময়ের রুটিন</span></li></ul>
+          </div>
+          <button type="button" data-feature-interest="লাইভ ক্লাস" class="icon-tile px-5 py-2.5 rounded-2xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">আমাদের স্কুলে দরকার</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ==========================================
+    // MONOCHROME LINE-ICON SVG HELPERS
+    // ==========================================
+    const lineIcons = {
+      math: `<svg class="line-icon" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>`,
+      english: `<svg class="line-icon" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>`,
+      bangla: `<svg class="line-icon" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>`,
+      science: `<svg class="line-icon" viewBox="0 0 24 24"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>`,
+      gridKhata: `<svg class="line-icon-sm" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="9" x2="9" y1="3" y2="21"/><line x1="15" x2="15" y1="3" y2="21"/></svg>`,
+      fourLineKhata: `<svg class="line-icon-sm" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="3" x2="21" y1="8" y2="8"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="16" y2="16"/></svg>`,
+      linedKhata: `<svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/></svg>`,
+      check: `<svg class="line-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
+      pen: `<svg class="line-icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`
+    };
+
+    const appState = {
+      activeView: 'parent', // Open directly on Parent section so the 4 Floating Cards are immediately visible
+      loginSection: 'parent',
+      activeParentPanel: 'assignments', // 'assignments', 'grades', 'improvement', 'topics'
+      gradeTerm: 'weekly', // 'weekly', 'monthly'
+      topicScope: 'weekly', // 'weekly', 'monthly'
+      schoolCode: 'KSB',
+      schoolName: 'কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি',
+      studentClass: '৩য় শ্রেণি',
+      studentRoll: '০৭',
+      studentName: 'তাসনিম জারিন',
+      hwFilter: 'all',
+      chatOpen: false
+    };
+
+    const schoolNamesByCode = {
+      KSB: 'কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি',
+      BLS: 'ব্রাহ্মণবাড়িয়া লিটল স্টার কিন্ডারগার্টেন',
+      TMS: 'তিতাস মডেল প্রি-ক্যাডেট স্কুল'
+    };
+
+    const rollNames = {
+      '01': 'আরিয়ান ইসলাম',
+      '02': 'মাহির তাজওয়ার',
+      '05': 'নুসরাত জাহান',
+      '07': 'তাসনিম জারিন',
+      '10': 'রাফসান কবির'
+    };
+
+    const subjectMeta = {
+      গণিত: { svg: lineIcons.math },
+      ইংরেজি: { svg: lineIcons.english },
+      বাংলা: { svg: lineIcons.bangla },
+      বিজ্ঞান: { svg: lineIcons.science }
+    };
+
+    const khataMeta = {
+      'গণিত বক্স খাতা': { svg: lineIcons.gridKhata, shortLabel: 'বক্স খাতা' },
+      'ইংরেজি ৪-দাগ খাতা': { svg: lineIcons.fourLineKhata, shortLabel: '৪-দাগ খাতা' },
+      'বাংলা দাগ খাতা': { svg: lineIcons.linedKhata, shortLabel: 'বাংলা খাতা' }
+    };
+
+    const homeworks = [
+      {
+        id: 1,
+        subject: 'গণিত',
+        khata: 'গণিত বক্স খাতা',
+        instruction: 'পৃষ্ঠা ২৪-এর সমহর ভগ্নাংশের যোগ (১ থেকে ৫ নং) Paperloop গণিত বক্স খাতায় সমাধান করে আনবে।',
+        due: 'আগামীকাল সকাল ৮:৩০',
+        doneByParent: false,
+        totalCompleted: 19,
+        totalStudents: 30
+      },
+      {
+        id: 2,
+        subject: 'ইংরেজি',
+        khata: 'ইংরেজি ৪-দাগ খাতা',
+        instruction: 'English for Today (Unit 3): ১০টি নতুন শব্দের অর্থ ৪-দাগ খাতায় সুন্দর হাতের লেখায় লিখে আনবে।',
+        due: 'আগামীকাল সকাল ৮:৩০',
+        doneByParent: false,
+        totalCompleted: 22,
+        totalStudents: 30
+      },
+      {
+        id: 3,
+        subject: 'বাংলা',
+        khata: 'বাংলা দাগ খাতা',
+        instruction: 'আমার বাংলা বই: "কুঁজো বুড়ির গল্প" থেকে ৫টি যুক্তবর্ণ ভেঙে ১টি করে বাক্য খাতায় লিখবে।',
+        due: 'আজ সম্পন্ন',
+        doneByParent: true,
+        totalCompleted: 27,
+        totalStudents: 30
+      }
+    ];
+
+    // Grades Dataset (Weekly vs Monthly/BKA Model)
+    const gradesData = {
+      weekly: {
+        overallLetter: 'A+ (৯২%)',
+        overallRank: '৩য় স্থান (৩০ জনে)',
+        overallMarks: '৯২ / ১০০',
+        items: [
+          { subject: 'গণিত', exam: 'সাপ্তাহিক বৃহস্পতিবার টেস্ট (ভগ্নাংশ ও নামতা)', marks: '২৪ / ২৫', grade: 'A+', note: 'সবগুলো অংক নির্ভুল হয়েছে' },
+          { subject: 'ইংরেজি', exam: 'English 4-Line Dictation & Word Meaning', marks: '২২ / ২৫', grade: 'A', note: '২টি বানানে ছোট ভুল ছিল' },
+          { subject: 'বাংলা', exam: 'যুক্তবর্ণ ও এক কথায় প্রকাশ মূল্যায়ন', marks: '২৩ / ২৫', grade: 'A+', note: 'হাতের লেখা অত্যন্ত পরিষ্কার' },
+          { subject: 'বিজ্ঞান', exam: 'উদ্ভিদ ও সালোকসংশ্লেষণ সংক্ষিপ্ত প্রশ্ন', marks: '২৩ / ২৫', grade: 'A+', note: 'চিত্রসহ সুন্দর উত্তর' }
+        ]
+      },
+      monthly: {
+        overallLetter: 'A+ (৯০.৫%)',
+        overallRank: '২য় স্থান (ট্যালেন্টপুল জোন)',
+        overallMarks: '৩৬২ / ৪০০',
+        items: [
+          { subject: 'গণিত', exam: 'BKA বৃত্তি মডেল পরীক্ষা (১০০ নম্বর)', marks: '৯৪ / ১০০', grade: 'A+', note: 'জ্যামিতি ও ভগ্নাংশে পূর্ণ নম্বর' },
+          { subject: 'ইংরেজি', exam: 'BKA English Grammar & Composition', marks: '৮৬ / ১০০', grade: 'A', note: 'Tense ও Translation আরও অনুশীলন প্রয়োজন' },
+          { subject: 'বাংলা', exam: 'আমার বাংলা বই ও ব্যাকরণ (১০০ নম্বর)', marks: '৯১ / ১০০', grade: 'A+', note: 'রচনা ও ব্যাকরণে চমৎকার নম্বর' },
+          { subject: 'বিজ্ঞান', exam: 'প্রাথমিক বিজ্ঞান ও সাধারণ জ্ঞান (১০০ নম্বর)', marks: '৯১ / ১০০', grade: 'A+', note: 'ট্যালেন্টপুল বৃত্তির যোগ্য স্কোর' }
+        ]
+      }
+    };
+
+    // Improvement Reports Dataset
+    const improvementMetrics = [
+      { subject: 'গণিত (ভগ্নাংশ ও নামতা)', prev: 74, curr: 94, diff: '+২০%', detail: 'Paperloop বক্স খাতায় নিয়মিত অনুশীলনে সংখ্যার সারি ও যোগ-বিয়োগ নির্ভুল হয়েছে।' },
+      { subject: 'ইংরেজি (৪-দাগ হাতের লেখা ও বানান)', prev: 72, curr: 88, diff: '+১৬%', detail: 'Capital ও Small letter-এর লাইন মেইনটেইন করা অনেক উন্নত হয়েছে।' },
+      { subject: 'বাংলা (যুক্তবর্ণ ও বাক্য গঠন)', prev: 82, curr: 92, diff: '+১০%', detail: 'বানান ভুল কমেছে এবং হাতের লেখার গতি বেড়েছে।' },
+      { subject: 'প্রাথমিক বিজ্ঞান (চিত্র ও সংজ্ঞা)', prev: 80, curr: 90, diff: '+১০%', detail: 'সালোকসংশ্লেষণ ও খাদ্যশৃঙ্খলের মূল ধারণা পরিষ্কার হয়েছে।' }
+    ];
+
+    // Weekly & Monthly Topics Covered Dataset
+    const topicsCoveredData = {
+      weekly: [
+        { subject: 'গণিত', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'অধ্যায় ৭: সমহর ভগ্নাংশের যোগ ও বিয়োগ (পৃষ্ঠা ২২–২৫)', khata: 'গণিত বক্স খাতা (পৃষ্ঠা ১৪–১৮)', status: 'ক্লাসে সম্পন্ন' },
+        { subject: 'ইংরেজি', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'Unit 3, Lesson 1–3: Action Verbs & Daily Routine Sentences', khata: 'ইংরেজি ৪-দাগ খাতা (পৃষ্ঠা ১০–১২)', status: 'চলমান' },
+        { subject: 'বাংলা', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'কুঁজো বুড়ির গল্প: শব্দের অর্থ, যুক্তবর্ণ ও প্রশ্নোত্তর', khata: 'বাংলা দাগ খাতা (পৃষ্ঠা ১৬–১৯)', status: 'ক্লাসে সম্পন্ন' },
+        { subject: 'বিজ্ঞান', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'অধ্যায় ৪: উদ্ভিদের খাদ্য তৈরি (সালোকসংশ্লেষণ ও ক্লোরোফিল)', khata: 'বিজ্ঞান খাতা (পৃষ্ঠা ০৮–১০)', status: 'বৃহস্পতিবার টেস্ট' }
+      ],
+      monthly: [
+        { subject: 'গণিত', week: 'নভেম্বর মাসের সম্পূর্ণ সিলেবাস', topic: '১–১৫ ঘরের নামতা, ভগ্নাংশের তুলনা, ঐকিক নিয়ম ও ত্রিভুজ-চতুর্ভুজ পরিচিতি', khata: 'গণিত বক্স খাতা (অধ্যায় ৫–৮)', status: '৮৫% সম্পন্ন' },
+        { subject: 'ইংরেজি', week: 'নভেম্বর মাসের সম্পূর্ণ সিলেবাস', topic: 'Parts of Speech (Noun, Verb, Adjective), Present Tense ও ৫০টি Word Meaning', khata: 'ইংরেজি ৪-দাগ খাতা (Unit 2–4)', status: '৮০% সম্পন্ন' },
+        { subject: 'বাংলা', week: 'নভেম্বর মাসের সম্পূর্ণ সিলেবাস', topic: 'বাংলার খোকা, কুঁজো বুড়ির গল্প, বিপরীত শব্দ, এক কথায় প্রকাশ ও দরখাস্ত লিখন', khata: 'বাংলা দাগ খাতা (গদ্য ৩–৫)', status: '৯০% সম্পন্ন' },
+        { subject: 'বিজ্ঞান', week: 'নভেম্বর মাসের সম্পূর্ণ সিলেবাস', topic: 'জীব ও জড়, উদ্ভিদ ও প্রাণীর নির্ভরশীলতা, পানির উৎস ও BKA মডেল প্রশ্ন ব্যাংক', khata: 'বিজ্ঞান খাতা (অধ্যায় ২–৫)', status: '৮৮% সম্পন্ন' }
+      ]
+    };
+
+    const chatMessages = [
+      {
+        sender: 'teacher',
+        name: 'রাশেদা বেগম (শ্রেণি শিক্ষিকা)',
+        text: 'আসসালামু আলাইকুম। তাসনিমের বাংলা হাতের লেখা আগের চেয়ে অনেক সুন্দর হয়েছে। আজকের গণিত বাড়ির কাজটি খাতায় করিয়ে দেবেন।',
+        time: 'দুপুর ২:১৫'
+      }
+    ];
+
+    function showToast(text) {
+      const toast = document.getElementById('app-toast');
+      document.getElementById('toast-text').textContent = text;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2600);
+    }
+
+    function switchMainView(viewName) {
+      appState.activeView = viewName;
+      const views = ['login', 'parent', 'teacher', 'school'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+        const btn = document.getElementById(`tab-btn-${v}`);
+        if (btn) {
+          btn.className = v === viewName
+            ? 'icon-tile tile-active flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border text-ink-900'
+            : 'icon-tile flex flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-600 hover:bg-ink-50';
+        }
+      });
+    }
+
+    function switchParentFloatingPanel(panelName) {
+      appState.activeParentPanel = panelName;
+      document.querySelectorAll('.parent-floating-card').forEach(card => {
+        const isCurrent = card.getAttribute('data-parent-panel') === panelName;
+        card.classList.toggle('tile-active', isCurrent);
+      });
+      ['assignments', 'grades', 'improvement', 'topics', 'attendance'].forEach(p => {
+        const panelEl = document.getElementById(`panel-parent-${p}`);
+        if (panelEl) panelEl.classList.toggle('hidden', p !== panelName);
+      });
+    }
+
+    // ==========================================
+    // RENDER PARENT DASHBOARD & ALL 4 FLOATING CARD PANELS
+    // ==========================================
+    function renderParentDashboard() {
+      document.getElementById('school-name-display').textContent = appState.schoolName;
+      document.getElementById('admin-school-title').textContent = `${appState.schoolName} (কোড: ${appState.schoolCode})`;
+      document.getElementById('student-roll-badge').textContent = appState.studentRoll;
+      document.getElementById('student-name-display').textContent = appState.studentName;
+      document.getElementById('student-class-display').textContent = appState.studentClass;
+      document.getElementById('student-code-display').textContent = appState.schoolCode;
+
+      const doneCount = homeworks.filter(h => h.doneByParent).length;
+      document.getElementById('stat-hw-progress').textContent = `${doneCount} / ${homeworks.length} সম্পন্ন`;
+
+      document.querySelectorAll('.hw-filter-btn').forEach(btn => {
+        const f = btn.getAttribute('data-filter');
+        btn.className = f === appState.hwFilter
+          ? 'hw-filter-btn icon-tile tile-active flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border'
+          : 'hw-filter-btn icon-tile flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl bg-white text-ink-600 border border-ink-200 hover:bg-ink-50';
+      });
+
+      const filtered = homeworks.filter(h => {
+        if (appState.hwFilter === 'pending') return !h.doneByParent;
+        if (appState.hwFilter === 'done') return h.doneByParent;
+        return true;
+      });
+
+      const listEl = document.getElementById('parent-homework-list');
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="bg-white rounded-2xl border border-ink-200 p-8 text-center space-y-2 text-ink-600">
+            <div class="text-sm font-bold">এই তালিকায় কোনো বাড়ির কাজ নেই।</div>
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = filtered.map(item => {
+          const sMeta = subjectMeta[item.subject] || { svg: lineIcons.bangla };
+          const kMeta = khataMeta[item.khata] || { svg: lineIcons.linedKhata, shortLabel: item.khata };
+
+          return `
+            <div class="floating-card rounded-2xl ${item.doneByParent ? 'border-ink-400 bg-ink-50/60' : ''} p-4 transition">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                <div class="flex sm:flex-col items-center gap-2 shrink-0">
+                  <div class="w-20 py-2.5 px-2 rounded-2xl border border-ink-300 bg-ink-100 text-ink-800 flex flex-col items-center justify-center text-center">
+                    <div class="mb-1">${sMeta.svg}</div>
+                    <span class="text-xs font-extrabold leading-none">${item.subject}</span>
+                  </div>
+                  <div class="w-20 py-2 px-2 rounded-xl bg-white border border-ink-200 text-ink-600 flex flex-col items-center justify-center text-center">
+                    <div class="mb-1">${kMeta.svg}</div>
+                    <span class="text-[10px] font-bold leading-none">${kMeta.shortLabel}</span>
+                  </div>
+                </div>
+
+                <div class="flex-1 space-y-2">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-ink-500">${item.khata}</span>
+                    <span class="text-xs font-bold px-2.5 py-0.5 rounded-full border ${item.doneByParent ? 'bg-ink-100 text-ink-800 border-ink-300' : 'bg-gold-50 text-gold-900 border-gold-200'}">
+                      ${item.doneByParent ? 'খাতায় সম্পন্ন' : 'জমা: ' + item.due}
+                    </span>
+                  </div>
+                  <p class="text-sm sm:text-base font-bold text-ink-900 leading-relaxed">
+                    ${item.instruction}
+                  </p>
+                  <div class="text-xs text-ink-500">
+                    ক্লাসের ${item.totalCompleted}/${item.totalStudents} জন শিক্ষার্থী সম্পন্ন করেছে
+                  </div>
+                </div>
+
+                <div class="shrink-0">
+                  <button type="button" data-hw-toggle="${item.id}" class="hw-toggle-btn icon-tile w-full sm:w-28 py-3 px-3 rounded-2xl flex flex-col items-center justify-center text-center font-bold border transition ${
+                    item.doneByParent
+                      ? 'bg-ink-100 text-ink-800 border-ink-300 hover:bg-ink-200'
+                      : 'bg-ink-900 text-white border-ink-900 hover:bg-ink-800 shadow-sm'
+                  }">
+                    <div class="mb-1.5">${item.doneByParent ? lineIcons.check : lineIcons.pen}</div>
+                    <span class="text-xs font-extrabold leading-tight">${item.doneByParent ? 'সম্পন্ন হয়েছে' : 'লেখা শেষ (টিক দিন)'}</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        listEl.querySelectorAll('.hw-toggle-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = parseInt(btn.getAttribute('data-hw-toggle'), 10);
+            const target = homeworks.find(h => h.id === id);
+            if (!target) return;
+            target.doneByParent = !target.doneByParent;
+            target.totalCompleted += target.doneByParent ? 1 : -1;
+            renderParentDashboard();
+            renderTeacherDashboard();
+            showToast(
+              target.doneByParent
+                ? `${target.subject} বাড়ির কাজ সম্পন্ন হিসেবে চিহ্নিত হয়েছে!`
+                : `${target.subject} বাড়ির কাজ বাকি তালিকায় নেওয়া হয়েছে।`
+            );
+          });
+        });
+      }
+
+      renderGradesPanel();
+      renderImprovementPanel();
+      renderTopicsPanel();
+      renderParentAttendance();
+    }
+
+    function renderGradesPanel() {
+      const g = gradesData[appState.gradeTerm] || gradesData.weekly;
+      document.getElementById('grade-overall-letter').textContent = g.overallLetter;
+      document.getElementById('grade-overall-rank').textContent = g.overallRank;
+      document.getElementById('grade-overall-marks').textContent = g.overallMarks;
+
+      document.querySelectorAll('.grade-term-btn').forEach(btn => {
+        const active = btn.getAttribute('data-grade-term') === appState.gradeTerm;
+        btn.className = active
+          ? 'grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ink-900 text-white'
+          : 'grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold text-ink-600 hover:bg-white';
+      });
+
+      const box = document.getElementById('grades-subject-list');
+      box.innerHTML = g.items.map(item => {
+        const sMeta = subjectMeta[item.subject] || { svg: lineIcons.bangla };
+        return `
+          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
+                <div class="mb-1">${sMeta.svg}</div>
+                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-ink-900">${item.exam}</div>
+                <div class="text-xs text-ink-500 mt-0.5">শিক্ষকের মন্তব্য: ${item.note}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-extrabold text-ink-900">${item.marks}</div>
+              <span class="inline-block mt-0.5 px-2.5 py-0.5 rounded-md bg-gold-50 text-gold-900 border border-gold-200 text-xs font-extrabold">
+                গ্রেড: ${item.grade}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderImprovementPanel() {
+      const box = document.getElementById('improvement-bars-list');
+      box.innerHTML = improvementMetrics.map(m => `
+        <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs sm:text-sm font-bold text-ink-900">${m.subject}</span>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-ink-500">গত মাস: ${m.prev}%</span>
+              <span>→</span>
+              <span class="font-extrabold text-ink-900">এই মাস: ${m.curr}%</span>
+              <span class="px-2 py-0.5 rounded-md bg-gold-100 text-gold-950 font-extrabold">${m.diff}</span>
+            </div>
+          </div>
+          <div class="w-full h-2.5 bg-ink-200 rounded-full overflow-hidden">
+            <div class="h-full bg-ink-900 rounded-full" style="width: ${m.curr}%;"></div>
+          </div>
+          <p class="text-xs text-ink-600">${m.detail}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderTopicsPanel() {
+      document.querySelectorAll('.topic-scope-btn').forEach(btn => {
+        const active = btn.getAttribute('data-topic-scope') === appState.topicScope;
+        btn.className = active
+          ? 'topic-scope-btn icon-tile tile-active px-3.5 py-2 rounded-xl border flex items-center gap-2 text-xs font-bold'
+          : 'topic-scope-btn icon-tile px-3.5 py-2 rounded-xl border border-ink-200 bg-white text-ink-600 flex items-center gap-2 text-xs font-bold';
+      });
+
+      const list = topicsCoveredData[appState.topicScope] || topicsCoveredData.weekly;
+      const box = document.getElementById('topics-covered-list');
+      box.innerHTML = list.map(item => {
+        const sMeta = subjectMeta[item.subject] || { svg: lineIcons.bangla };
+        return `
+          <div class="p-4 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
+                <div class="mb-1">${sMeta.svg}</div>
+                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-[11px] font-bold text-ink-500">${item.week}</span>
+                <h4 class="text-xs sm:text-sm font-bold text-ink-900 leading-snug">${item.topic}</h4>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-ink-200/80 flex items-center justify-between text-xs">
+              <span class="text-ink-600 font-medium">${item.khata}</span>
+              <span class="px-2.5 py-0.5 rounded-md bg-white border border-ink-300 font-bold text-ink-800">${item.status}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderChatMessages() {
+      const box = document.getElementById('chat-messages-box');
+      box.innerHTML = chatMessages.map(m => {
+        if (m.sender === 'teacher') {
+          return `
+            <div class="bg-ink-100 rounded-xl p-2.5 text-xs sm:text-sm text-ink-800 max-w-md">
+              <div class="font-bold text-ink-900 text-[11px] mb-0.5">${m.name} • ${m.time}</div>
+              <div>${m.text}</div>
+            </div>
+          `;
+        }
+        return `
+          <div class="bg-ink-900 text-white rounded-xl p-2.5 text-xs sm:text-sm max-w-md ml-auto">
+            <div class="font-bold text-ink-300 text-[11px] mb-0.5">অভিভাবক (রোল ${appState.studentRoll}) • ${m.time}</div>
+            <div>${m.text}</div>
+          </div>
+        `;
+      }).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderTeacherDashboard() {
+      document.getElementById('teacher-sent-count').textContent = `${homeworks.length}টি কাজ পাঠানো হয়েছে`;
+      document.getElementById('t-stat-hw').textContent = `${bn(homeworks.length)}টি পাঠানো`;
+      const box = document.getElementById('teacher-homework-list');
+      box.innerHTML = homeworks.map(item => {
+        const pct = Math.round((item.totalCompleted / item.totalStudents) * 100);
+        const sMeta = subjectMeta[item.subject] || { svg: lineIcons.bangla };
+        return `
+          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3 max-w-lg">
+              <div class="w-14 py-2 px-1.5 rounded-xl border border-ink-300 bg-white text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
+                <div class="mb-1">${sMeta.svg}</div>
+                <span class="text-[11px] font-extrabold leading-none">${item.subject}</span>
+              </div>
+              <div class="space-y-0.5">
+                <div class="text-xs font-semibold text-ink-500">${item.khata}</div>
+                <div class="text-sm font-bold text-ink-900">${item.instruction}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-ink-800">${item.totalCompleted} / ${item.totalStudents} জন সম্পন্ন (${pct}%)</div>
+              <div class="w-28 h-2 bg-ink-200 rounded-full overflow-hidden mt-1 ml-auto">
+                <div class="h-full bg-ink-800" style="width: ${pct}%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Top Navigation Buttons
+      document.getElementById('tab-btn-login').addEventListener('click', () => switchMainView('login'));
+      document.getElementById('tab-btn-parent').addEventListener('click', () => switchMainView('parent'));
+      document.getElementById('tab-btn-teacher').addEventListener('click', () => switchMainView('teacher'));
+      document.getElementById('tab-btn-school').addEventListener('click', () => switchMainView('school'));
+      document.getElementById('btn-logout-to-login').addEventListener('click', () => switchMainView('login'));
+
+      // 4 Floating Cards Navigation inside Parent View
+      document.querySelectorAll('.parent-floating-card').forEach(card => {
+        card.addEventListener('click', () => {
+          switchParentFloatingPanel(card.getAttribute('data-parent-panel'));
+        });
+      });
+
+      // Grades Term Toggle
+      document.querySelectorAll('.grade-term-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.gradeTerm = btn.getAttribute('data-grade-term');
+          renderGradesPanel();
+        });
+      });
+
+      // Topics Scope Toggle (Weekly vs Monthly)
+      document.querySelectorAll('.topic-scope-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.topicScope = btn.getAttribute('data-topic-scope');
+          renderTopicsPanel();
+        });
+      });
+
+      // Login Page Role Section Switcher
+      document.querySelectorAll('.login-role-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const role = card.getAttribute('data-login-role');
+          appState.loginSection = role;
+          document.querySelectorAll('.login-role-card').forEach(c => {
+            const active = c.getAttribute('data-login-role') === role;
+            c.className = active
+              ? 'login-role-card icon-tile tile-active flex flex-col items-center justify-center p-4 rounded-2xl border-2 text-center'
+              : 'login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center';
+          });
+          document.getElementById('form-login-parent').classList.toggle('hidden', role !== 'parent');
+          document.getElementById('form-login-teacher').classList.toggle('hidden', role !== 'teacher');
+          document.getElementById('form-login-school').classList.toggle('hidden', role !== 'school');
+        });
+      });
+
+      // Login Form Submissions
+      document.getElementById('form-login-parent').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = (document.getElementById('login-p-code').value || 'KSB').trim().toUpperCase();
+        const cls = document.getElementById('login-p-class').value;
+        const rawRoll = (document.getElementById('login-p-roll').value || '07').trim().padStart(2, '0');
+
+        appState.schoolCode = code;
+        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.studentClass = cls;
+        appState.studentRoll = rawRoll;
+        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
+
+        renderParentDashboard();
+        switchMainView('parent');
+        showToast(`${appState.studentName} (${cls}, রোল ${rawRoll})-এর অভিভাবক ড্যাশবোর্ডে স্বাগতম!`);
+      });
+
+      document.getElementById('form-login-teacher').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = (document.getElementById('login-t-code').value || 'KSB').trim().toUpperCase();
+        appState.schoolCode = code;
+        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        renderParentDashboard();
+        renderTeacherDashboard();
+        switchMainView('teacher');
+        showToast('শিক্ষক ড্যাশবোর্ডে সফলভাবে লগইন হয়েছে!');
+      });
+
+      document.getElementById('form-login-school').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = (document.getElementById('login-s-code').value || 'KSB').trim().toUpperCase();
+        appState.schoolCode = code;
+        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        renderParentDashboard();
+        switchMainView('school');
+        showToast(`${appState.schoolName} অ্যাডমিন প্যানেলে স্বাগতম!`);
+      });
+
+      // Quick Roll Switcher inside Parent Dashboard
+      const loginBox = document.getElementById('login-form-box');
+      document.getElementById('btn-toggle-login-box').addEventListener('click', () => {
+        loginBox.classList.toggle('hidden');
+      });
+
+      loginBox.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = (document.getElementById('input-school-code').value || 'KSB').trim().toUpperCase();
+        const cls = document.getElementById('input-student-class').value;
+        const rawRoll = (document.getElementById('input-student-roll').value || '07').trim().padStart(2, '0');
+
+        appState.schoolCode = code;
+        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.studentClass = cls;
+        appState.studentRoll = rawRoll;
+        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
+
+        loginBox.classList.add('hidden');
+        renderParentDashboard();
+        showToast(`${appState.studentName} (${cls}, রোল ${rawRoll})-এর ড্যাশবোর্ড খোলা হয়েছে!`);
+      });
+
+      // Homework Filter Buttons
+      document.querySelectorAll('.hw-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.hwFilter = btn.getAttribute('data-filter');
+          renderParentDashboard();
+        });
+      });
+
+      // Optional Chat Toggle
+      const chatPanel = document.getElementById('optional-chat-panel');
+      const chatChevron = document.getElementById('chat-chevron');
+      const toggleChat = (forceOpen = null) => {
+        appState.chatOpen = forceOpen !== null ? forceOpen : !appState.chatOpen;
+        chatPanel.classList.toggle('hidden', !appState.chatOpen);
+        chatChevron.textContent = appState.chatOpen ? 'বন্ধ করুন ▲' : 'মেসেজ খুলুন ▼';
+      };
+
+      document.getElementById('btn-toggle-optional-chat').addEventListener('click', () => toggleChat());
+      document.getElementById('tile-open-chat-shortcut').addEventListener('click', () => {
+        toggleChat(true);
+        document.getElementById('optional-chat-card').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      const sendParentMsg = (text) => {
+        if (!text) return;
+        chatMessages.push({ sender: 'parent', text, time: 'এইমাত্র' });
+        renderChatMessages();
+        setTimeout(() => {
+          chatMessages.push({
+            sender: 'teacher',
+            name: 'রাশেদা বেগম (শ্রেণি শিক্ষিকা)',
+            text: 'ধন্যবাদ, আপনার মেসেজটি ডায়েরিতে নোট করা হয়েছে।',
+            time: 'এইমাত্র'
+          });
+          renderChatMessages();
+        }, 400);
+      };
+
+      document.getElementById('parent-chat-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('parent-chat-input');
+        const val = (inp.value || '').trim();
+        if (!val) return;
+        sendParentMsg(val);
+        inp.value = '';
+      });
+
+      document.querySelectorAll('.quick-msg-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          sendParentMsg(btn.getAttribute('data-quick-msg'));
+        });
+      });
+
+      // Teacher Subject & Khata Line-Icon Tiles
+      const subjSelect = document.getElementById('t-subject-select');
+      const khataSelect = document.getElementById('t-khata-select');
+      const defaultKhataForSubject = {
+        বাংলা: 'বাংলা দাগ খাতা',
+        ইংরেজি: 'ইংরেজি ৪-দাগ খাতা',
+        গণিত: 'গণিত বক্স খাতা',
+        বিজ্ঞান: 'বাংলা দাগ খাতা'
+      };
+
+      function highlightTeacherTiles() {
+        document.querySelectorAll('.t-subj-tile').forEach(btn => {
+          const active = btn.getAttribute('data-subj') === subjSelect.value;
+          btn.className = active
+            ? 't-subj-tile icon-tile tile-active flex flex-col items-center justify-center p-3 rounded-2xl border-2'
+            : 't-subj-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50';
+        });
+        document.querySelectorAll('.t-khata-tile').forEach(btn => {
+          const active = btn.getAttribute('data-khata') === khataSelect.value;
+          btn.className = active
+            ? 't-khata-tile icon-tile tile-active flex flex-col items-center justify-center p-3 rounded-2xl border-2'
+            : 't-khata-tile icon-tile flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50';
+        });
+      }
+
+      document.querySelectorAll('.t-subj-tile').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const picked = btn.getAttribute('data-subj');
+          subjSelect.value = picked;
+          if (defaultKhataForSubject[picked]) khataSelect.value = defaultKhataForSubject[picked];
+          highlightTeacherTiles();
+        });
+      });
+
+      document.querySelectorAll('.t-khata-tile').forEach(btn => {
+        btn.addEventListener('click', () => {
+          khataSelect.value = btn.getAttribute('data-khata');
+          highlightTeacherTiles();
+        });
+      });
+
+      document.querySelectorAll('.teacher-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('t-hw-instruction').value = btn.getAttribute('data-preset');
+        });
+      });
+
+      document.getElementById('teacher-hw-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const subj = subjSelect.value;
+        const khata = khataSelect.value;
+        const instrInput = document.getElementById('t-hw-instruction');
+        const instr = (instrInput.value || '').trim();
+        if (!instr) {
+          showToast('অনুগ্রহ করে বাড়ির কাজের বিবরণ লিখুন');
+          return;
+        }
+
+        homeworks.unshift({
+          id: Date.now(),
+          subject: subj,
+          khata: khata,
+          instruction: instr,
+          due: 'আগামীকাল সকাল ৮:৩০',
+          doneByParent: false,
+          totalCompleted: 0,
+          totalStudents: 30
+        });
+
+        instrInput.value = '';
+        renderTeacherDashboard();
+        renderParentDashboard();
+        showToast('সকল শিক্ষার্থীর ড্যাশবোর্ডে নতুন বাড়ির কাজ পাঠানো হয়েছে!');
+      });
+
+      // Initial Render
+      renderParentDashboard();
+      renderChatMessages();
+      renderTeacherDashboard();
+    });
+  </script>
+  <script>
+    // ==========================================
+    // ATTENDANCE BLOCK (হাজিরা)
+    // Students: the class teacher marks the whole class once each morning.
+    // Teachers & staff: the principal marks them.
+    // Parents see their child's month and get an in-app alert on an absent day (no SMS yet).
+    // A parent's leave message is a REQUEST: it pre-marks that day as ছুটি in the teacher's
+    // register, and only the teacher's submitted register counts.
+    // All data lives in memory, like the rest of the prototype.
+    // ==========================================
+    const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
+    const bn = v => String(v).replace(/\d/g, d => BN_DIGITS[d]);
+    const toAsciiDigits = v => String(v).replace(/[০-৯]/g, d => BN_DIGITS.indexOf(d));
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+    const BN_WEEKDAYS = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+    const BN_WEEK_HEAD = ['শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র']; // Bangladeshi week starts on Saturday
+    const WEEKLY_OFF = [5]; // Friday. Add 6 here if a school also closes on Saturday.
+
+    const dateKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const isSchoolDay = d => !WEEKLY_OFF.includes(d.getDay());
+    function shiftSchoolDay(d, step) {
+      const x = new Date(d);
+      do { x.setDate(x.getDate() + step); } while (!isSchoolDay(x));
+      return x;
+    }
+    const bnDate = d => `${BN_WEEKDAYS[d.getDay()]}, ${bn(d.getDate())} ${BN_MONTHS[d.getMonth()]}`;
+    function bnTime(d) {
+      const h = d.getHours(), m = d.getMinutes();
+      const part = h < 12 ? 'সকাল' : h < 15 ? 'দুপুর' : h < 18 ? 'বিকাল' : 'রাত';
+      return `${part} ${bn(h % 12 || 12)}:${bn(String(m).padStart(2, '0'))}`;
+    }
+    // Small deterministic random numbers, so the sample history looks the same on every reload.
+    function seededRandom(seed) {
+      let t = (seed + 0x6D2B79F5) >>> 0;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
+
+    const realToday = new Date(); realToday.setHours(0, 0, 0, 0);
+    // On a holiday the register opens on the last school day instead.
+    const attDate = isSchoolDay(realToday) ? realToday : shiftSchoolDay(realToday, -1);
+    const attKey = dateKey(attDate);
+
+    const attIcons = {
+      userCheck: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>',
+      userX: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/>',
+      leave: '<rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="10" x2="14" y1="16" y2="16"/>',
+      clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>',
+      x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      alert: '<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+      classes: '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 21v-4h4v4"/>'
+    };
+    const svg = (name, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${attIcons[name]}</svg>`;
+
+    const ATT_META = {
+      present: { label: 'উপস্থিত', icon: 'userCheck', tile: 'border border-ink-200 bg-white text-ink-800 hover:bg-ink-50' },
+      absent: { label: 'অনুপস্থিত', icon: 'userX', tile: 'border-2 border-gold-600 bg-gold-50 text-gold-900' },
+      leave: { label: 'ছুটি', icon: 'leave', tile: 'border-2 border-dashed border-ink-400 bg-ink-50 text-ink-700' },
+      late: { label: 'দেরিতে', icon: 'clock', tile: 'border-2 border-ink-500 bg-ink-100 text-ink-800' }
+    };
+    const NEXT_STUDENT_STATUS = { present: 'absent', absent: 'leave', leave: 'present' };
+
+    // Small icon-above-text count tile, used by every attendance summary.
+    const countTile = (icon, label, value, accent = false) => `
+      <div class="p-3 rounded-2xl ${accent ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'} flex flex-col items-center text-center">
+        <span class="text-ink-700 mb-1">${svg(icon, 'line-icon')}</span>
+        <div class="text-[11px] text-ink-500 font-semibold">${label}</div>
+        <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5">${value}</div>
+      </div>`;
+
+    // ---------- Class 3 roll list (roll 01–30) ----------
+    const classRoster = [
+      'আরিয়ান ইসলাম', 'মাহির তাজওয়ার', 'সাদিয়া আক্তার', 'রাইয়ান হোসেন', 'নুসরাত জাহান',
+      'তাহমিদ হাসান', 'তাসনিম জারিন', 'ফারহান আহমেদ', 'লামিয়া ইসলাম', 'রাফসান কবির',
+      'আয়েশা সিদ্দিকা', 'সিয়াম মিয়া', 'মারিয়া খাতুন', 'নাফিস ইকবাল', 'জান্নাতুল ফেরদৌস',
+      'আবির রহমান', 'তানজিলা হক', 'মেহেদী হাসান', 'সুমাইয়া আক্তার', 'রিফাত হোসেন',
+      'ইশরাত জাহান', 'সাকিবুল ইসলাম', 'প্রিয়া দাস', 'ইমরান হোসেন', 'ফাতেমা তুজ জোহরা',
+      'অর্ক দেব', 'মিম আক্তার', 'তাওসিফ আহমেদ', 'রিয়া সাহা', 'জুবায়ের হোসেন'
+    ];
+    classRoster.forEach((name, i) => { rollNames[String(i + 1).padStart(2, '0')] = name; });
+    const rollLabel = r => bn(String(r).padStart(2, '0'));
+    function currentRollNo() {
+      const n = parseInt(toAsciiDigits(appState.studentRoll), 10);
+      return n >= 1 && n <= classRoster.length ? n : null;
+    }
+
+    // records[dateKey] = { statuses: { roll: 'present' | 'absent' | 'leave' }, submittedAt }
+    // leaveRequests[dateKey] = { roll: true }  (sent by parents, upcoming days only)
+    const studentAtt = { records: {}, draft: {}, leaveRequests: {}, view: 'today' };
+
+    (function seedStudentHistory() {
+      const d = new Date(attDate.getFullYear(), attDate.getMonth(), 1);
+      while (d < attDate) {
+        if (isSchoolDay(d)) {
+          const statuses = {};
+          for (let r = 1; r <= classRoster.length; r++) {
+            const x = seededRandom(d.getDate() * 131 + r * 17 + d.getMonth() * 7);
+            statuses[r] = x < 0.06 ? 'absent' : x < 0.085 ? 'leave' : 'present';
+          }
+          const t = new Date(d); t.setHours(8, 25 + (d.getDate() * 7) % 20);
+          studentAtt.records[dateKey(d)] = { statuses, submittedAt: bnTime(t) };
+        }
+        d.setDate(d.getDate() + 1);
+      }
+    })();
+
+    function resetStudentDraft() {
+      const requests = studentAtt.leaveRequests[attKey] || {};
+      studentAtt.draft = {};
+      for (let r = 1; r <= classRoster.length; r++) studentAtt.draft[r] = requests[r] ? 'leave' : 'present';
+    }
+    resetStudentDraft();
+
+    const countStatuses = statuses => {
+      const c = { present: 0, absent: 0, leave: 0, late: 0 };
+      Object.values(statuses).forEach(s => { c[s] += 1; });
+      return c;
+    };
+    const sameStatuses = (a, b) => Object.keys(a).every(k => a[k] === b[k]);
+
+    // ---------- Teacher: morning register ----------
+    function renderTeacherAttendance() {
+      const rec = studentAtt.records[attKey];
+      const draft = studentAtt.draft;
+      const c = countStatuses(draft);
+      const dirty = !rec || !sameStatuses(draft, rec.statuses);
+
+      document.getElementById('t-att-date').textContent = bnDate(attDate);
+      const note = document.getElementById('t-att-holiday-note');
+      const holiday = attDate.getTime() !== realToday.getTime();
+      note.classList.toggle('hidden', !holiday);
+      if (holiday) note.textContent = `আজ ${BN_WEEKDAYS[realToday.getDay()]}, স্কুল বন্ধ। শেষ স্কুল দিনের (${bnDate(attDate)}) হাজিরা দেখানো হচ্ছে।`;
+
+      document.querySelectorAll('.att-view-btn').forEach(btn => {
+        btn.className = btn.getAttribute('data-att-view') === studentAtt.view
+          ? 'att-view-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ink-900 text-white'
+          : 'att-view-btn px-3 py-1.5 rounded-lg text-xs font-bold text-ink-600 hover:bg-white';
+      });
+      document.getElementById('t-att-today').classList.toggle('hidden', studentAtt.view !== 'today');
+      document.getElementById('t-att-month').classList.toggle('hidden', studentAtt.view !== 'month');
+
+      document.getElementById('t-att-summary').innerHTML =
+        countTile('userCheck', 'উপস্থিত', `${bn(c.present)} জন`) +
+        countTile('userX', 'অনুপস্থিত', `${bn(c.absent)} জন`, c.absent > 0) +
+        countTile('leave', 'ছুটি', `${bn(c.leave)} জন`);
+
+      document.getElementById('t-att-grid').innerHTML = classRoster.map((name, i) => {
+        const r = i + 1, s = draft[r], m = ATT_META[s];
+        return `
+          <button type="button" data-att-roll="${r}" aria-label="রোল ${rollLabel(r)} ${esc(name)}: ${m.label}। বদলাতে ট্যাপ করুন"
+            class="icon-tile rounded-xl py-2 px-1 flex flex-col items-center justify-center text-center min-w-0 ${m.tile}">
+            <span class="text-base font-extrabold leading-none">${rollLabel(r)}</span>
+            <span class="text-[10px] font-semibold leading-tight mt-1 w-full truncate">${esc(name.split(' ')[0])}</span>
+            <span class="text-[10px] font-bold leading-none mt-0.5">${m.label}</span>
+          </button>`;
+      }).join('');
+
+      // Leave requests from parents, for today's register or upcoming days
+      const upcoming = Object.keys(studentAtt.leaveRequests).filter(k => k >= attKey).sort()
+        .flatMap(k => Object.keys(studentAtt.leaveRequests[k]).map(r => ({ k, r: Number(r) })));
+      document.getElementById('t-att-requests').innerHTML = upcoming.length ? `
+        <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold text-ink-900">${svg('leave')}<span>অভিভাবকের ছুটির আবেদন</span></div>
+          ${upcoming.map(({ k, r }) => {
+            const [y, mo, da] = k.split('-').map(Number);
+            return `<div class="flex flex-wrap items-center justify-between gap-2 text-xs text-ink-700">
+              <span><strong>রোল ${rollLabel(r)}</strong> • ${esc(classRoster[r - 1])}</span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-dashed border-ink-400 font-bold">${bnDate(new Date(y, mo - 1, da))}</span>
+            </div>`;
+          }).join('')}
+          <p class="text-[11px] text-ink-500">সেদিনের হাজিরায় আগে থেকেই ছুটি বসানো থাকবে; দরকার হলে বদলাতে পারবেন।</p>
+        </div>` : '';
+
+      const absentRolls = classRoster.map((_, i) => i + 1).filter(r => draft[r] === 'absent');
+      const statusEl = document.getElementById('t-att-status');
+      if (rec && !dirty) {
+        statusEl.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-300 space-y-1.5">
+            <div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>
+            <p class="text-xs text-ink-600">${absentRolls.length
+              ? `অনুপস্থিত ${bn(absentRolls.length)} জনের অভিভাবক অ্যাপে বার্তা পেয়েছেন: ${absentRolls.map(r => 'রোল ' + rollLabel(r)).join(', ')}`
+              : 'আজ সবাই উপস্থিত বা ছুটিতে। কোনো অভিভাবককে বার্তা পাঠানোর দরকার নেই।'}</p>
+          </div>`;
+      } else {
+        statusEl.innerHTML = rec ? `<p class="text-xs font-bold text-gold-900">হাজিরা বদলেছেন। আবার জমা দিলে অভিভাবকেরা নতুন তথ্য দেখবেন।</p>` : '';
+      }
+      const submitBtn = document.getElementById('t-att-submit');
+      submitBtn.disabled = !!rec && !dirty;
+      document.getElementById('t-att-submit-label').textContent =
+        !rec ? `হাজিরা জমা দিন (${bn(classRoster.length)} জন)` : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
+      document.getElementById('t-stat-att').textContent = rec ? `জমা ${rec.submittedAt}` : 'এখনো জমা হয়নি';
+
+      if (studentAtt.view === 'month') renderTeacherMonthSheet();
+    }
+
+    function renderTeacherMonthSheet() {
+      const y = attDate.getFullYear(), m = attDate.getMonth(), last = new Date(y, m + 1, 0).getDate();
+      const days = Array.from({ length: last }, (_, i) => new Date(y, m, i + 1));
+      const cell = 'px-1 py-1.5 text-center border-l border-ink-100';
+      const head = days.map(d => `<th class="${cell} font-bold ${!isSchoolDay(d) ? 'bg-ink-100 text-ink-400' : dateKey(d) === attKey ? 'bg-gold-50 text-gold-900' : 'text-ink-600'}">${isSchoolDay(d) ? bn(d.getDate()) : 'শু'}</th>`).join('');
+      const rows = classRoster.map((name, i) => {
+        const r = i + 1;
+        let present = 0, counted = 0;
+        const cells = days.map(d => {
+          if (!isSchoolDay(d)) return `<td class="${cell} bg-ink-100"></td>`;
+          const rec = studentAtt.records[dateKey(d)];
+          if (!rec) return `<td class="${cell}"></td>`;
+          const s = rec.statuses[r];
+          counted += 1; if (s === 'present') present += 1;
+          const mark = s === 'present' ? '<span class="text-ink-400 font-bold">•</span>'
+            : s === 'absent' ? '<span class="text-gold-700 font-extrabold">অ</span>'
+            : '<span class="text-ink-600 font-bold">ছু</span>';
+          return `<td class="${cell}">${mark}</td>`;
+        }).join('');
+        return `<tr class="border-t border-ink-100">
+          <th class="sticky left-0 bg-white px-2 py-1.5 text-left font-bold text-ink-800 whitespace-nowrap">${rollLabel(r)} ${esc(name.split(' ')[0])}</th>
+          ${cells}
+          <td class="px-2 py-1.5 text-center font-extrabold text-ink-900 whitespace-nowrap border-l border-ink-200">${bn(present)}/${bn(counted)}</td>
+        </tr>`;
+      }).join('');
+      document.getElementById('t-att-table').innerHTML = `
+        <table class="text-[11px] min-w-full">
+          <thead class="bg-ink-50"><tr>
+            <th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap">রোল • ${BN_MONTHS[m]}</th>
+            ${head}
+            <th class="px-2 py-1.5 font-bold text-ink-600 border-l border-ink-200">মোট</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    // ---------- Parent: today's line, absent alert, monthly calendar ----------
+    function renderParentAttendance() {
+      const roll = currentRollNo();
+      const todayLine = document.getElementById('parent-today-att');
+      const alertBox = document.getElementById('parent-absent-alert');
+      const rec = studentAtt.records[attKey];
+      const label = attDate.getTime() === realToday.getTime() ? 'আজ' : bnDate(attDate);
+
+      if (!roll) {
+        todayLine.innerHTML = `${svg('alert')}<span>এই রোল নম্বর শ্রেণির তালিকায় নেই</span>`;
+        alertBox.classList.add('hidden');
+        document.getElementById('stat-att-month').textContent = '—';
+        document.getElementById('p-att-summary').innerHTML = '';
+        document.getElementById('p-att-calendar').innerHTML = '<p class="col-span-7 text-xs text-ink-500 text-center py-6">হাজিরার তথ্য পাওয়া যায়নি।</p>';
+        document.getElementById('p-att-weekhead').innerHTML = '';
+        document.getElementById('p-att-legend').innerHTML = '';
+        return;
+      }
+
+      const todayStatus = rec ? rec.statuses[roll] : null;
+      todayLine.innerHTML = todayStatus
+        ? `${svg(ATT_META[todayStatus].icon)}<span>${label}: ${ATT_META[todayStatus].label}</span>`
+        : `${svg('clock')}<span>${label}: হাজিরা এখনো নেওয়া হয়নি</span>`;
+
+      if (todayStatus === 'absent') {
+        alertBox.className = 'floating-card rounded-2xl p-4 border-gold-300 bg-gold-50/60 flex flex-wrap items-center justify-between gap-3';
+        alertBox.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-white border border-gold-200 text-gold-900 flex items-center justify-center shrink-0">${svg('alert', 'line-icon')}</div>
+            <div>
+              <div class="text-sm font-bold text-ink-900">${label} ${esc(appState.studentName)} স্কুলে আসেনি</div>
+              <div class="text-xs text-ink-600">শ্রেণি শিক্ষক ${rec.submittedAt}-এ হাজিরা নিয়েছেন</div>
+            </div>
+          </div>
+          <button type="button" id="btn-absent-reason" class="icon-tile px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-xs font-bold">কারণ জানান</button>`;
+        document.getElementById('btn-absent-reason').addEventListener('click', () => {
+          document.getElementById('tile-open-chat-shortcut').click();
+        });
+      } else {
+        alertBox.className = 'hidden';
+        alertBox.innerHTML = '';
+      }
+
+      const y = attDate.getFullYear(), m = attDate.getMonth(), last = new Date(y, m + 1, 0).getDate();
+      const c = { present: 0, absent: 0, leave: 0 };
+      let counted = 0;
+      Object.keys(studentAtt.records).forEach(k => {
+        const [ky, km] = k.split('-').map(Number);
+        if (ky === y && km === m + 1) { c[studentAtt.records[k].statuses[roll]] += 1; counted += 1; }
+      });
+      const pct = counted ? Math.round((c.present / counted) * 100) : 0;
+      document.getElementById('stat-att-month').textContent = counted ? `${bn(c.present)}/${bn(counted)} দিন` : '—';
+      document.getElementById('p-att-month-label').textContent = `${BN_MONTHS[m]} ${bn(y)} • ${bn(pct)}% উপস্থিতি`;
+      document.getElementById('p-att-summary').innerHTML =
+        countTile('userCheck', 'উপস্থিত', `${bn(c.present)} দিন`) +
+        countTile('userX', 'অনুপস্থিত', `${bn(c.absent)} দিন`, c.absent > 0) +
+        countTile('leave', 'ছুটি', `${bn(c.leave)} দিন`);
+
+      document.getElementById('p-att-weekhead').innerHTML = BN_WEEK_HEAD.map(d => `<div>${d}</div>`).join('');
+      const lead = (new Date(y, m, 1).getDay() + 1) % 7; // Saturday-first columns
+      const base = 'h-12 rounded-xl flex flex-col items-center justify-center text-xs font-bold';
+      let cells = Array.from({ length: lead }, () => '<div></div>').join('');
+      for (let day = 1; day <= last; day++) {
+        const d = new Date(y, m, day), k = dateKey(d);
+        const r = studentAtt.records[k];
+        const requested = studentAtt.leaveRequests[k] && studentAtt.leaveRequests[k][roll];
+        let cls, inner = '';
+        if (!isSchoolDay(d)) { cls = 'bg-ink-50 text-ink-300'; }
+        else if (r) {
+          const s = r.statuses[roll];
+          cls = s === 'present' ? 'bg-white border border-ink-200 text-ink-800'
+            : s === 'absent' ? 'bg-gold-50 border-2 border-gold-600 text-gold-900'
+            : 'bg-ink-50 border-2 border-dashed border-ink-400 text-ink-700';
+          inner = s === 'present' ? svg('check') : s === 'absent' ? svg('x') : '<span class="text-[9px] leading-none">ছুটি</span>';
+        } else if (requested) { cls = 'border-2 border-dashed border-ink-400 text-ink-700'; inner = '<span class="text-[9px] leading-none">আবেদন</span>'; }
+        else if (k === attKey) { cls = 'border-2 border-ink-900 text-ink-900'; inner = '<span class="text-[9px] leading-none">বাকি</span>'; }
+        else { cls = 'border border-ink-100 text-ink-400'; }
+        cells += `<div class="${base} ${cls}"><span>${bn(day)}</span>${inner}</div>`;
+      }
+      document.getElementById('p-att-calendar').innerHTML = cells;
+      const swatch = cls => `<span class="inline-block w-3 h-3 rounded ${cls} align-middle mr-1"></span>`;
+      document.getElementById('p-att-legend').innerHTML = [
+        [swatch('bg-white border border-ink-300'), 'উপস্থিত'],
+        [swatch('bg-gold-50 border-2 border-gold-600'), 'অনুপস্থিত'],
+        [swatch('bg-ink-50 border-2 border-dashed border-ink-400'), 'ছুটি / ছুটির আবেদন'],
+        [swatch('bg-ink-50'), 'শুক্রবার বন্ধ']
+      ].map(([s, l]) => `<span>${s}${l}</span>`).join('');
+    }
+
+    // ---------- Principal: class-wise student attendance ----------
+    // Only ৩য় শ্রেণি is live in this prototype; the other classes are sample rows.
+    const schoolClassAttendance = [
+      { cls: 'Play', total: 22, present: 20, at: 'সকাল ৮:২০' },
+      { cls: 'KG', total: 23, present: 21, at: 'সকাল ৮:২৬' },
+      { cls: '১ম শ্রেণি', total: 30, present: 28, at: 'সকাল ৮:৩১' },
+      { cls: '২য় শ্রেণি', total: 30, present: 27, at: 'সকাল ৮:৩৮' },
+      { cls: '৩য় শ্রেণি', live: true },
+      { cls: '৪র্থ শ্রেণি', total: 25, present: null },
+      { cls: '৫ম শ্রেণি', total: 20, present: 19, at: 'সকাল ৮:৪০' }
+    ];
+
+    function renderSchoolStudentAttendance() {
+      const rows = schoolClassAttendance.map(row => {
+        if (!row.live) return row;
+        const rec = studentAtt.records[attKey];
+        return { cls: row.cls, total: classRoster.length, present: rec ? countStatuses(rec.statuses).present : null, at: rec ? rec.submittedAt : null };
+      });
+      const totalStudents = rows.reduce((a, r) => a + r.total, 0);
+      const done = rows.filter(r => r.present !== null);
+      const present = done.reduce((a, r) => a + r.present, 0);
+      const doneTotal = done.reduce((a, r) => a + r.total, 0);
+      const pending = rows.length - done.length;
+
+      document.getElementById('school-total-students').textContent = `${bn(totalStudents)} জন`;
+      document.getElementById('s-att-date').textContent = bnDate(attDate);
+      document.getElementById('s-stat-att').textContent = `${bn(present)}/${bn(doneTotal)} উপস্থিত`;
+      document.getElementById('s-att-summary').innerHTML =
+        countTile('userCheck', 'উপস্থিত', `${bn(present)} জন`) +
+        countTile('userX', 'অনুপস্থিত', `${bn(doneTotal - present)} জন`) +
+        countTile('classes', 'জমা হয়নি', `${bn(pending)}টি শ্রেণি`, pending > 0);
+      document.getElementById('s-att-rows').innerHTML = rows.map(r => {
+        const submitted = r.present !== null;
+        const pct = submitted ? Math.round((r.present / r.total) * 100) : 0;
+        return `
+          <div class="p-3.5 rounded-2xl ${submitted ? 'bg-ink-50 border border-ink-200' : 'bg-gold-50/60 border border-gold-200'} flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-bold text-ink-900">${r.cls}</div>
+              <div class="text-xs text-ink-500">${submitted ? `${r.at}-এ জমা` : 'শ্রেণি শিক্ষক এখনো হাজিরা জমা দেননি'}</div>
+            </div>
+            ${submitted ? `
+              <div class="text-right">
+                <div class="text-xs font-bold text-ink-800">${bn(r.present)} / ${bn(r.total)} উপস্থিত</div>
+                <div class="w-28 h-2 bg-ink-200 rounded-full overflow-hidden mt-1 ml-auto"><div class="h-full bg-ink-800" style="width:${pct}%"></div></div>
+              </div>`
+              : '<span class="px-2.5 py-1 rounded-lg bg-white border border-gold-300 text-gold-900 text-xs font-extrabold">জমা হয়নি</span>'}
+          </div>`;
+      }).join('');
+    }
+
+    // ---------- Principal: teacher & staff attendance ----------
+    const staffList = [
+      { name: 'সালমা আক্তার', role: 'শিক্ষিকা' },
+      { name: 'কামরুল হাসান', role: 'শিক্ষক' },
+      { name: 'রাশেদা বেগম', role: 'শিক্ষিকা' },
+      { name: 'শাহানা পারভীন', role: 'শিক্ষিকা' },
+      { name: 'আব্দুল কাদের', role: 'শিক্ষক' },
+      { name: 'মাহফুজা খাতুন', role: 'শিক্ষিকা' },
+      { name: 'নাজমুল হক', role: 'অফিস সহকারী' }
+    ];
+    const STAFF_ORDER = ['present', 'late', 'leave', 'absent'];
+    const staffAtt = { records: {}, draft: {} };
+
+    (function seedStaffHistory() {
+      const d = new Date(attDate.getFullYear(), attDate.getMonth(), 1);
+      while (d < attDate) {
+        if (isSchoolDay(d)) {
+          const statuses = {};
+          staffList.forEach((_, i) => {
+            const x = seededRandom(d.getDate() * 97 + i * 31 + 5);
+            statuses[i] = x < 0.03 ? 'absent' : x < 0.06 ? 'leave' : x < 0.13 ? 'late' : 'present';
+          });
+          staffAtt.records[dateKey(d)] = { statuses, submittedAt: 'সকাল ৯:০০' };
+        }
+        d.setDate(d.getDate() + 1);
+      }
+      staffList.forEach((_, i) => { staffAtt.draft[i] = 'present'; });
+    })();
+
+    function renderStaffAttendance() {
+      const rec = staffAtt.records[attKey];
+      const draft = staffAtt.draft;
+      const c = countStatuses(draft);
+      const dirty = !rec || !sameStatuses(draft, rec.statuses);
+      document.getElementById('s-staff-date').textContent = `${bnDate(attDate)} • প্রিন্সিপাল হাজিরা নেন`;
+      document.getElementById('s-staff-summary').innerHTML =
+        countTile('userCheck', 'উপস্থিত', bn(c.present)) +
+        countTile('clock', 'দেরিতে', bn(c.late)) +
+        countTile('leave', 'ছুটি', bn(c.leave)) +
+        countTile('userX', 'অনুপস্থিত', bn(c.absent), c.absent > 0);
+
+      const monthKeys = Object.keys(staffAtt.records).filter(k => k.startsWith(attKey.slice(0, 8)));
+      document.getElementById('s-staff-rows').innerHTML = staffList.map((st, i) => {
+        const came = monthKeys.filter(k => ['present', 'late'].includes(staffAtt.records[k].statuses[i])).length;
+        const pills = STAFF_ORDER.map(s => {
+          const active = draft[i] === s;
+          return `<button type="button" data-staff="${i}" data-staff-status="${s}" aria-pressed="${active}"
+            class="icon-tile py-1.5 rounded-xl flex flex-col items-center justify-center ${active ? (s === 'absent' ? 'border-2 border-gold-600 bg-gold-50 text-gold-900' : 'tile-active border') : 'border border-ink-200 bg-white text-ink-500 hover:bg-ink-50'}">
+            ${svg(ATT_META[s].icon)}<span class="text-[10px] font-bold mt-0.5">${ATT_META[s].label}</span></button>`;
+        }).join('');
+        return `
+          <div class="p-3 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-sm font-bold text-ink-900">${esc(st.name)}</span> <span class="text-xs text-ink-500">• ${st.role}</span></div>
+              <span class="text-[11px] font-bold text-ink-600">এ মাসে ${bn(came)}/${bn(monthKeys.length)} দিন</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5">${pills}</div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('s-staff-status').innerHTML = rec && !dirty
+        ? `<div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>`
+        : rec ? '<p class="text-xs font-bold text-gold-900">হাজিরা বদলেছেন। আবার জমা দিন।</p>' : '';
+      const btn = document.getElementById('s-staff-submit');
+      btn.disabled = !!rec && !dirty;
+      document.getElementById('s-staff-submit-label').textContent = !rec ? 'শিক্ষক হাজিরা জমা দিন' : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
+      document.getElementById('s-stat-staff').textContent = rec ? `${bn(c.present + c.late)}/${bn(staffList.length)} উপস্থিত` : 'এখনো জমা হয়নি';
+    }
+
+    // ---------- Floating-card switching for the teacher and principal views ----------
+    function switchSubPanel(kind, name) {
+      document.querySelectorAll(`.${kind}-floating-card`).forEach(card => {
+        card.classList.toggle('tile-active', card.getAttribute(`data-${kind}-panel`) === name);
+      });
+      document.querySelectorAll(`.${kind}-subpanel`).forEach(panel => {
+        panel.classList.toggle('hidden', panel.id !== `panel-${kind}-${name}`);
+      });
+    }
+
+    function renderAllAttendance() {
+      renderTeacherAttendance();
+      renderParentAttendance();
+      renderSchoolStudentAttendance();
+      renderStaffAttendance();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('today-date-label').textContent = bnDate(realToday);
+
+      document.querySelectorAll('.teacher-floating-card').forEach(card => {
+        card.addEventListener('click', () => switchSubPanel('teacher', card.getAttribute('data-teacher-panel')));
+      });
+      document.querySelectorAll('.school-floating-card').forEach(card => {
+        card.addEventListener('click', () => switchSubPanel('school', card.getAttribute('data-school-panel')));
+      });
+      document.querySelectorAll('.att-view-btn').forEach(btn => {
+        btn.addEventListener('click', () => { studentAtt.view = btn.getAttribute('data-att-view'); renderTeacherAttendance(); });
+      });
+
+      // Tap a roll: present → absent → leave → present
+      document.getElementById('t-att-grid').addEventListener('click', e => {
+        const tile = e.target.closest('[data-att-roll]');
+        if (!tile) return;
+        const r = Number(tile.getAttribute('data-att-roll'));
+        studentAtt.draft[r] = NEXT_STUDENT_STATUS[studentAtt.draft[r]];
+        renderTeacherAttendance();
+      });
+      document.getElementById('t-att-reset').addEventListener('click', () => {
+        resetStudentDraft();
+        renderTeacherAttendance();
+      });
+      document.getElementById('t-att-submit').addEventListener('click', () => {
+        studentAtt.records[attKey] = { statuses: { ...studentAtt.draft }, submittedAt: bnTime(new Date()) };
+        renderAllAttendance();
+        const absent = countStatuses(studentAtt.draft).absent;
+        showToast(absent ? `হাজিরা জমা হয়েছে। ${bn(absent)} জন অভিভাবক অ্যাপে বার্তা পাবেন।` : 'হাজিরা জমা হয়েছে। আজ কেউ অনুপস্থিত নেই।');
+      });
+
+      document.getElementById('s-staff-rows').addEventListener('click', e => {
+        const pill = e.target.closest('[data-staff]');
+        if (!pill) return;
+        staffAtt.draft[Number(pill.getAttribute('data-staff'))] = pill.getAttribute('data-staff-status');
+        renderStaffAttendance();
+      });
+      document.getElementById('s-staff-submit').addEventListener('click', () => {
+        staffAtt.records[attKey] = { statuses: { ...staffAtt.draft }, submittedAt: bnTime(new Date()) };
+        renderAllAttendance();
+        showToast('শিক্ষক ও স্টাফ হাজিরা জমা হয়েছে।');
+      });
+
+      // Parent's "tomorrow's leave" quick reply becomes a leave request for the next school day.
+      document.querySelectorAll('.quick-msg-btn').forEach(btn => {
+        if (!btn.getAttribute('data-quick-msg').includes('আগামীকাল')) return;
+        btn.addEventListener('click', () => {
+          const roll = currentRollNo();
+          if (!roll) return;
+          const next = shiftSchoolDay(realToday, 1), k = dateKey(next);
+          studentAtt.leaveRequests[k] = studentAtt.leaveRequests[k] || {};
+          studentAtt.leaveRequests[k][roll] = true;
+          if (k === attKey && !studentAtt.records[attKey]) studentAtt.draft[roll] = 'leave';
+          renderAllAttendance();
+          showToast(`${bnDate(next)}-এর ছুটির আবেদন শিক্ষকের হাজিরা তালিকায় গেছে।`);
+        });
+      });
+
+      document.querySelectorAll('[data-feature-interest]').forEach(btn => {
+        btn.addEventListener('click', () => showToast(`${btn.getAttribute('data-feature-interest')}: আপনার আগ্রহ নোট করা হয়েছে।`));
+      });
+
+      renderAllAttendance();
+    });
+
+  </script>
+</body>
+</html>
