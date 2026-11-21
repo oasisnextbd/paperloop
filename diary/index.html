@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=bb75fa6e27" />
+  <link rel="stylesheet" href="diary.css?v=a3ad4919d9" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -599,7 +599,7 @@
       </div>
 
       <!-- Teacher floating cards: Morning attendance / Homework / Notices / Routine -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
         <button type="button" data-teacher-panel="attendance" class="teacher-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">সকালের হাজিরা</div>
@@ -624,11 +624,17 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-routine">—</div>
           </button>
-        <button type="button" data-teacher-panel="marks" class="teacher-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+        <button type="button" data-teacher-panel="marks" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">নম্বর দিন</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Marks</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-marks">—</div>
+          </button>
+        <button type="button" data-teacher-panel="records" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 2v2"/><path d="M8 2v2"/><rect width="18" height="18" x="3" y="4" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M7 20a5 5 0 0 1 10 0"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী তালিকা</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Students</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-records">—</div>
           </button>
       </div>
 
@@ -698,6 +704,9 @@
 
       <!-- TEACHER PANEL 5: MARKS ENTRY (one screen per subject, a box per roll) -->
       <div id="panel-teacher-marks" class="teacher-subpanel hidden space-y-4"></div>
+
+      <!-- TEACHER PANEL 6: CLASS LIST (read-only student records) -->
+      <div id="panel-teacher-records" class="teacher-subpanel hidden space-y-4"></div>
 
       <div id="panel-teacher-homework" class="teacher-subpanel hidden space-y-5">
       <form id="teacher-hw-form" class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-5">
@@ -885,7 +894,7 @@
       </div>
 
       <!-- Principal floating cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
         <button type="button" data-school-panel="students" class="school-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী হাজিরা</div>
@@ -916,6 +925,12 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Results</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-results">—</div>
           </button>
+        <button type="button" data-school-panel="records" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 2v2"/><path d="M8 2v2"/><rect width="18" height="18" x="3" y="4" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M7 20a5 5 0 0 1 10 0"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী তথ্য</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Records</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-records">—</div>
+          </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
@@ -928,7 +943,7 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
-        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
@@ -953,6 +968,9 @@
 
       <!-- PRINCIPAL PANEL: RESULTS (publish, merit list, tabulation, failed subjects, summary) -->
       <div id="panel-school-results" class="school-subpanel hidden space-y-4"></div>
+
+      <!-- PRINCIPAL PANEL: STUDENT RECORDS (counts, list, profiles, admission) -->
+      <div id="panel-school-records" class="school-subpanel hidden space-y-4"></div>
 
       <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
       <div id="panel-school-students" class="school-subpanel space-y-4">
@@ -1048,6 +1066,27 @@
 
   <!-- Filled just before printing; on paper it is the only thing shown (see diary.input.css) -->
   <div id="print-sheet" aria-hidden="true"></div>
+
+  <!-- ==========================================
+       STUDENT PROFILE PANEL (from the principal's records or the teacher's class list)
+       ========================================== -->
+  <dialog id="student-dialog" class="profile-sheet" aria-labelledby="student-dialog-title">
+    <div class="flex flex-col h-full">
+      <div class="p-5 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="student-dialog-avatar" class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-200 text-ink-900 flex items-center justify-center shrink-0 text-lg font-bold"></div>
+          <div class="min-w-0">
+            <h2 id="student-dialog-title" class="text-lg font-bold text-ink-900 leading-tight"></h2>
+            <p id="student-dialog-subtitle" class="text-xs text-ink-500 mt-0.5"></p>
+          </div>
+        </div>
+        <button type="button" data-student-close aria-label="বন্ধ করুন" class="icon-tile w-10 h-10 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50 flex items-center justify-center shrink-0">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="student-dialog-body" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+    </div>
+  </dialog>
 
   <!-- ==========================================
        NOTICE PANEL: notices meant for the signed-in person (opened from the header's নোটিশ button)
@@ -1974,6 +2013,7 @@
           const rec = studentAtt.records[dateKey(d)];
           if (!rec) return `<td class="${cell}"></td>`;
           const s = rec.statuses[r];
+          if (!s) return `<td class="${cell}"></td>`; // not yet admitted that day
           counted += 1; if (s === 'present') present += 1;
           const mark = s === 'present' ? '<span class="text-ink-400 font-bold">•</span>'
             : s === 'absent' ? '<span class="text-gold-700 font-extrabold">অ</span>'
@@ -2045,7 +2085,8 @@
       let counted = 0;
       Object.keys(studentAtt.records).forEach(k => {
         const [ky, km] = k.split('-').map(Number);
-        if (ky === y && km === m + 1) { c[studentAtt.records[k].statuses[roll]] += 1; counted += 1; }
+        const s = studentAtt.records[k].statuses[roll];
+        if (ky === y && km === m + 1 && s) { c[s] += 1; counted += 1; }
       });
       const pct = counted ? Math.round((c.present / counted) * 100) : 0;
       document.getElementById('stat-att-month').textContent = counted ? `${bn(c.present)}/${bn(counted)} দিন` : '—';
@@ -2065,7 +2106,7 @@
         const requested = studentAtt.leaveRequests[k] && studentAtt.leaveRequests[k][roll];
         let cls, inner = '';
         if (!isSchoolDay(d)) { cls = 'bg-ink-50 text-ink-300'; }
-        else if (r) {
+        else if (r && r.statuses[roll]) {
           const s = r.statuses[roll];
           cls = s === 'present' ? 'bg-white border border-ink-200 text-ink-800'
             : s === 'absent' ? 'bg-gold-50 border-2 border-gold-600 text-gold-900'
@@ -2929,7 +2970,7 @@
     const exams = [];
     function makeExam(kind, cls, name, date) {
       const k = EXAM_KINDS[kind];
-      const exam = { id: nextExamId++, kind, cls, name, date, full: k.full, subjects: k.subjects.slice(), publisher: k.publisher, marks: {}, publishedAt: null };
+      const exam = { id: nextExamId++, kind, cls, name, date, rosterSize: rosterFor(cls).length, full: k.full, subjects: k.subjects.slice(), publisher: k.publisher, marks: {}, publishedAt: null };
       exam.subjects.forEach(s => { exam.marks[s] = {}; });
       exams.push(exam);
       return exam;
@@ -2956,13 +2997,15 @@
       seedMarks(nov, nov.subjects.slice(0, 3), 9); // the teacher is still entering the other three subjects
     })();
 
-    const enteredCount = (exam, s) => rosterFor(exam.cls).filter((_, i) => exam.marks[s][i + 1] !== undefined).length;
-    const subjectDone = (exam, s) => rosterFor(exam.cls).length > 0 && enteredCount(exam, s) === rosterFor(exam.cls).length;
+    // Students admitted after an exam was created are not part of it
+    const examRoster = exam => rosterFor(exam.cls).slice(0, exam.rosterSize);
+    const enteredCount = (exam, s) => examRoster(exam).filter((_, i) => exam.marks[s][i + 1] !== undefined).length;
+    const subjectDone = (exam, s) => examRoster(exam).length > 0 && enteredCount(exam, s) === examRoster(exam).length;
     const examComplete = exam => exam.subjects.every(s => subjectDone(exam, s));
     const subjectsDone = exam => exam.subjects.filter(s => subjectDone(exam, s)).length;
 
     function computeResults(exam) {
-      const rows = rosterFor(exam.cls).map((name, i) => {
+      const rows = examRoster(exam).map((name, i) => {
         const r = i + 1;
         const subs = exam.subjects.map(s => {
           const m = exam.marks[s][r];
@@ -3011,7 +3054,8 @@
     function renderGradesPanel() {
       const box = document.getElementById('p-results'), stat = document.getElementById('stat-grade');
       const roll = currentRollNo();
-      const list = exams.filter(e => e.cls === appState.studentClass && e.publishedAt).sort((a, b) => b.date - a.date);
+      // Only exams this child sat (a student admitted later is not part of older exams)
+      const list = exams.filter(e => e.cls === appState.studentClass && e.publishedAt && roll && roll <= e.rosterSize).sort((a, b) => b.date - a.date);
       if (!list.length || !roll) {
         box.innerHTML = '<p class="text-sm text-ink-500 text-center py-6">এখনো কোনো ফলাফল প্রকাশ হয়নি।</p>';
         stat.textContent = '—';
@@ -3094,10 +3138,10 @@
         const meta = subjectMeta[s] || { svg: lineIcons.bangla }, done = subjectDone(exam, s);
         return `<button type="button" data-tmarks-subject="${esc(s)}" aria-pressed="${s === st.subject}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${s === st.subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
           ${meta.svg}<span class="text-[0.6875rem] font-bold mt-1 leading-tight">${shortSubject(s)}</span>
-          <span data-subject-count="${esc(s)}" class="text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}">${done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(classRoster.length)}`}</span>
+          <span data-subject-count="${esc(s)}" class="text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}">${done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)}`}</span>
         </button>`;
       }).join('');
-      const rows = classRoster.map((name, i) => {
+      const rows = examRoster(exam).map((name, i) => {
         const r = i + 1, m = exam.marks[st.subject][r], absent = m === 'ab';
         return `
           <div class="flex items-center gap-2.5 py-2 border-b border-ink-200 last:border-0">
@@ -3129,7 +3173,7 @@
           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">${subjectTiles}</div>
           <div class="flex items-center justify-between text-xs font-bold text-ink-600">
             <span>${esc(st.subject)} • পূর্ণমান ${bn(exam.full)}</span>
-            <span data-entry-progress>${bn(enteredCount(exam, st.subject))}/${bn(classRoster.length)} জনের নম্বর দেওয়া</span>
+            <span data-entry-progress>${bn(enteredCount(exam, st.subject))}/${bn(examRoster(exam).length)} জনের নম্বর দেওয়া</span>
           </div>
           <div class="bg-white rounded-2xl border border-ink-200 px-3">${rows}</div>
           <p data-mark-error class="hidden text-xs font-bold text-gold-900"></p>
@@ -3140,11 +3184,11 @@
     function updateEntryProgress() {
       const exam = exams.find(e => e.id === resultsState.teacher.examId), s = resultsState.teacher.subject;
       const el = document.getElementById('panel-teacher-marks');
-      el.querySelector('[data-entry-progress]').textContent = `${bn(enteredCount(exam, s))}/${bn(classRoster.length)} জনের নম্বর দেওয়া`;
+      el.querySelector('[data-entry-progress]').textContent = `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)} জনের নম্বর দেওয়া`;
       const tile = el.querySelector(`[data-subject-count="${CSS.escape(s)}"]`);
       if (tile) {
         const done = subjectDone(exam, s);
-        tile.textContent = done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(classRoster.length)}`;
+        tile.textContent = done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)}`;
         tile.className = `text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}`;
       }
       const pub = el.querySelector('[data-tmarks-publish]');
@@ -3178,7 +3222,7 @@
         </div>` : '';
       let detail = '';
       if (exam) {
-        const complete = examComplete(exam), roster = rosterFor(exam.cls);
+        const complete = examComplete(exam), roster = examRoster(exam);
         const publishBtn = !exam.publishedAt && exam.publisher === 'school' ? `
           <button type="button" data-sres-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
         if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই।</p>';
@@ -3382,6 +3426,348 @@
       });
 
       renderAllResults();
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // STUDENT RECORDS
+    // Principal: class-wise counts, searchable student list, full profile (editable), new admission,
+    // printable class list. Class teacher: her class's list, read-only, with a call button where a
+    // guardian number exists. Parent: the child's record in the profile panel.
+    // A new admission to ৩য় শ্রেণি joins the attendance register at once and every exam created after it.
+    // Sample records carry no phone numbers on purpose: a made-up number could be a real person's.
+    // ==========================================
+    const recIcon = {
+      search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+      userPlus: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>',
+      phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+      edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+      close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      chevron: '<path d="m9 18 6-6-6-6"/>'
+    };
+    const recSvg = (n, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${recIcon[n]}</svg>`;
+
+    const SCHOOL_CODE = 'KSB';
+    const ADMISSION_YEAR = new Date().getFullYear();
+    const CLASS_CODE = { 'Play': '00', 'KG': '01', '১ম শ্রেণি': '11', '২য় শ্রেণি': '12', '৩য় শ্রেণি': '13', '৪র্থ শ্রেণি': '14', '৫ম শ্রেণি': '15' };
+    const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const RELIGION_BOOKS = ['ইসলাম শিক্ষা', 'হিন্দুধর্ম শিক্ষা', 'বৌদ্ধধর্ম শিক্ষা', 'খ্রিস্টধর্ম শিক্ষা'];
+    // Phone keyboards type য় ড় ঢ় either as one character or as letter + nukta; store and search one spelling.
+    const oneSpelling = s => String(s).replace(/\u09AF\u09BC/g, '\u09DF').replace(/\u09A1\u09BC/g, '\u09DC').replace(/\u09A2\u09BC/g, '\u09DD');
+    const studentId = (cls, roll, year) => `${SCHOOL_CODE}${String(year).slice(2)}${CLASS_CODE[cls] || '99'}${String(roll).padStart(2, '0')}`;
+
+    // ---------- Sample records for ৩য় শ্রেণি (fictional) ----------
+    const SAMPLE_FATHERS = ['আব্দুল করিম', 'জসিম উদ্দিন', 'রফিকুল ইসলাম', 'মোস্তফা কামাল', 'আনোয়ার হোসেন', 'শফিকুল ইসলাম', 'মিজানুর রহমান', 'আবুল কালাম', 'নজরুল ইসলাম', 'কামরুল হাসান'];
+    const SAMPLE_MOTHERS = ['রাবেয়া খাতুন', 'শাহনাজ বেগম', 'নাসরিন আক্তার', 'ফেরদৌসী বেগম', 'রোকসানা আক্তার', 'সালমা খাতুন', 'জেসমিন আক্তার', 'হাসিনা বেগম', 'মাহমুদা খাতুন', 'শিরিন আক্তার'];
+    const SAMPLE_HINDU = { 23: ['প্রদীপ দাস', 'শিখা দাস'], 26: ['অমল দেব', 'রীতা দেব'], 29: ['সুবীর সাহা', 'মিতা সাহা'] };
+    const SAMPLE_AREAS = ['কসবা পৌরসভা', 'কুটি', 'গোপীনাথপুর', 'বায়েক', 'কায়েমপুর', 'মূলগ্রাম', 'বিনাউটি', 'খাড়েরা', 'বাদৈর', 'মেহারী'];
+    const recordsByClass = {};
+    recordsByClass[TEACHER_CLASS] = classRoster.map((name, i) => {
+      const r = i + 1, pick = (list, salt) => list[Math.floor(seededRandom(r * 97 + salt) * list.length)];
+      const hindu = SAMPLE_HINDU[r];
+      const year = seededRandom(r * 13) < 0.6 ? ADMISSION_YEAR - 3 : ADMISSION_YEAR - 2;
+      return {
+        roll: r, name, cls: TEACHER_CLASS, id: studentId('৩য় শ্রেণি', r, year), admitted: year,
+        gender: r >= 3 && r % 2 === 1 ? 'ছাত্রী' : 'ছাত্র',
+        dob: new Date(ADMISSION_YEAR - 9 + (seededRandom(r * 5) < 0.3 ? 1 : 0), Math.floor(seededRandom(r * 7) * 12), 1 + Math.floor(seededRandom(r * 11) * 27)),
+        father: hindu ? hindu[0] : pick(SAMPLE_FATHERS, 1),
+        mother: hindu ? hindu[1] : pick(SAMPLE_MOTHERS, 2),
+        phone: '', address: `${pick(SAMPLE_AREAS, 3)}, কসবা, ব্রাহ্মণবাড়িয়া`,
+        blood: seededRandom(r * 17) < 0.5 ? pick(BLOOD_GROUPS, 4) : '',
+        religionBook: hindu ? 'হিন্দুধর্ম শিক্ষা' : 'ইসলাম শিক্ষা', prevSchool: '', isNew: false
+      };
+    });
+    // Other classes have only counts in this demo (same totals as the attendance panel), plus anyone admitted here.
+    const SAMPLE_COUNTS = { 'Play': [12, 10], 'KG': [11, 12], '১ম শ্রেণি': [16, 14], '২য় শ্রেণি': [15, 15], '৪র্থ শ্রেণি': [13, 12], '৫ম শ্রেণি': [9, 11] };
+    CLASSES.forEach(c => { recordsByClass[c] = recordsByClass[c] || []; });
+    const CLASS_TEACHERS = { 'Play': 'সালমা আক্তার', 'KG': 'সালমা আক্তার', '১ম শ্রেণি': 'কামরুল হাসান', '২য় শ্রেণি': 'কামরুল হাসান', '৩য় শ্রেণি': 'রাশেদা বেগম', '৪র্থ শ্রেণি': 'শাহানা পারভীন', '৫ম শ্রেণি': 'আব্দুল কাদের' };
+
+    function classCounts(cls) {
+      const list = recordsByClass[cls], sample = SAMPLE_COUNTS[cls] || [0, 0];
+      const boys = sample[0] + list.filter(s => s.gender === 'ছাত্র').length;
+      const girls = sample[1] + list.filter(s => s.gender === 'ছাত্রী').length;
+      return { boys, girls, total: boys + girls, listed: list.length };
+    }
+    const bnFullDate = d => `${bn(d.getDate())} ${BN_MONTHS[d.getMonth()]} ${bn(d.getFullYear())}`;
+    const ageOn = d => { const t = new Date(); let a = t.getFullYear() - d.getFullYear(); if (t < new Date(t.getFullYear(), d.getMonth(), d.getDate())) a -= 1; return a; };
+    const findRecord = (cls, roll) => (recordsByClass[cls] || []).find(s => s.roll === roll);
+    const initialsOf = name => name.trim().split(/\s+/)[0].slice(0, 2);
+
+    // ---------- Shared pieces ----------
+    function recordRows(s, { showPhone = true } = {}) {
+      return [
+        ['শিক্ষার্থী আইডি', s.id], ['শ্রেণি ও রোল', `${s.cls} • রোল ${bn(String(s.roll).padStart(2, '0'))}`],
+        ['লিঙ্গ', s.gender], ['জন্ম তারিখ', `${bnFullDate(s.dob)} (বয়স ${bn(ageOn(s.dob))})`],
+        ['পিতার নাম', s.father], ['মাতার নাম', s.mother],
+        ...(showPhone ? [['অভিভাবকের মোবাইল', s.phone ? bn(s.phone) : 'দেওয়া হয়নি']] : []),
+        ['ঠিকানা', s.address], ['রক্তের গ্রুপ', s.blood || '—'], ['ধর্ম শিক্ষা বই', s.religionBook],
+        ['ভর্তির বছর', bn(s.admitted)], ...(s.prevSchool ? [['আগের স্কুল', s.prevSchool]] : [])
+      ];
+    }
+    const dlRows = rows => rows.map(([k, v]) => `
+      <div class="flex items-start justify-between gap-3 px-4 py-2.5">
+        <dt class="text-xs text-ink-500 pt-0.5 shrink-0">${k}</dt>
+        <dd class="text-sm font-bold text-ink-900 text-right">${esc(v)}</dd>
+      </div>`).join('');
+
+    function studentRow(s, mode) {
+      return `
+        <button type="button" data-student-open="${esc(s.cls)}|${s.roll}" data-student-mode="${mode}"
+          class="icon-tile w-full p-3 rounded-2xl bg-ink-50 border border-ink-200 hover:bg-white flex items-center gap-3 text-left">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex flex-col items-center justify-center shrink-0">
+            <span class="text-[0.625rem] text-ink-500 leading-none">রোল</span><span class="text-sm font-extrabold text-ink-900 leading-tight">${bn(String(s.roll).padStart(2, '0'))}</span>
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-sm font-bold text-ink-900 truncate">${esc(s.name)}${s.isNew ? ' <span class="ml-1 px-1.5 py-0.5 rounded bg-gold-50 border border-gold-200 text-gold-900 text-[0.625rem] font-extrabold align-middle">নতুন ভর্তি</span>' : ''}</span>
+            <span class="block text-[0.6875rem] text-ink-500 truncate">${esc(s.id)} • পিতা: ${esc(s.father)}</span>
+          </span>
+          <span class="text-ink-400 shrink-0">${recSvg('chevron')}</span>
+        </button>`;
+    }
+
+    // ---------- Admission / edit form ----------
+    const fieldCls = 'w-full px-3 py-2.5 rounded-xl border border-ink-300 text-sm bg-white aria-[invalid=true]:border-gold-600 aria-[invalid=true]:bg-gold-50';
+    function admissionForm(s, mode) {
+      const v = k => s ? esc(s[k] || '') : '';
+      const dobVal = s ? `${s.dob.getFullYear()}-${String(s.dob.getMonth() + 1).padStart(2, '0')}-${String(s.dob.getDate()).padStart(2, '0')}` : '';
+      const field = (id, label, input, wide = false) => `<div class="${wide ? 'col-span-2' : ''}"><label for="${id}" class="block text-xs font-bold text-ink-600 mb-1">${label}</label>${input}</div>`;
+      return `
+        <form data-student-form="${mode}" class="grid grid-cols-2 gap-3" novalidate>
+          ${mode === 'new' ? field('adm-class', 'শ্রেণি *', `<select id="adm-class" name="cls" class="${fieldCls} font-bold">${CLASSES.map(c => `<option${c === recordsState.cls ? ' selected' : ''}>${c}</option>`).join('')}</select>`) : ''}
+          ${mode === 'new' ? field('adm-gender', 'লিঙ্গ *', `<select id="adm-gender" name="gender" class="${fieldCls}"><option>ছাত্র</option><option>ছাত্রী</option></select>`) : ''}
+          ${field(`${mode}-name`, 'শিক্ষার্থীর নাম *', `<input id="${mode}-name" name="name" type="text" maxlength="60" required value="${v('name')}" class="${fieldCls} font-bold" />`, true)}
+          ${field(`${mode}-dob`, 'জন্ম তারিখ *', `<input id="${mode}-dob" name="dob" type="date" required value="${dobVal}" class="${fieldCls}" />`)}
+          ${field(`${mode}-blood`, 'রক্তের গ্রুপ', `<select id="${mode}-blood" name="blood" class="${fieldCls}"><option value="">জানা নেই</option>${BLOOD_GROUPS.map(b => `<option${s && s.blood === b ? ' selected' : ''}>${b}</option>`).join('')}</select>`)}
+          ${field(`${mode}-father`, 'পিতার নাম *', `<input id="${mode}-father" name="father" type="text" maxlength="60" required value="${v('father')}" class="${fieldCls}" />`)}
+          ${field(`${mode}-mother`, 'মাতার নাম *', `<input id="${mode}-mother" name="mother" type="text" maxlength="60" required value="${v('mother')}" class="${fieldCls}" />`)}
+          ${field(`${mode}-phone`, 'অভিভাবকের মোবাইল *', `<input id="${mode}-phone" name="phone" type="tel" inputmode="tel" maxlength="14" required value="${s && s.phone ? bn(s.phone) : ''}" placeholder="০১XXXXXXXXX" class="${fieldCls}" />`)}
+          ${field(`${mode}-religion`, 'ধর্ম শিক্ষা বই *', `<select id="${mode}-religion" name="religionBook" class="${fieldCls}">${RELIGION_BOOKS.map(b => `<option${s && s.religionBook === b ? ' selected' : ''}>${b}</option>`).join('')}</select>`)}
+          ${field(`${mode}-address`, 'ঠিকানা (গ্রাম/মহল্লা, ইউনিয়ন) *', `<input id="${mode}-address" name="address" type="text" maxlength="100" required value="${v('address')}" class="${fieldCls}" />`, true)}
+          ${field(`${mode}-prev`, 'আগের স্কুল (থাকলে)', `<input id="${mode}-prev" name="prevSchool" type="text" maxlength="80" value="${v('prevSchool')}" class="${fieldCls}" />`, true)}
+          <p data-form-error class="hidden col-span-2 text-xs font-bold text-gold-900"></p>
+          <button type="submit" class="col-span-2 py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2">
+            ${recSvg(mode === 'new' ? 'userPlus' : 'edit')}<span>${mode === 'new' ? 'ভর্তি সম্পন্ন করুন' : 'পরিবর্তন সংরক্ষণ করুন'}</span>
+          </button>
+        </form>`;
+    }
+
+    // Read and check a form; returns the values or null (and marks the first problem)
+    function readStudentForm(form) {
+      const f = form.elements, err = form.querySelector('[data-form-error]');
+      form.querySelectorAll('[aria-invalid]').forEach(el => el.setAttribute('aria-invalid', 'false'));
+      const val = name => (f[name] ? oneSpelling(f[name].value.trim()) : '');
+      const phone = toAsciiDigits(val('phone')).replace(/[\s-]/g, '').replace(/^\+?88/, '');
+      const problems = [
+        ['name', !val('name'), 'শিক্ষার্থীর নাম লিখুন'],
+        ['dob', !val('dob') || new Date(val('dob')) > new Date(), 'সঠিক জন্ম তারিখ দিন'],
+        ['father', !val('father'), 'পিতার নাম লিখুন'],
+        ['mother', !val('mother'), 'মাতার নাম লিখুন'],
+        ['phone', !/^01[3-9]\d{8}$/.test(phone), '১১ সংখ্যার মোবাইল নম্বর দিন (০১ দিয়ে শুরু)'],
+        ['address', !val('address'), 'ঠিকানা লিখুন']
+      ].find(p => p[1]);
+      if (problems) {
+        f[problems[0]].setAttribute('aria-invalid', 'true'); f[problems[0]].focus();
+        err.textContent = problems[2]; err.classList.remove('hidden');
+        return null;
+      }
+      err.classList.add('hidden');
+      const [y, m, d] = val('dob').split('-').map(Number);
+      return { name: val('name'), dob: new Date(y, m - 1, d), father: val('father'), mother: val('mother'), phone,
+        address: val('address'), blood: val('blood'), religionBook: val('religionBook'), prevSchool: val('prevSchool'),
+        cls: val('cls'), gender: val('gender') };
+    }
+
+    function admitStudent(data) {
+      const list = recordsByClass[data.cls];
+      const counts = classCounts(data.cls);
+      // Rolls continue after the class's existing students
+      const roll = data.cls === TEACHER_CLASS ? classRoster.length + 1 : counts.total + 1;
+      const rec = { ...data, roll, id: studentId(data.cls, roll, ADMISSION_YEAR), admitted: ADMISSION_YEAR, isNew: true };
+      list.push(rec);
+      if (data.cls === TEACHER_CLASS) {
+        // Joins the live class: attendance register now, exams created from now on
+        classRoster.push(data.name);
+        rollNames[String(roll).padStart(2, '0')] = data.name;
+        studentAtt.draft[roll] = 'present';
+        renderAllAttendance();
+        renderAllResults();
+      }
+      return rec;
+    }
+
+    // ---------- Principal panel ----------
+    const recordsState = { cls: TEACHER_CLASS, query: '', admitting: false };
+    function renderSchoolRecords() {
+      const el = document.getElementById('panel-school-records'), st = recordsState;
+      const total = CLASSES.reduce((a, c) => a + classCounts(c).total, 0);
+      const boys = CLASSES.reduce((a, c) => a + classCounts(c).boys, 0);
+      document.getElementById('s-stat-records').textContent = `${bn(total)} জন`;
+      const summaryRows = CLASSES.map(c => {
+        const k = classCounts(c);
+        return `<tr class="border-t border-ink-200">
+          <th class="px-3 py-2 text-left font-bold text-ink-900 whitespace-nowrap">${c}</th>
+          <td class="px-3 py-2 text-ink-700">${bn(k.boys)}</td><td class="px-3 py-2 text-ink-700">${bn(k.girls)}</td>
+          <td class="px-3 py-2 font-bold text-ink-900">${bn(k.total)}</td>
+          <td class="px-3 py-2 text-ink-600 whitespace-nowrap">${CLASS_TEACHERS[c]}</td></tr>`;
+      }).join('');
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">শিক্ষার্থী তথ্য</h3>
+              <p class="text-xs text-ink-500">মোট ${bn(total)} জন • ছাত্র ${bn(boys)} • ছাত্রী ${bn(total - boys)}</p>
+            </div>
+            <button type="button" data-records-admit aria-expanded="${st.admitting}" class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl ${st.admitting ? 'tile-active border' : 'border border-ink-300 bg-white hover:bg-ink-50 text-ink-800'} text-xs font-bold">${recSvg('userPlus')}নতুন ভর্তি</button>
+          </div>
+          ${st.admitting ? `<div class="p-4 rounded-2xl bg-white border border-ink-200 space-y-3"><div class="text-sm font-bold text-ink-900">ভর্তি ফরম</div>${admissionForm(null, 'new')}</div>` : ''}
+          <div class="overflow-x-auto rounded-xl border border-ink-200">
+            <table class="text-xs min-w-full">
+              <thead class="bg-ink-50"><tr>${['শ্রেণি', 'ছাত্র', 'ছাত্রী', 'মোট', 'শ্রেণি শিক্ষক'].map(h => `<th class="px-3 py-2 text-left font-bold text-ink-600 whitespace-nowrap">${h}</th>`).join('')}</tr></thead>
+              <tbody>${summaryRows}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap gap-2">${CLASSES.map(c => `<button type="button" data-records-class="${c}" aria-pressed="${c === st.cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === st.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('')}</div>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500">${recSvg('search')}</span>
+            <input type="search" data-records-search value="${esc(st.query)}" placeholder="নাম, রোল বা আইডি দিয়ে খুঁজুন" aria-label="শিক্ষার্থী খুঁজুন" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm" />
+          </div>
+          <div data-records-list class="space-y-2"></div>
+          <button type="button" data-records-print class="icon-tile w-full py-2.5 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>${esc(st.cls)}-এর তালিকা প্রিন্ট / PDF</span></button>
+        </div>`;
+      renderRecordsList();
+    }
+    function matches(s, q) {
+      if (!q) return true;
+      q = oneSpelling(q);
+      const qa = toAsciiDigits(q).toLowerCase();
+      return s.name.includes(q) || s.id.toLowerCase().includes(qa) || String(s.roll) === qa.replace(/^0+/, '') || s.father.includes(q);
+    }
+    function renderRecordsList() {
+      const box = document.querySelector('#panel-school-records [data-records-list]');
+      if (!box) return;
+      const st = recordsState, list = recordsByClass[st.cls].filter(s => matches(s, st.query.trim()));
+      const k = classCounts(st.cls);
+      const note = k.listed < k.total ? `<p class="text-xs text-ink-500">ডেমোতে এই শ্রেণির ${bn(k.total - k.listed)} জনের বিস্তারিত তথ্য নেই; শুধু সংখ্যা দেখানো হচ্ছে।</p>` : '';
+      box.innerHTML = note + (list.length ? list.map(s => studentRow(s, 'school')).join('') : `<p class="text-sm text-ink-500 text-center py-4">${st.query ? 'কাউকে পাওয়া যায়নি।' : 'তালিকায় কেউ নেই।'}</p>`);
+    }
+    function printClassList() {
+      const st = recordsState, list = recordsByClass[st.cls];
+      printDoc(`শিক্ষার্থী তালিকা • ${esc(st.cls)} • ${bn(ADMISSION_YEAR)}`, printTable(['রোল', 'আইডি', 'নাম', 'পিতা', 'মাতা', 'জন্ম তারিখ', 'মোবাইল'],
+        list.map(s => [bn(String(s.roll).padStart(2, '0')), s.id, esc(s.name), esc(s.father), esc(s.mother), bnFullDate(s.dob), s.phone ? bn(s.phone) : '—'])));
+    }
+
+    // ---------- Teacher panel ----------
+    function renderTeacherRecords() {
+      const el = document.getElementById('panel-teacher-records');
+      const list = recordsByClass[TEACHER_CLASS];
+      document.getElementById('t-stat-records').textContent = `${bn(list.length)} জন`;
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">শিক্ষার্থী তালিকা — ${esc(TEACHER_CLASS)}</h3>
+            <p class="text-xs text-ink-500">${bn(list.filter(s => s.gender === 'ছাত্র').length)} ছাত্র • ${bn(list.filter(s => s.gender === 'ছাত্রী').length)} ছাত্রী। তথ্য বদলাতে স্কুল অফিসে জানান।</p>
+          </div>
+          <div class="space-y-2">${list.map(s => studentRow(s, 'teacher')).join('')}</div>
+        </div>`;
+    }
+
+    // ---------- Student profile sheet ----------
+    const studentSheet = { cls: null, roll: null, mode: 'school', editing: false };
+    function openStudent(cls, roll, mode) {
+      Object.assign(studentSheet, { cls, roll, mode, editing: false });
+      renderStudentSheet();
+      document.getElementById('student-dialog').showModal();
+    }
+    function renderStudentSheet() {
+      const s = findRecord(studentSheet.cls, studentSheet.roll);
+      const body = document.getElementById('student-dialog-body');
+      if (!s) { body.innerHTML = ''; return; }
+      const canEdit = studentSheet.mode === 'school';
+      document.getElementById('student-dialog-title').textContent = s.name;
+      document.getElementById('student-dialog-subtitle').textContent = `${s.cls} • রোল ${bn(String(s.roll).padStart(2, '0'))} • ${s.id}`;
+      document.getElementById('student-dialog-avatar').textContent = initialsOf(s.name);
+      body.innerHTML = studentSheet.editing ? admissionForm(s, 'edit') : `
+        <dl class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200">${dlRows(recordRows(s))}</dl>
+        <div class="grid ${canEdit ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5">
+          ${s.phone ? `<a href="tel:+88${s.phone}" class="icon-tile py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm flex items-center justify-center gap-2">${recSvg('phone')}<span>অভিভাবককে কল</span></a>`
+            : '<p class="py-3 px-3 rounded-2xl bg-ink-50 border border-ink-200 text-xs text-ink-600 text-center">মোবাইল নম্বর দেওয়া হয়নি (নমুনা তথ্য)</p>'}
+          ${canEdit ? `<button type="button" data-student-edit class="icon-tile py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${recSvg('edit')}<span>তথ্য সম্পাদনা</span></button>` : ''}
+        </div>`;
+    }
+
+    // ---------- Parent: the child's record in the profile panel ----------
+    const baseRenderProfile = renderProfile;
+    renderProfile = function () {
+      baseRenderProfile();
+      if (!session || session.role !== 'parent') return;
+      const s = findRecord(appState.studentClass, currentRollNo());
+      if (!s) return;
+      const extra = recordRows(s, { showPhone: true }).filter(([k]) => !['শ্রেণি ও রোল'].includes(k));
+      document.getElementById('profile-info').insertAdjacentHTML('beforeend', dlRows(extra) +
+        '<p class="px-4 py-2.5 text-[0.6875rem] text-ink-500">কোনো তথ্য ভুল থাকলে স্কুল অফিসে জানান।</p>');
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const sPanel = document.getElementById('panel-school-records');
+      // A form's error message goes away as soon as the person starts correcting it
+      const clearFormError = e => {
+        const form = e.target.closest('[data-student-form]');
+        if (!form) return;
+        e.target.setAttribute('aria-invalid', 'false');
+        form.querySelector('[data-form-error]').classList.add('hidden');
+      };
+      sPanel.addEventListener('input', clearFormError);
+      document.getElementById('student-dialog').addEventListener('input', clearFormError);
+      sPanel.addEventListener('click', e => {
+        const c = e.target.closest('[data-records-class]');
+        if (c) { recordsState.cls = c.getAttribute('data-records-class'); recordsState.query = ''; renderSchoolRecords(); return; }
+        if (e.target.closest('[data-records-admit]')) { recordsState.admitting = !recordsState.admitting; renderSchoolRecords(); return; }
+        if (e.target.closest('[data-records-print]')) { printClassList(); return; }
+        const open = e.target.closest('[data-student-open]');
+        if (open) { const [cls, roll] = open.getAttribute('data-student-open').split('|'); openStudent(cls, Number(roll), 'school'); }
+      });
+      sPanel.addEventListener('input', e => {
+        if (!e.target.matches('[data-records-search]')) return;
+        recordsState.query = e.target.value; renderRecordsList();
+      });
+      sPanel.addEventListener('submit', e => {
+        e.preventDefault();
+        const data = readStudentForm(e.target);
+        if (!data) return;
+        const rec = admitStudent(data);
+        recordsState.admitting = false; recordsState.cls = rec.cls; recordsState.query = '';
+        renderSchoolRecords(); renderTeacherRecords();
+        showToast(`${rec.name} ভর্তি হয়েছে: ${rec.cls}, রোল ${bn(String(rec.roll).padStart(2, '0'))}, আইডি ${rec.id}`);
+      });
+
+      document.getElementById('panel-teacher-records').addEventListener('click', e => {
+        const open = e.target.closest('[data-student-open]');
+        if (open) { const [cls, roll] = open.getAttribute('data-student-open').split('|'); openStudent(cls, Number(roll), 'teacher'); }
+      });
+
+      const dlg = document.getElementById('student-dialog');
+      dlg.querySelector('[data-student-close]').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', e => {
+        if (e.target === dlg) { dlg.close(); return; }
+        if (e.target.closest('[data-student-edit]')) { studentSheet.editing = true; renderStudentSheet(); }
+      });
+      dlg.addEventListener('submit', e => {
+        e.preventDefault();
+        const data = readStudentForm(e.target);
+        if (!data) return;
+        const s = findRecord(studentSheet.cls, studentSheet.roll);
+        ['name', 'dob', 'father', 'mother', 'phone', 'address', 'blood', 'religionBook', 'prevSchool'].forEach(k => { s[k] = data[k]; });
+        if (s.cls === TEACHER_CLASS) { classRoster[s.roll - 1] = s.name; rollNames[String(s.roll).padStart(2, '0')] = s.name; renderAllAttendance(); }
+        studentSheet.editing = false;
+        renderStudentSheet(); renderSchoolRecords(); renderTeacherRecords();
+        showToast('শিক্ষার্থীর তথ্য সংরক্ষণ হয়েছে');
+      });
+
+      renderSchoolRecords();
+      renderTeacherRecords();
     });
 
   </script>
