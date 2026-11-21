@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=f9da698890" />
+  <link rel="stylesheet" href="diary.css?v=ef90ecc688" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -232,16 +232,6 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button id="tile-open-chat-shortcut" type="button" class="icon-tile flex flex-col items-center justify-center px-3 py-2 rounded-2xl bg-ink-100 hover:bg-ink-200 border border-ink-200 text-ink-700">
-              <svg class="line-icon mb-1" viewBox="0 0 24 24">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                <line x1="8" x2="16" y1="9" y2="9"/>
-                <line x1="8" x2="13" y1="13" y2="13"/>
-              </svg>
-              <span class="text-[0.6875rem] font-bold leading-none">মেসেজ দিন →</span>
-            </button>
-          </div>
         </div>
 
       </div>
@@ -531,59 +521,6 @@
             <p class="text-xs text-ink-500">বকেয়া আর স্কুল অফিস থেকে পাওয়া রসিদ</p>
           </div>
           <div id="p-fees"></div>
-        </div>
-      </div>
-
-      <!-- Optional Class Teacher Chat Section (Collapsed by Default, Monochrome Line Icons) -->
-      <div id="optional-chat-card" class="bg-white rounded-2xl border border-ink-200 shadow-sm overflow-hidden">
-        <button id="btn-toggle-optional-chat" type="button" class="w-full p-4 flex items-center justify-between text-left hover:bg-ink-50 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-ink-100 text-ink-700 flex flex-col items-center justify-center border border-ink-200">
-              <svg class="line-icon" viewBox="0 0 24 24">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                <line x1="8" x2="16" y1="9" y2="9"/>
-                <line x1="8" x2="13" y1="13" y2="13"/>
-              </svg>
-            </div>
-            <div>
-              <div class="text-sm sm:text-base font-bold text-ink-900">শ্রেণি শিক্ষকের সাথে মেসেজ (ঐচ্ছিক / Optional)</div>
-              <div class="text-xs text-ink-500">ছুটির আবেদন বা পড়া বুঝতে সমস্যা হলে ১ ট্যাপে জানান</div>
-            </div>
-          </div>
-          <span id="chat-chevron" class="text-xs font-bold text-ink-700 bg-ink-100 px-3 py-1.5 rounded-xl border border-ink-200">
-            মেসেজ খুলুন ▼
-          </span>
-        </button>
-
-        <!-- Collapsible Chat Body -->
-        <div id="optional-chat-panel" class="hidden border-t border-ink-200 p-4 space-y-3.5 bg-ink-50">
-          <div class="grid grid-cols-3 gap-2">
-            <button type="button" data-quick-msg="ম্যাডাম, আজকের সব বাড়ির কাজ খাতায় শেষ করেছে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
-              <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-xs font-bold leading-tight">আজকের পড়া শেষ করেছে</span>
-            </button>
-            <button type="button" data-quick-msg="ম্যাডাম, অসুস্থতার কারণে আগামীকাল স্কুলে আসতে পারবে না।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
-              <svg class="line-icon mb-1" viewBox="0 0 24 24">
-                <rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
-              </svg>
-              <span class="text-xs font-bold leading-tight">আগামীকাল ছুটির আবেদন</span>
-            </button>
-            <button type="button" data-quick-msg="ম্যাডাম, গণিতের বাড়ির কাজটি বুঝতে একটু সাহায্য লাগবে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
-              <svg class="line-icon mb-1" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/>
-              </svg>
-              <span class="text-xs font-bold leading-tight">গণিত পড়াটি বুঝতে সমস্যা হচ্ছে</span>
-            </button>
-          </div>
-
-          <div id="chat-messages-box" class="bg-white rounded-2xl border border-ink-200 p-3.5 h-48 overflow-y-auto space-y-2.5"></div>
-
-          <form id="parent-chat-form" class="flex gap-2">
-            <input id="parent-chat-input" type="text" placeholder="শিক্ষককে ছোট মেসেজ লিখুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm bg-white focus:outline-none focus:border-ink-800" />
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">
-              পাঠান
-            </button>
-          </form>
         </div>
       </div>
 
@@ -1174,6 +1111,61 @@
   </dialog>
 
   <!-- ==========================================
+       PARENT ↔ CLASS TEACHER MESSAGES (optional): opened from the floating message button
+       ========================================== -->
+  <button id="btn-chat-fab" type="button" aria-haspopup="dialog" aria-controls="chat-dialog" aria-label="শ্রেণি শিক্ষককে মেসেজ"
+    class="hidden fixed z-40 icon-tile w-16 h-16 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white shadow-lg flex-col items-center justify-center" style="bottom:20px;right:16px">
+    <svg class="line-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" x2="16" y1="9" y2="9"/><line x1="8" x2="13" y1="13" y2="13"/></svg>
+    <span class="text-[0.625rem] font-bold leading-none mt-1">মেসেজ</span>
+  </button>
+  <dialog id="chat-dialog" class="chat-sheet" aria-labelledby="chat-title">
+    <div class="flex flex-col">
+      <div class="p-4 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" x2="16" y1="9" y2="9"/><line x1="8" x2="13" y1="13" y2="13"/></svg></div>
+          <div class="min-w-0">
+            <h2 id="chat-title" class="text-base font-bold text-ink-900 leading-tight">শ্রেণি শিক্ষকের সাথে মেসেজ</h2>
+            <p id="chat-subtitle" class="text-xs text-ink-500 truncate">ছুটির আবেদন বা পড়া বুঝতে সমস্যা হলে ১ ট্যাপে জানান</p>
+          </div>
+        </div>
+        <button type="button" data-chat-close aria-label="মেসেজ বন্ধ করুন" class="icon-tile w-12 h-12 rounded-2xl border border-ink-200 bg-white text-ink-800 hover:bg-ink-50 flex flex-col items-center justify-center shrink-0">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          <span class="text-[0.625rem] font-bold leading-none mt-0.5">বন্ধ</span>
+        </button>
+      </div>
+      <div id="optional-chat-panel" class="flex-1 min-h-0 overflow-y-auto p-4 space-y-3.5 bg-ink-50">
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-quick-msg="ম্যাডাম, আজকের সব বাড়ির কাজ খাতায় শেষ করেছে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-xs font-bold leading-tight">আজকের পড়া শেষ করেছে</span>
+            </button>
+            <button type="button" data-quick-msg="ম্যাডাম, অসুস্থতার কারণে আগামীকাল স্কুলে আসতে পারবে না।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+              </svg>
+              <span class="text-xs font-bold leading-tight">আগামীকাল ছুটির আবেদন</span>
+            </button>
+            <button type="button" data-quick-msg="ম্যাডাম, গণিতের বাড়ির কাজটি বুঝতে একটু সাহায্য লাগবে।" class="quick-msg-btn icon-tile flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white hover:bg-ink-100 border border-ink-200 text-ink-700 text-center shadow-sm">
+              <svg class="line-icon mb-1" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/>
+              </svg>
+              <span class="text-xs font-bold leading-tight">গণিত পড়াটি বুঝতে সমস্যা হচ্ছে</span>
+            </button>
+          </div>
+
+          <div id="chat-messages-box" class="bg-white rounded-2xl border border-ink-200 p-3.5 h-48 overflow-y-auto space-y-2.5"></div>
+
+          <form id="parent-chat-form" class="flex gap-2">
+            <input id="parent-chat-input" type="text" placeholder="শিক্ষককে ছোট মেসেজ লিখুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm bg-white focus:outline-none focus:border-ink-800" />
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">
+              পাঠান
+            </button>
+          </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==========================================
        MENU: notices, profile and settings, every section of this dashboard, logout (opened from the floating
        menu button; the cross closes it back to the button)
        ========================================== -->
@@ -1338,7 +1330,7 @@
       studentRoll: '০৭',
       studentName: 'তাসনিম জারিন',
       hwFilter: 'all',
-      chatOpen: false
+      chatOpen: false // (unused since messages open from the floating button)
     };
 
     const schoolNamesByCode = {
@@ -1635,21 +1627,28 @@
       }).join('');
     }
 
+    function openChat() {
+      const dlg = document.getElementById('chat-dialog');
+      renderChatMessages();
+      if (!dlg.open) dlg.showModal();
+      const box = document.getElementById('chat-messages-box'); box.scrollTop = box.scrollHeight;
+    }
+
     function renderChatMessages() {
       const box = document.getElementById('chat-messages-box');
       box.innerHTML = chatMessages.map(m => {
         if (m.sender === 'teacher') {
           return `
             <div class="bg-ink-100 rounded-xl p-2.5 text-xs sm:text-sm text-ink-800 max-w-md">
-              <div class="font-bold text-ink-900 text-[0.6875rem] mb-0.5">${m.name} • ${m.time}</div>
-              <div>${m.text}</div>
+              <div class="font-bold text-ink-900 text-[0.6875rem] mb-0.5">${esc(m.name)} • ${m.time}</div>
+              <div>${esc(m.text)}</div>
             </div>
           `;
         }
         return `
           <div class="bg-ink-900 text-white rounded-xl p-2.5 text-xs sm:text-sm max-w-md ml-auto">
-            <div class="font-bold text-ink-300 text-[0.6875rem] mb-0.5">অভিভাবক (রোল ${appState.studentRoll}) • ${m.time}</div>
-            <div>${m.text}</div>
+            <div class="font-bold text-ink-300 text-[0.6875rem] mb-0.5">অভিভাবক (রোল ${bn(appState.studentRoll)}) • ${m.time}</div>
+            <div>${esc(m.text)}</div>
           </div>
         `;
       }).join('');
@@ -1791,20 +1790,11 @@
         });
       });
 
-      // Optional Chat Toggle
-      const chatPanel = document.getElementById('optional-chat-panel');
-      const chatChevron = document.getElementById('chat-chevron');
-      const toggleChat = (forceOpen = null) => {
-        appState.chatOpen = forceOpen !== null ? forceOpen : !appState.chatOpen;
-        chatPanel.classList.toggle('hidden', !appState.chatOpen);
-        chatChevron.textContent = appState.chatOpen ? 'বন্ধ করুন ▲' : 'মেসেজ খুলুন ▼';
-      };
-
-      document.getElementById('btn-toggle-optional-chat').addEventListener('click', () => toggleChat());
-      document.getElementById('tile-open-chat-shortcut').addEventListener('click', () => {
-        toggleChat(true);
-        document.getElementById('optional-chat-card').scrollIntoView({ behavior: 'smooth' });
-      });
+      // Optional messages with the class teacher: a floating button opens them as a panel
+      const chatDialog = document.getElementById('chat-dialog');
+      document.getElementById('btn-chat-fab').addEventListener('click', openChat);
+      chatDialog.querySelector('[data-chat-close]').addEventListener('click', () => chatDialog.close());
+      chatDialog.addEventListener('click', e => { if (e.target === chatDialog) chatDialog.close(); }); // tap outside
 
       const sendParentMsg = (text) => {
         if (!text) return;
@@ -2188,7 +2178,7 @@
           </div>
           <button type="button" id="btn-absent-reason" class="icon-tile px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-xs font-bold">কারণ জানান</button>`;
         document.getElementById('btn-absent-reason').addEventListener('click', () => {
-          document.getElementById('tile-open-chat-shortcut').click();
+          openChat();
         });
       } else {
         alertBox.className = 'hidden';
@@ -5169,8 +5159,16 @@
       btn.style.top = `${Math.max(12, Math.round(h.top + (h.height - btn.offsetHeight) / 2))}px`;
       btn.style.right = `${Math.max(16, Math.round((document.documentElement.clientWidth - 768) / 2 + 16))}px`;
     }
+    function placeChatButton() {
+      const fab = document.getElementById('btn-chat-fab');
+      fab.style.right = `${Math.max(16, Math.round((document.documentElement.clientWidth - 768) / 2 + 16))}px`;
+    }
     function syncMenuButton() {
-      const btn = document.getElementById('btn-menu');
+      const btn = document.getElementById('btn-menu'), fab = document.getElementById('btn-chat-fab'), parent = !!session && session.role === 'parent';
+      fab.classList.toggle('hidden', !parent); fab.classList.toggle('flex', parent);
+      document.body.classList.toggle('has-chat-fab', parent); // room under the last card for the button
+      if (!parent && document.getElementById('chat-dialog').open) document.getElementById('chat-dialog').close();
+      placeChatButton();
       btn.classList.toggle('hidden', !session); btn.classList.toggle('flex', !!session);
       if (!session && menuDialog().open) menuDialog().close();
       requestAnimationFrame(placeMenuButton);
@@ -5217,7 +5215,7 @@
       new MutationObserver(mirror).observe(badge, { attributes: true, childList: true, characterData: true, subtree: true });
       mirror();
       window.addEventListener('scroll', placeMenuButton, { passive: true });
-      window.addEventListener('resize', placeMenuButton);
+      window.addEventListener('resize', () => { placeMenuButton(); placeChatButton(); });
       window.addEventListener('hashchange', () => requestAnimationFrame(placeMenuButton));
       syncMenuButton();
     });

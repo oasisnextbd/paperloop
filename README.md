@@ -45,7 +45,8 @@ It opens on a login page where the person chooses **অভিভাবক** (Sch
 **স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see. The header scrolls away with the page;
 a floating three-line **মেনু** button stays in the corner (with the unread-notice count) and opens a menu with
 notices, profile and settings, every section of that dashboard, the Paperloop website and logout; its cross closes
-it back to the button. **প্রোফাইল ও সেটিংস** opens their details, settings (text size; absent alerts for parents; another child's
+it back to the button. Parents also get a floating **মেসেজ** button at the bottom corner that opens
+the optional messages with the class teacher (quick replies and a short message) as a panel. **প্রোফাইল ও সেটিংস** opens their details, settings (text size; absent alerts for parents; another child's
 diary) and logout. Notices sit behind the menu's **নোটিশ** (with an unread count): the
 principal sends to everyone, parents, teachers or one class; a class teacher sends to her class's parents.
 The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
