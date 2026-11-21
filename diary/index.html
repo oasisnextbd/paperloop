@@ -570,7 +570,13 @@
 
           <div id="t-att-today" class="space-y-4">
             <div id="t-att-summary" class="grid grid-cols-3 gap-3"></div>
-            <p class="text-xs text-ink-500">সবাই উপস্থিত ধরা আছে। যে আসেনি তার রোলে ট্যাপ করুন; আবার ট্যাপ করলে উপস্থিত। ছুটি আসে অভিভাবকের আবেদন থেকে।</p>
+            <div class="space-y-1.5">
+              <div class="grid grid-cols-2 gap-2" role="radiogroup" aria-label="রোলে ট্যাপ করলে">
+                <button type="button" role="radio" data-att-mode="absent" class="att-mode-btn icon-tile py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5"></button>
+                <button type="button" role="radio" data-att-mode="leave" class="att-mode-btn icon-tile py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5"></button>
+              </div>
+              <p id="t-att-hint" class="text-xs text-ink-500"></p>
+            </div>
             <div id="t-att-grid" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
             <div id="t-att-requests"></div>
             <div id="t-att-status"></div>
@@ -1809,12 +1815,13 @@
       leave: { label: 'ছুটি', icon: 'leave', tile: 'border-2 border-dashed border-ink-400 bg-ink-50 text-ink-700' },
       late: { label: 'দেরিতে', icon: 'clock', tile: 'border-2 border-ink-500 bg-ink-100 text-ink-800' }
     };
-    // A tap only switches present ↔ absent, so a mistaken tap is undone by tapping again. Leave comes only from a
-    // parent's leave request; for such a student a tap goes leave → present (came anyway) → absent → leave.
+    // Two tap modes, so a mistaken tap is always undone by tapping again:
+    //   অনুপস্থিত (default): present ↔ absent (a student on leave who came anyway: leave → present)
+    //   ছুটি দিন: present/absent ↔ leave, for a child who falls ill or has another reason (also after submitting)
+    // A parent's leave request puts leave in the register beforehand.
     function nextStudentStatus(roll, current) {
-      const requested = (studentAtt.leaveRequests[attKey] || {})[roll];
-      if (requested) return { leave: 'present', present: 'absent', absent: 'leave' }[current];
-      return current === 'absent' ? 'present' : 'absent';
+      if (studentAtt.tapMode === 'leave') return current === 'leave' ? 'present' : 'leave';
+      return current === 'absent' || current === 'leave' ? 'present' : 'absent';
     }
 
     // Small icon-above-text count tile, used by every attendance summary.
@@ -1843,7 +1850,7 @@
 
     // records[dateKey] = { statuses: { roll: 'present' | 'absent' | 'leave' }, submittedAt }
     // leaveRequests[dateKey] = { roll: true }  (sent by parents, upcoming days only)
-    const studentAtt = { records: {}, draft: {}, leaveRequests: {}, view: 'today' };
+    const studentAtt = { records: {}, draft: {}, leaveRequests: {}, view: 'today', tapMode: 'absent' };
 
     (function seedStudentHistory() {
       const d = new Date(attDate.getFullYear(), attDate.getMonth(), 1);
@@ -1895,6 +1902,16 @@
       });
       document.getElementById('t-att-today').classList.toggle('hidden', studentAtt.view !== 'today');
       document.getElementById('t-att-month').classList.toggle('hidden', studentAtt.view !== 'month');
+
+      document.querySelectorAll('.att-mode-btn').forEach(btn => {
+        const mode = btn.getAttribute('data-att-mode'), on = mode === studentAtt.tapMode;
+        btn.setAttribute('aria-checked', on);
+        btn.className = `att-mode-btn icon-tile py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${on ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}`;
+        btn.innerHTML = mode === 'leave' ? `${svg('leave')}<span>ছুটি দিন</span>` : `${svg('userX')}<span>অনুপস্থিত</span>`;
+      });
+      document.getElementById('t-att-hint').textContent = studentAtt.tapMode === 'leave'
+        ? 'যাকে ছুটি দেবেন তার রোলে ট্যাপ করুন (অসুস্থতা বা অন্য কারণে); আবার ট্যাপ করলে ছুটি বাতিল।'
+        : 'সবাই উপস্থিত ধরা আছে। যে আসেনি তার রোলে ট্যাপ করুন; আবার ট্যাপ করলে উপস্থিত।';
 
       document.getElementById('t-att-summary').innerHTML =
         countTile('userCheck', 'উপস্থিত', `${bn(c.present)} জন`) +
@@ -2226,7 +2243,11 @@
         btn.addEventListener('click', () => { studentAtt.view = btn.getAttribute('data-att-view'); renderTeacherAttendance(); });
       });
 
-      // Tap a roll: present ↔ absent (see nextStudentStatus)
+      document.querySelectorAll('.att-mode-btn').forEach(btn => btn.addEventListener('click', () => {
+        studentAtt.tapMode = btn.getAttribute('data-att-mode');
+        renderTeacherAttendance();
+      }));
+      // Tap a roll: see nextStudentStatus
       document.getElementById('t-att-grid').addEventListener('click', e => {
         const tile = e.target.closest('[data-att-roll]');
         if (!tile) return;
