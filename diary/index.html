@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=a3ad4919d9" />
+  <link rel="stylesheet" href="diary.css?v=b6870194b3" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -267,7 +267,7 @@
           <span class="text-xs font-semibold text-ink-500" id="today-date-label">বুধবার, ১৮ নভেম্বর</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
           <!-- Floating Card 1: Assignments -->
           <button type="button" data-parent-panel="assignments" class="parent-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
@@ -345,6 +345,14 @@
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস রুটিন</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-routine">—</div>
+          </button>
+
+          <!-- Floating Card 7: Fees -->
+          <button type="button" data-parent-panel="fees" class="parent-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বেতন ও ফি</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Fees</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-fees">—</div>
           </button>
         </div>
       </div>
@@ -515,6 +523,19 @@
             <p class="text-xs text-ink-500" id="p-routine-class"></p>
           </div>
           <div id="p-routine" data-routine-view="parent"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           FLOATING PANEL 7: FEES (বকেয়া ও জমার রসিদ)
+           ========================================== -->
+      <div id="panel-parent-fees" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">বেতন ও ফি (Fees)</h3>
+            <p class="text-xs text-ink-500">বকেয়া আর স্কুল অফিস থেকে পাওয়া রসিদ</p>
+          </div>
+          <div id="p-fees"></div>
         </div>
       </div>
 
@@ -894,7 +915,7 @@
       </div>
 
       <!-- Principal floating cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
         <button type="button" data-school-panel="students" class="school-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী হাজিরা</div>
@@ -931,6 +952,12 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Records</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-records">—</div>
           </button>
+        <button type="button" data-school-panel="fees" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বেতন ও ফি</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Fees</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-fees">—</div>
+          </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
@@ -943,7 +970,7 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
-        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
@@ -971,6 +998,9 @@
 
       <!-- PRINCIPAL PANEL: STUDENT RECORDS (counts, list, profiles, admission) -->
       <div id="panel-school-records" class="school-subpanel hidden space-y-4"></div>
+
+      <!-- PRINCIPAL PANEL: FEES (collect with receipt, due list, cash book, fee settings) -->
+      <div id="panel-school-fees" class="school-subpanel hidden space-y-4"></div>
 
       <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
       <div id="panel-school-students" class="school-subpanel space-y-4">
@@ -1085,6 +1115,27 @@
         </button>
       </div>
       <div id="student-dialog-body" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+    </div>
+  </dialog>
+
+  <!-- ==========================================
+       RECEIPT PANEL (after collecting a fee, or from the cash book / a parent's receipt list)
+       ========================================== -->
+  <dialog id="receipt-dialog" class="profile-sheet" aria-labelledby="receipt-dialog-title">
+    <div class="flex flex-col h-full">
+      <div class="p-5 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg></div>
+          <div class="min-w-0">
+            <h2 id="receipt-dialog-title" class="text-lg font-bold text-ink-900 leading-tight"></h2>
+            <p id="receipt-dialog-subtitle" class="text-xs text-ink-500 mt-0.5"></p>
+          </div>
+        </div>
+        <button type="button" data-receipt-close aria-label="বন্ধ করুন" class="icon-tile w-10 h-10 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50 flex items-center justify-center shrink-0">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="receipt-dialog-body" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
     </div>
   </dialog>
 
@@ -1351,7 +1402,7 @@
         const isCurrent = card.getAttribute('data-parent-panel') === panelName;
         card.classList.toggle('tile-active', isCurrent);
       });
-      ['assignments', 'grades', 'improvement', 'topics', 'attendance', 'routine'].forEach(p => {
+      ['assignments', 'grades', 'improvement', 'topics', 'attendance', 'routine', 'fees'].forEach(p => {
         const panelEl = document.getElementById(`panel-parent-${p}`);
         if (panelEl) panelEl.classList.toggle('hidden', p !== panelName);
       });
@@ -1464,6 +1515,7 @@
       renderImprovementPanel();
       renderTopicsPanel();
       renderParentAttendance();
+      renderParentFees();
     }
 
     function renderImprovementPanel() {
@@ -1625,7 +1677,7 @@
 
         renderParentDashboard();
         switchMainView('parent');
-        showToast(`${appState.studentName} (${cls}, রোল ${rawRoll})-এর অভিভাবক ড্যাশবোর্ডে স্বাগতম!`);
+        showToast(`${appState.studentName} (${cls}, রোল ${bn(rawRoll)})-এর অভিভাবক ড্যাশবোর্ডে স্বাগতম!`);
       });
 
       document.getElementById('form-login-teacher').addEventListener('submit', (e) => {
@@ -1665,7 +1717,7 @@
         appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
 
         renderParentDashboard();
-        showToast(`${appState.studentName} (${cls}, রোল ${rawRoll})-এর ড্যাশবোর্ড খোলা হয়েছে!`);
+        showToast(`${appState.studentName} (${cls}, রোল ${bn(rawRoll)})-এর ড্যাশবোর্ড খোলা হয়েছে!`);
       });
 
       // Homework Filter Buttons
@@ -3028,16 +3080,16 @@
     const gradePill = (letter, big = false) => `<span class="inline-block ${big ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs'} rounded-md font-extrabold ${letter === 'F' ? 'bg-ink-900 text-white' : 'bg-gold-50 text-gold-900 border border-gold-200'}">${letter}</span>`;
 
     // ---------- Printing (mark sheet, merit list, tabulation) ----------
-    function printDoc(title, inner) {
+    function printDoc(title, inner, signatures = ['শ্রেণি শিক্ষক', 'প্রধান শিক্ষক']) {
       const sheet = document.getElementById('print-sheet');
-      sheet.innerHTML = `
+      sheet.innerHTML = (title === null ? '' : `
         <div class="text-center mb-4">
           <div class="text-xl font-bold">${esc(appState.schoolName)}</div>
           <div class="text-sm">স্কুল কোড: ${esc(appState.schoolCode)}</div>
-          <div class="text-base font-bold mt-2">${title}</div>
-        </div>
+          ${title ? `<div class="text-base font-bold mt-2">${title}</div>` : ''}
+        </div>`) + `
         ${inner}
-        <div class="mt-12 flex justify-between text-sm"><span class="border-t border-ink-900 pt-1 px-6">শ্রেণি শিক্ষক</span><span class="border-t border-ink-900 pt-1 px-6">প্রধান শিক্ষক</span></div>
+        ${signatures.length ? `<div class="mt-12 flex justify-between text-sm">${signatures.map(s => `<span class="border-t border-ink-900 pt-1 px-6">${s}</span>`).join('')}</div>` : ''}
         <p class="mt-8 text-center text-xs">Paperloop স্মার্ট ডায়েরি • ডেমো: নমুনা তথ্য, আসল শিক্ষার্থীর নয়</p>`;
       window.print();
     }
@@ -3583,7 +3635,7 @@
       const counts = classCounts(data.cls);
       // Rolls continue after the class's existing students
       const roll = data.cls === TEACHER_CLASS ? classRoster.length + 1 : counts.total + 1;
-      const rec = { ...data, roll, id: studentId(data.cls, roll, ADMISSION_YEAR), admitted: ADMISSION_YEAR, isNew: true };
+      const rec = { ...data, roll, id: studentId(data.cls, roll, ADMISSION_YEAR), admitted: ADMISSION_YEAR, joinedMonth: new Date().getMonth(), isNew: true };
       list.push(rec);
       if (data.cls === TEACHER_CLASS) {
         // Joins the live class: attendance register now, exams created from now on
@@ -3740,6 +3792,7 @@
         const rec = admitStudent(data);
         recordsState.admitting = false; recordsState.cls = rec.cls; recordsState.query = '';
         renderSchoolRecords(); renderTeacherRecords();
+        if (typeof renderAllFees === 'function') renderAllFees();
         showToast(`${rec.name} ভর্তি হয়েছে: ${rec.cls}, রোল ${bn(String(rec.roll).padStart(2, '0'))}, আইডি ${rec.id}`);
       });
 
@@ -3768,6 +3821,427 @@
 
       renderSchoolRecords();
       renderTeacherRecords();
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // FEES & RECEIPTS
+    // Principal / office: collect fees (tick what is being paid, method, optional discount) and give a money
+    // receipt with parent and office copies; due list; cash book; fee settings per class and waivers.
+    // Parent: what is due now and every receipt received. Teachers do not see fees.
+    // Charges per student this year: session fee, monthly tuition from January (or the month of admission)
+    // up to this month, the half-yearly exam fee from June and the annual exam fee from November.
+    // A waiver (half or full) reduces the monthly tuition only. No online payment: the method is recorded.
+    // ==========================================
+    const feeIcon = {
+      wallet: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+      receipt: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/>',
+      list: '<line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>',
+      book: '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+      settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>',
+      back: '<path d="m15 18-6-6 6-6"/>',
+      close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'
+    };
+    const fSvg = (n, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${feeIcon[n]}</svg>`;
+    const taka = n => `৳${bn(Math.round(n).toLocaleString('en-IN'))}`;
+    const FEE_YEAR = realToday.getFullYear(), THIS_MONTH = realToday.getMonth();
+    const METHODS = ['হাতে নগদ', 'বিকাশ', 'Nagad', 'ব্যাংক'];
+    const WAIVERS = [[0, 'পূর্ণ বেতন'], [50, 'অর্ধেক ছাড়'], [100, 'সম্পূর্ণ ছাড়']];
+
+    // Fee settings per class (sample amounts; the principal changes them under ফি নির্ধারণ)
+    const feeStructure = {
+      'Play': { monthly: 500, session: 1500, exam: 300 }, 'KG': { monthly: 500, session: 1500, exam: 300 },
+      '১ম শ্রেণি': { monthly: 600, session: 1500, exam: 300 }, '২য় শ্রেণি': { monthly: 600, session: 1500, exam: 300 },
+      '৩য় শ্রেণি': { monthly: 700, session: 1500, exam: 300 }, '৪র্থ শ্রেণি': { monthly: 800, session: 2000, exam: 400 },
+      '৫ম শ্রেণি': { monthly: 800, session: 2000, exam: 400 }
+    };
+    const waivers = {}; // "cls|roll" → percent off the monthly tuition
+    const wKey = s => `${s.cls}|${s.roll}`;
+    waivers[`${TEACHER_CLASS}|12`] = 50; waivers[`${TEACHER_CLASS}|29`] = 100; // sample: half and full free
+
+    function chargesFor(s) {
+      const fs = feeStructure[s.cls], waiver = waivers[wKey(s)] || 0;
+      const start = s.isNew && s.admitted === FEE_YEAR ? (s.joinedMonth ?? THIS_MONTH) : 0;
+      const list = [{ key: `session-${FEE_YEAR}`, label: `সেশন ফি ${bn(FEE_YEAR)}`, amount: fs.session }];
+      for (let m = start; m <= THIS_MONTH; m++) {
+        const amount = Math.round(fs.monthly * (100 - waiver) / 100);
+        if (amount > 0) list.push({ key: `month-${FEE_YEAR}-${m}`, label: `${BN_MONTHS[m]} মাসের বেতন`, amount, month: m });
+      }
+      if (THIS_MONTH >= 5 && start <= 5) list.push({ key: `exam-half-${FEE_YEAR}`, label: 'অর্ধবার্ষিক পরীক্ষার ফি', amount: fs.exam });
+      if (THIS_MONTH >= 10) list.push({ key: `exam-annual-${FEE_YEAR}`, label: 'বার্ষিক পরীক্ষার ফি', amount: fs.exam });
+      return list;
+    }
+
+    // ---------- Receipts ----------
+    let nextReceiptNo = 1001;
+    const receipts = []; // { no, cls, roll, name, id, date, items:[{key,label,amount}], discount, paid, method, txn }
+    const paidKeys = s => new Set(receipts.filter(r => r.cls === s.cls && r.roll === s.roll).flatMap(r => r.items.map(i => i.key)));
+    const duesFor = s => { const paid = paidKeys(s); return chargesFor(s).filter(c => !paid.has(c.key)); };
+    const dueTotal = s => duesFor(s).reduce((a, c) => a + c.amount, 0);
+
+    (function seedReceipts() {
+      const seeded = [];
+      recordsByClass[TEACHER_CLASS].forEach(s => {
+        const r = s.roll, x = seededRandom(r * 389 + 7);
+        const through = x < 0.62 ? THIS_MONTH : x < 0.8 ? THIS_MONTH - 1 : x < 0.92 ? THIS_MONTH - 2 : THIS_MONTH - 4;
+        const charges = chargesFor(s), used = new Set();
+        let m = 0;
+        while (m <= through) {
+          const step = 1 + Math.floor(seededRandom(r * 31 + m) * 3);
+          const end = Math.min(through, m + step - 1);
+          const items = charges.filter(c => (c.month !== undefined && c.month >= m && c.month <= end)
+            || (m === 0 && c.key.startsWith('session'))
+            || (c.key.startsWith('exam-half') && m <= 5 && end >= 5)
+            || (c.key.startsWith('exam-annual') && end >= 10 && seededRandom(r) < 0.5)).filter(c => !used.has(c.key));
+          items.forEach(c => used.add(c.key));
+          let date = new Date(FEE_YEAR, end, 4 + Math.floor(seededRandom(r * 13 + end) * 10));
+          if (end === THIS_MONTH) date = r % 5 === 0 ? new Date(realToday) : new Date(FEE_YEAR, end, Math.max(1, Math.min(realToday.getDate() - 1, date.getDate())));
+          if (date > new Date()) date = new Date(realToday);
+          const mx = seededRandom(r * 3 + end);
+          if (items.length) seeded.push({ cls: s.cls, roll: r, name: s.name, id: s.id, date, items: items.map(({ key, label, amount }) => ({ key, label, amount })),
+            discount: 0, method: mx < 0.8 ? 'হাতে নগদ' : mx < 0.95 ? 'বিকাশ' : 'Nagad', txn: '' });
+          m = end + 1;
+        }
+      });
+      seeded.sort((a, b) => a.date - b.date).forEach(rc => {
+        rc.no = nextReceiptNo++; rc.paid = rc.items.reduce((a, i) => a + i.amount, 0) - rc.discount; receipts.push(rc);
+      });
+    })();
+
+    // ---------- Receipt view and print ----------
+    function receiptHtml(rc, copyLabel) {
+      const gross = rc.items.reduce((a, i) => a + i.amount, 0);
+      return `
+        <div class="space-y-3">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-base font-bold text-ink-900">${esc(appState.schoolName)}</div>
+              <div class="text-xs text-ink-500">স্কুল কোড: ${esc(appState.schoolCode)}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-bold text-ink-900">টাকা জমার রসিদ</div>
+              ${copyLabel ? `<div class="text-[0.6875rem] text-ink-500">${copyLabel}</div>` : ''}
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-ink-700">
+            <div>রসিদ নং: <b class="text-ink-900">${bn(rc.no)}</b></div><div class="text-right">তারিখ: <b class="text-ink-900">${bnFullDate(rc.date)}</b></div>
+            <div>নাম: <b class="text-ink-900">${esc(rc.name)}</b></div><div class="text-right">আইডি: <b class="text-ink-900">${esc(rc.id)}</b></div>
+            <div>শ্রেণি: <b class="text-ink-900">${esc(rc.cls)}</b></div><div class="text-right">রোল: <b class="text-ink-900">${bn(String(rc.roll).padStart(2, '0'))}</b></div>
+          </div>
+          <table class="w-full text-sm border-collapse">
+            <thead><tr class="border-b border-ink-300"><th class="py-1.5 text-left font-bold text-ink-600 text-xs">বিবরণ</th><th class="py-1.5 text-right font-bold text-ink-600 text-xs">টাকা</th></tr></thead>
+            <tbody>
+              ${rc.items.map(i => `<tr class="border-b border-ink-200"><td class="py-1.5 text-ink-800">${esc(i.label)}</td><td class="py-1.5 text-right text-ink-900">${taka(i.amount)}</td></tr>`).join('')}
+              <tr><td class="pt-2 text-right text-xs text-ink-600">মোট</td><td class="pt-2 text-right font-bold">${taka(gross)}</td></tr>
+              ${rc.discount ? `<tr><td class="text-right text-xs text-ink-600">ছাড়</td><td class="text-right">− ${taka(rc.discount)}</td></tr>` : ''}
+              <tr><td class="pt-1 text-right font-bold text-ink-900">জমা</td><td class="pt-1 text-right text-base font-extrabold text-ink-900">${taka(rc.paid)}</td></tr>
+            </tbody>
+          </table>
+          <div class="text-xs text-ink-700">মাধ্যম: <b class="text-ink-900">${esc(rc.method)}</b>${rc.txn ? ` • ট্রানজেকশন আইডি: <b class="text-ink-900">${esc(rc.txn)}</b>` : ''}</div>
+        </div>`;
+    }
+    function openReceipt(no) {
+      const rc = receipts.find(r => r.no === no);
+      if (!rc) return;
+      document.getElementById('receipt-dialog-body').innerHTML = `
+        <div class="bg-white rounded-2xl border border-ink-200 p-4">${receiptHtml(rc, '')}</div>
+        <button type="button" data-receipt-print="${rc.no}" class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>${session && session.role === 'parent' ? 'রসিদ প্রিন্ট / PDF' : 'রসিদ প্রিন্ট (অভিভাবক ও অফিস কপি)'}</span></button>`;
+      document.getElementById('receipt-dialog-title').textContent = `রসিদ নং ${bn(rc.no)}`;
+      document.getElementById('receipt-dialog-subtitle').textContent = `${rc.name} • ${taka(rc.paid)}`;
+      const dlg = document.getElementById('receipt-dialog');
+      if (!dlg.open) dlg.showModal();
+    }
+    function printReceipt(no) {
+      const rc = receipts.find(r => r.no === no);
+      const sig = '<div class="mt-8 flex justify-end text-sm"><span class="border-t border-ink-900 pt-1 px-6">গ্রহণকারীর স্বাক্ষর</span></div>';
+      const copies = session && session.role === 'parent' ? [''] : ['অভিভাবকের কপি', 'অফিস কপি'];
+      printDoc(null, copies.map(c => receiptHtml(rc, c) + sig).join('<div class="my-8 border-t-2 border-dashed border-ink-400"></div>'), []);
+    }
+
+    // ---------- Parent: fees card ----------
+    function renderParentFees() {
+      const box = document.getElementById('p-fees'), stat = document.getElementById('stat-fees');
+      const s = findRecord(appState.studentClass, currentRollNo());
+      if (!s) { box.innerHTML = '<p class="text-sm text-ink-500 text-center py-6">এই শিক্ষার্থীর বেতনের তথ্য পাওয়া যায়নি।</p>'; stat.textContent = '—'; return; }
+      const dues = duesFor(s), total = dues.reduce((a, c) => a + c.amount, 0);
+      const mine = receipts.filter(r => r.cls === s.cls && r.roll === s.roll).sort((a, b) => b.date - a.date);
+      const waiver = waivers[wKey(s)] || 0;
+      stat.textContent = total ? `বকেয়া ${taka(total)}` : 'সব পরিশোধিত';
+      box.innerHTML = `
+        <div class="space-y-4">
+          <div class="p-4 rounded-2xl ${total ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'} flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-ink-600">${total ? 'এখন বকেয়া' : 'এখন কোনো বকেয়া নেই'}</div>
+              <div class="text-2xl font-extrabold text-ink-900">${taka(total)}</div>
+            </div>
+            <div class="text-right text-[0.6875rem] text-ink-600">মাসিক বেতন ${taka(feeStructure[s.cls].monthly)}${waiver ? `<br>${waiver === 100 ? 'সম্পূর্ণ' : 'অর্ধেক'} ছাড় প্রাপ্ত` : ''}</div>
+          </div>
+          ${dues.length ? `<div class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200">${dues.map(c => `<div class="flex items-center justify-between px-4 py-2.5 text-sm"><span class="text-ink-800">${esc(c.label)}</span><span class="font-bold text-ink-900">${taka(c.amount)}</span></div>`).join('')}</div>
+            <p class="text-xs text-ink-500">স্কুল অফিসে জমা দিলে রসিদ এখানেও দেখা যাবে।</p>` : ''}
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-ink-600">জমার রসিদ (${bn(mine.length)}টি)</div>
+            ${mine.length ? mine.map(r => `
+              <button type="button" data-open-receipt="${r.no}" class="icon-tile w-full p-3 rounded-2xl bg-ink-50 border border-ink-200 hover:bg-white flex items-center gap-3 text-left">
+                <span class="w-10 h-10 rounded-xl bg-white border border-ink-200 text-ink-800 flex items-center justify-center shrink-0">${fSvg('receipt', 'line-icon')}</span>
+                <span class="flex-1 min-w-0"><span class="block text-sm font-bold text-ink-900">${taka(r.paid)} • ${bnFullDate(r.date)}</span>
+                <span class="block text-[0.6875rem] text-ink-500 truncate">রসিদ ${bn(r.no)} • ${r.items.map(i => i.label.replace(' মাসের বেতন', '')).join(', ')}</span></span>
+              </button>`).join('') : '<p class="text-xs text-ink-500">এখনো কোনো রসিদ নেই।</p>'}
+          </div>
+        </div>`;
+    }
+
+    // ---------- Principal: fees panel ----------
+    const feeState = { tab: 'collect', cls: TEACHER_CLASS, query: '', roll: null, book: 'month' };
+    const allStudents = () => CLASSES.flatMap(c => recordsByClass[c]);
+    function feeTotals() {
+      const dueStudents = allStudents().filter(s => dueTotal(s) > 0);
+      const due = dueStudents.reduce((a, s) => a + dueTotal(s), 0);
+      const monthIn = receipts.filter(r => r.date.getFullYear() === FEE_YEAR && r.date.getMonth() === THIS_MONTH).reduce((a, r) => a + r.paid, 0);
+      const todayIn = receipts.filter(r => dateKey(r.date) === dateKey(realToday)).reduce((a, r) => a + r.paid, 0);
+      return { due, dueStudents, monthIn, todayIn };
+    }
+    function renderSchoolFees() {
+      const el = document.getElementById('panel-school-fees'), st = feeState, t = feeTotals();
+      document.getElementById('s-stat-fees').textContent = `বকেয়া ${taka(t.due)}`;
+      const tabs = [['collect', 'আদায়', 'wallet'], ['dues', 'বকেয়া তালিকা', 'list'], ['book', 'ক্যাশ বই', 'book'], ['settings', 'ফি নির্ধারণ', 'settings']];
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">বেতন ও ফি</h3>
+            <p class="text-xs text-ink-500">${BN_MONTHS[THIS_MONTH]} ${bn(FEE_YEAR)} • সব হিসাব টাকায়</p>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            ${countTile('check', 'আজ আদায়', taka(t.todayIn))}
+            ${countTile('clock', 'এ মাসে আদায়', taka(t.monthIn))}
+            ${countTile('alert', `বকেয়া (${bn(t.dueStudents.length)} জন)`, taka(t.due), t.due > 0)}
+          </div>
+          <div class="grid grid-cols-4 gap-2">${tabs.map(([k, l, i]) => `
+            <button type="button" data-fee-tab="${k}" aria-pressed="${k === st.tab}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${k === st.tab ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+              ${fSvg(i, 'line-icon mb-1')}<span class="text-[0.6875rem] font-bold text-center leading-tight">${l}</span></button>`).join('')}</div>
+        </div>
+        <div class="floating-card rounded-2xl p-5 space-y-4" data-fee-body>${feeBody()}</div>`;
+    }
+    function feeBody() {
+      const st = feeState;
+      const classChips = CLASSES.map(c => `<button type="button" data-fee-class="${c}" aria-pressed="${c === st.cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === st.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('');
+      if (st.tab === 'collect') {
+        if (st.roll) return collectForm(findRecord(st.cls, st.roll));
+        return `
+          <div class="flex flex-wrap gap-2">${classChips}</div>
+          <input type="search" data-fee-search value="${esc(st.query)}" placeholder="নাম, রোল বা আইডি দিয়ে শিক্ষার্থী খুঁজুন" aria-label="শিক্ষার্থী খুঁজুন" class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm" />
+          <div data-fee-list class="space-y-2">${feeStudentList()}</div>`;
+      }
+      if (st.tab === 'dues') {
+        const list = allStudents().map(s => ({ s, due: dueTotal(s), items: duesFor(s) })).filter(x => x.due > 0).sort((a, b) => b.due - a.due);
+        return list.length ? `
+          <div class="text-xs font-bold text-ink-600">${bn(list.length)} জনের কাছে মোট ${taka(list.reduce((a, x) => a + x.due, 0))} বকেয়া</div>
+          <div class="space-y-2">${list.map(x => {
+            const months = x.items.filter(c => c.month !== undefined).length;
+            return `<button type="button" data-fee-collect="${esc(x.s.cls)}|${x.s.roll}" class="icon-tile w-full p-3 rounded-2xl bg-ink-50 border border-ink-200 hover:bg-white flex items-center justify-between gap-3 text-left">
+              <span class="min-w-0"><span class="block text-sm font-bold text-ink-900 truncate">${esc(x.s.name)}</span>
+              <span class="block text-[0.6875rem] text-ink-500">${esc(x.s.cls)} • রোল ${bn(String(x.s.roll).padStart(2, '0'))}${months ? ` • ${bn(months)} মাসের বেতন` : ''}</span></span>
+              <span class="shrink-0 px-2.5 py-1 rounded-lg bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">${taka(x.due)}</span>
+            </button>`;
+          }).join('')}</div>
+          <button type="button" data-fee-print-dues class="icon-tile w-full py-2.5 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>বকেয়া তালিকা প্রিন্ট / PDF</span></button>`
+          : '<p class="text-sm text-ink-500 text-center py-6">কারও কোনো বকেয়া নেই।</p>';
+      }
+      if (st.tab === 'book') {
+        const filters = [['today', 'আজ'], ['month', 'এ মাস'], ['all', 'এ বছর']];
+        const list = bookReceipts();
+        const byMethod = METHODS.map(m => [m, list.filter(r => r.method === m).reduce((a, r) => a + r.paid, 0)]).filter(([, v]) => v > 0);
+        return `
+          <div class="grid grid-cols-3 gap-2">${filters.map(([k, l]) => `<button type="button" data-fee-book="${k}" aria-pressed="${k === st.book}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${k === st.book ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>
+          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200">
+            <div class="flex items-center justify-between"><span class="text-xs font-bold text-ink-600">মোট আদায় (${bn(list.length)}টি রসিদ)</span><span class="text-lg font-extrabold text-ink-900">${taka(list.reduce((a, r) => a + r.paid, 0))}</span></div>
+            ${byMethod.length ? `<div class="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[0.6875rem] text-ink-600">${byMethod.map(([m, v]) => `<span>${esc(m)}: <b class="text-ink-900">${taka(v)}</b></span>`).join('')}</div>` : ''}
+          </div>
+          <div class="space-y-2">${list.slice().reverse().map(r => `
+            <button type="button" data-open-receipt="${r.no}" class="icon-tile w-full p-3 rounded-2xl bg-white border border-ink-200 hover:bg-ink-50 flex items-center justify-between gap-3 text-left">
+              <span class="min-w-0"><span class="block text-sm font-bold text-ink-900 truncate">${esc(r.name)} • ${esc(r.cls)}</span>
+              <span class="block text-[0.6875rem] text-ink-500">রসিদ ${bn(r.no)} • ${bnFullDate(r.date)} • ${esc(r.method)}</span></span>
+              <span class="shrink-0 text-sm font-extrabold text-ink-900">${taka(r.paid)}</span>
+            </button>`).join('') || '<p class="text-sm text-ink-500 text-center py-4">এই সময়ে কোনো আদায় নেই।</p>'}</div>
+          ${list.length ? `<button type="button" data-fee-print-book class="icon-tile w-full py-2.5 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>ক্যাশ বই প্রিন্ট / PDF</span></button>` : ''}`;
+      }
+      // settings
+      const input = (cls, k) => `<input type="text" inputmode="numeric" data-fee-set="${cls}|${k}" value="${bn(feeStructure[cls][k])}" aria-label="${cls} ${k}" class="w-20 px-2 py-1.5 rounded-lg border border-ink-300 bg-white text-sm text-right font-bold" />`;
+      return `
+        <div>
+          <div class="text-sm font-bold text-ink-900">শ্রেণিভিত্তিক ফি (টাকা)</div>
+          <p class="text-xs text-ink-500">বদলালে যেসব মাস এখনো পরিশোধ হয়নি, সেগুলোর হিসাবে নতুন অঙ্ক বসবে। আগের রসিদ বদলাবে না।</p>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-ink-200">
+          <table class="text-xs min-w-full">
+            <thead class="bg-ink-50"><tr>${['শ্রেণি', 'মাসিক বেতন', 'সেশন ফি', 'পরীক্ষার ফি'].map(h => `<th class="px-3 py-2 text-left font-bold text-ink-600 whitespace-nowrap">${h}</th>`).join('')}</tr></thead>
+            <tbody>${CLASSES.map(c => `<tr class="border-t border-ink-200"><th class="px-3 py-2 text-left font-bold text-ink-900 whitespace-nowrap">${c}</th><td class="px-3 py-1.5">${input(c, 'monthly')}</td><td class="px-3 py-1.5">${input(c, 'session')}</td><td class="px-3 py-1.5">${input(c, 'exam')}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+        <p data-fee-set-error class="hidden text-xs font-bold text-gold-900"></p>
+        <button type="button" data-fee-save class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm flex items-center justify-center gap-2">${fSvg('check')}<span>ফি সংরক্ষণ করুন</span></button>
+        <p class="text-xs text-ink-500">কোনো শিক্ষার্থীর বেতনে ছাড় দিতে “আদায়” থেকে তাকে খুলুন।</p>`;
+    }
+    function bookReceipts() {
+      const k = feeState.book;
+      return receipts.filter(r => k === 'today' ? dateKey(r.date) === dateKey(realToday)
+        : k === 'month' ? r.date.getFullYear() === FEE_YEAR && r.date.getMonth() === THIS_MONTH : r.date.getFullYear() === FEE_YEAR);
+    }
+    function feeStudentList() {
+      const st = feeState, list = recordsByClass[st.cls].filter(s => matches(s, st.query.trim()));
+      if (!list.length) return `<p class="text-sm text-ink-500 text-center py-4">${recordsByClass[st.cls].length ? 'কাউকে পাওয়া যায়নি।' : 'ডেমোতে এই শ্রেণির শিক্ষার্থী তালিকা নেই।'}</p>`;
+      return list.map(s => {
+        const due = dueTotal(s);
+        return `<button type="button" data-fee-collect="${esc(s.cls)}|${s.roll}" class="icon-tile w-full p-3 rounded-2xl bg-ink-50 border border-ink-200 hover:bg-white flex items-center gap-3 text-left">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex flex-col items-center justify-center shrink-0"><span class="text-[0.625rem] text-ink-500 leading-none">রোল</span><span class="text-sm font-extrabold text-ink-900 leading-tight">${bn(String(s.roll).padStart(2, '0'))}</span></span>
+          <span class="flex-1 min-w-0 text-sm font-bold text-ink-900 truncate">${esc(s.name)}</span>
+          <span class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-extrabold ${due ? 'bg-gold-50 border border-gold-200 text-gold-900' : 'bg-white border border-ink-200 text-ink-600'}">${due ? `বকেয়া ${taka(due)}` : 'পরিশোধিত'}</span>
+        </button>`;
+      }).join('');
+    }
+    function collectForm(s) {
+      const dues = duesFor(s), waiver = waivers[wKey(s)] || 0;
+      return `
+        <button type="button" data-fee-back class="inline-flex items-center gap-1 text-xs font-bold text-ink-700 hover:text-ink-900">${fSvg('back')}শিক্ষার্থী তালিকা</button>
+        <div class="flex items-center justify-between gap-3">
+          <div class="min-w-0"><div class="text-base font-bold text-ink-900 truncate">${esc(s.name)}</div><div class="text-xs text-ink-500">${esc(s.cls)} • রোল ${bn(String(s.roll).padStart(2, '0'))} • ${esc(s.id)}</div></div>
+          <span class="shrink-0 text-xs font-bold text-ink-600">মাসিক ${taka(feeStructure[s.cls].monthly)}</span>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-ink-600 mb-1.5">মাসিক বেতনে ছাড়</div>
+          <div class="grid grid-cols-3 gap-2">${WAIVERS.map(([w, l]) => `<button type="button" data-fee-waiver="${w}" aria-pressed="${w === waiver}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${w === waiver ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>
+        </div>
+        <form data-fee-form class="space-y-4" novalidate>
+          <div>
+            <div class="text-xs font-bold text-ink-600 mb-1.5">${dues.length ? 'কী কী জমা দিচ্ছেন (টিক দিন)' : 'কোনো বকেয়া নেই'}</div>
+            ${dues.length ? `<div class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200">${dues.map(c => `
+              <label class="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer">
+                <input type="checkbox" data-fee-item="${c.key}" checked class="w-5 h-5 accent-ink-900 shrink-0" />
+                <span class="flex-1 text-sm text-ink-800">${esc(c.label)}</span>
+                <span class="text-sm font-bold text-ink-900">${taka(c.amount)}</span>
+              </label>`).join('')}</div>` : ''}
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="col-span-2"><label for="fee-other-label" class="block text-xs font-bold text-ink-600 mb-1">অন্য ফি (থাকলে)</label><input id="fee-other-label" name="otherLabel" type="text" maxlength="40" placeholder="যেমন: পিকনিক" class="w-full px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm" /></div>
+            <div><label for="fee-other-amount" class="block text-xs font-bold text-ink-600 mb-1">টাকা</label><input id="fee-other-amount" name="otherAmount" type="text" inputmode="numeric" class="w-full px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm text-right" /></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div><label for="fee-discount" class="block text-xs font-bold text-ink-600 mb-1">ছাড় (টাকা)</label><input id="fee-discount" name="discount" type="text" inputmode="numeric" class="w-full px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm text-right" /></div>
+            <div class="col-span-2"><label for="fee-txn" class="block text-xs font-bold text-ink-600 mb-1">ট্রানজেকশন আইডি (বিকাশ/Nagad হলে)</label><input id="fee-txn" name="txn" type="text" maxlength="20" autocomplete="off" class="w-full px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm uppercase" /></div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-ink-600 mb-1.5">কীভাবে জমা দিলেন</div>
+            <div class="grid grid-cols-4 gap-2">${METHODS.map((m, i) => `<label class="relative"><input type="radio" name="method" value="${m}" ${i === 0 ? 'checked' : ''} class="peer sr-only" /><span class="icon-tile block py-2 rounded-xl border border-ink-200 bg-white text-ink-600 text-center text-xs font-bold cursor-pointer peer-checked:bg-gold-50 peer-checked:border-gold-600 peer-checked:text-ink-900 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-gold-400">${m}</span></label>`).join('')}</div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-between gap-3">
+            <span class="text-xs text-ink-600" data-fee-sum-detail></span>
+            <span class="text-xl font-extrabold text-ink-900" data-fee-sum></span>
+          </div>
+          <p data-fee-error class="hidden text-xs font-bold text-gold-900"></p>
+          <button type="submit" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500">${fSvg('receipt')}<span data-fee-submit-label>টাকা গ্রহণ করে রসিদ দিন</span></button>
+        </form>`;
+    }
+    function readCollect(form) {
+      const s = findRecord(feeState.cls, feeState.roll), dues = duesFor(s);
+      const items = dues.filter(c => form.querySelector(`[data-fee-item="${c.key}"]`)?.checked).map(({ key, label, amount }) => ({ key, label, amount }));
+      const num = v => { const x = toAsciiDigits(v).trim(); return x === '' ? 0 : (/^\d+$/.test(x) ? Number(x) : NaN); };
+      const otherAmount = num(form.elements.otherAmount.value), discount = num(form.elements.discount.value);
+      const otherLabel = oneSpelling(form.elements.otherLabel.value.trim());
+      if (otherAmount > 0) items.push({ key: `other-${Date.now()}`, label: otherLabel || 'অন্যান্য ফি', amount: otherAmount });
+      const gross = items.reduce((a, i) => a + i.amount, 0);
+      let error = '';
+      if (Number.isNaN(otherAmount) || Number.isNaN(discount)) error = 'টাকার ঘরে শুধু সংখ্যা লিখুন';
+      else if (!items.length) error = 'অন্তত একটি ফি বেছে নিন';
+      else if (discount > gross) error = 'ছাড় মোট টাকার চেয়ে বেশি হতে পারে না';
+      return { s, items, gross, discount: Number.isNaN(discount) ? 0 : discount, paid: gross - (Number.isNaN(discount) ? 0 : discount),
+        // A transaction ID only makes sense for bKash, Nagad or bank
+        method: form.elements.method.value, txn: form.elements.method.value === 'হাতে নগদ' ? '' : form.elements.txn.value.trim().toUpperCase(), error };
+    }
+    function updateCollectSum() {
+      const form = document.querySelector('#panel-school-fees [data-fee-form]');
+      if (!form) return;
+      const c = readCollect(form);
+      form.querySelector('[data-fee-sum]').textContent = taka(Math.max(0, c.paid));
+      form.querySelector('[data-fee-sum-detail]').textContent = `${bn(c.items.length)}টি খাত • মোট ${taka(c.gross)}${c.discount ? ` − ছাড় ${taka(c.discount)}` : ''}`;
+      form.querySelector('[data-fee-submit-label]').textContent = c.paid > 0 ? `${taka(c.paid)} গ্রহণ করে রসিদ দিন` : 'টাকা গ্রহণ করে রসিদ দিন';
+    }
+
+    function renderAllFees() { renderSchoolFees(); renderParentFees(); updateCollectSum(); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const panel = document.getElementById('panel-school-fees');
+      panel.addEventListener('click', e => {
+        const tab = e.target.closest('[data-fee-tab]');
+        if (tab) { feeState.tab = tab.getAttribute('data-fee-tab'); feeState.roll = null; renderAllFees(); return; }
+        const c = e.target.closest('[data-fee-class]');
+        if (c) { feeState.cls = c.getAttribute('data-fee-class'); feeState.query = ''; renderAllFees(); return; }
+        const col = e.target.closest('[data-fee-collect]');
+        if (col) { const [cls, roll] = col.getAttribute('data-fee-collect').split('|'); Object.assign(feeState, { tab: 'collect', cls, roll: Number(roll) }); renderAllFees(); panel.scrollIntoView({ block: 'start' }); return; }
+        if (e.target.closest('[data-fee-back]')) { feeState.roll = null; renderAllFees(); return; }
+        const w = e.target.closest('[data-fee-waiver]');
+        if (w) {
+          const s = findRecord(feeState.cls, feeState.roll), v = Number(w.getAttribute('data-fee-waiver'));
+          if (v) waivers[wKey(s)] = v; else delete waivers[wKey(s)];
+          renderAllFees(); showToast(`${s.name}: ${WAIVERS.find(x => x[0] === v)[1]}`);
+          return;
+        }
+        const b = e.target.closest('[data-fee-book]');
+        if (b) { feeState.book = b.getAttribute('data-fee-book'); renderAllFees(); return; }
+        const r = e.target.closest('[data-open-receipt]');
+        if (r) { openReceipt(Number(r.getAttribute('data-open-receipt'))); return; }
+        if (e.target.closest('[data-fee-print-dues]')) {
+          const list = allStudents().map(s => [s, dueTotal(s)]).filter(([, d]) => d > 0).sort((a, b) => b[1] - a[1]);
+          printDoc(`বকেয়া তালিকা • ${BN_MONTHS[THIS_MONTH]} ${bn(FEE_YEAR)}`, printTable(['শ্রেণি', 'রোল', 'নাম', 'বকেয়া খাত', 'টাকা'],
+            list.map(([s, d]) => [esc(s.cls), bn(String(s.roll).padStart(2, '0')), esc(s.name), duesFor(s).map(c => esc(c.label.replace(' মাসের বেতন', ''))).join(', '), taka(d)])), []);
+          return;
+        }
+        if (e.target.closest('[data-fee-print-book]')) {
+          const list = bookReceipts();
+          printDoc(`ক্যাশ বই (ফি আদায়) • ${feeState.book === 'today' ? bnFullDate(realToday) : feeState.book === 'month' ? `${BN_MONTHS[THIS_MONTH]} ${bn(FEE_YEAR)}` : bn(FEE_YEAR)}`,
+            printTable(['তারিখ', 'রসিদ', 'শিক্ষার্থী', 'শ্রেণি', 'মাধ্যম', 'টাকা'], list.map(r => [bnFullDate(r.date), bn(r.no), esc(r.name), esc(r.cls), esc(r.method), taka(r.paid)]))
+            + `<p class="mt-3 text-sm text-right">মোট: <b>${taka(list.reduce((a, r) => a + r.paid, 0))}</b></p>`, []);
+          return;
+        }
+        if (e.target.closest('[data-fee-save]')) {
+          const inputs = Array.from(panel.querySelectorAll('[data-fee-set]'));
+          const bad = inputs.find(i => !/^\d{1,6}$/.test(toAsciiDigits(i.value).trim()));
+          const err = panel.querySelector('[data-fee-set-error]');
+          if (bad) { err.textContent = 'প্রতিটি ঘরে ০ বা তার বেশি টাকার অঙ্ক লিখুন'; err.classList.remove('hidden'); bad.focus(); return; }
+          inputs.forEach(i => { const [cls, k] = i.getAttribute('data-fee-set').split('|'); feeStructure[cls][k] = Number(toAsciiDigits(i.value).trim()); });
+          renderAllFees(); showToast('ফি সংরক্ষণ হয়েছে');
+        }
+      });
+      panel.addEventListener('input', e => {
+        if (e.target.matches('[data-fee-search]')) { feeState.query = e.target.value; panel.querySelector('[data-fee-list]').innerHTML = feeStudentList(); return; }
+        if (e.target.closest('[data-fee-form]')) { panel.querySelector('[data-fee-error]').classList.add('hidden'); updateCollectSum(); }
+      });
+      panel.addEventListener('change', e => { if (e.target.closest('[data-fee-form]')) updateCollectSum(); });
+      panel.addEventListener('submit', e => {
+        e.preventDefault();
+        const c = readCollect(e.target), err = panel.querySelector('[data-fee-error]');
+        if (c.error) { err.textContent = c.error; err.classList.remove('hidden'); return; }
+        const rc = { no: nextReceiptNo++, cls: c.s.cls, roll: c.s.roll, name: c.s.name, id: c.s.id, date: new Date(), items: c.items, discount: c.discount, paid: c.paid, method: c.method, txn: c.txn };
+        receipts.push(rc);
+        feeState.roll = null; // back to the student list, ready for the next payment
+        renderAllFees();
+        openReceipt(rc.no);
+        showToast(`${taka(rc.paid)} জমা হয়েছে • রসিদ ${bn(rc.no)}`);
+      });
+
+      document.getElementById('p-fees').addEventListener('click', e => {
+        const r = e.target.closest('[data-open-receipt]');
+        if (r) openReceipt(Number(r.getAttribute('data-open-receipt')));
+      });
+      const dlg = document.getElementById('receipt-dialog');
+      dlg.querySelector('[data-receipt-close]').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', e => {
+        if (e.target === dlg) { dlg.close(); return; }
+        const p = e.target.closest('[data-receipt-print]');
+        if (p) printReceipt(Number(p.getAttribute('data-receipt-print')));
+      });
+
+      renderAllFees();
     });
 
   </script>

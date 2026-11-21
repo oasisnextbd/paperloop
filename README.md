@@ -53,7 +53,10 @@ overall F, positions only for students who passed). Parents see and print the ma
 the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Student records: the principal sees class-wise counts, searches the class list, opens and edits
 a student's profile, admits new students (they join the attendance register at once and every exam created
 after) and prints the class list; the class teacher sees her class read-only; parents see their child's
-record in the profile panel. Sample records have no phone numbers on purpose. The login and settings are remembered on that phone until logout (browser storage).
+record in the profile panel. Sample records have no phone numbers on purpose. Fees: the principal or office collects fees (tick the months
+or fees being paid, method, optional discount or other fee) and prints a money receipt with parent and office
+copies; due list, cash book and fee settings per class, with half or full waivers. Parents see what is due and
+their receipts. There is no online payment; the method (cash, bKash, Nagad, bank) is only recorded. The login and settings are remembered on that phone until logout (browser storage).
 
 Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.
