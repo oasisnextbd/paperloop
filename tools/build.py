@@ -170,6 +170,13 @@ def build_diary():
         shutil.copyfile(SRC / "diary" / name, OUT / "diary" / name)
 
 
+def copy_static_apps():
+    """Paperloop Admin (admin/) and its landing pages (p/) are hand-written files served from the repository
+    as they are; they are copied into _site/ for preview and the link check."""
+    for folder in ("admin", "p"):
+        shutil.copytree(SRC / folder, OUT / folder, ignore=shutil.ignore_patterns("README.md", ".*"))
+
+
 if __name__ == "__main__":
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -179,6 +186,7 @@ if __name__ == "__main__":
         write_sitemap()
     (OUT / ".nojekyll").write_text("")  # serve files as-is (no Jekyll processing)
     build_diary()
+    copy_static_apps()
     for name in PUBLISHED:
         src, dest = OUT / name, SRC / name
         if src.exists():

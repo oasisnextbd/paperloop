@@ -13,6 +13,8 @@ site.json            brand name, contacts, every price and offer
 templates/           base.html, partials/, pages/home.html  ({{ t("বাংলা", "English") }})
 assets/              css/khata.css, js/khata.js, fonts/, img/ (published as-is)
 assets-source/logo/  the chosen logo artwork (not published)
+admin/               Paperloop Admin for the Paperloop team (hand-written; see "Paperloop Admin" below)
+p/                   landing pages made in the admin (p/?page=<address>)
 tools/build.py       renders the page in both languages into _site/ and copies the pages to the root
 scripts/check_links.py   fails on any broken internal link
 .github/workflows/pages.yml   checks every push: builds, no broken links, built pages are committed
@@ -134,6 +136,36 @@ python3 tools/build.py && python3 scripts/check_links.py   # also refreshes the 
 
 Commit `diary/index.html` and `diary/diary.css` together. Diary rules: monochrome line icons only (no emoji),
 icon above a short label, floating cards, Bangla first, no QR or camera scanning, no made-up contact details.
+
+## Paperloop Admin (`admin/`)
+
+The Paperloop team's own admin at `https://oasisnextbd.github.io/paperloop/admin/`, built after the VenGuard
+team dashboard (oasisnextbd/OASIS_official_website → team-dashboard/) but for Paperloop's work. Nothing on the
+website links to it and search engines are told not to list it. Plain HTML, CSS and JavaScript modules (no build
+step): `admin/index.html`, `admin/admin.css`, `admin/js/app.js` (sign-in, menu), `admin/js/store.js` (data, roles),
+`admin/js/ui.js` (helpers), one module per section in `admin/js/views/`.
+
+| Section | What it does |
+|---|---|
+| Overview | institutions using the app, students, parents active, enquiries per day, enquiry → customer funnel, sources, upazilas, who needs a call, institutions needing attention (7 / 30 / 90 days / all time) |
+| Enquiries & orders | smart-diary enquiries and khata, A4 and ring-binder orders from the landing pages, calls, visits and referrals; status, who has it, notes; a diary enquiry becomes an institution in one step |
+| Institutions | schools, kindergartens, madrasas, colleges and coaching centres from enquiry to using the app; adding one gives the 3-letter school code (checked unique) and the principal's one-time first PIN, shown once |
+| App usage | per institution: attendance days, results published, monthly checks, parents active, last active |
+| Landing pages | pages for a campaign, an upazila or a product from a template, without a developer; publish, preview, copy the link; their form saves an enquiry marked with the page (`p/`) |
+| Standard & topics | the minimum standard and topic list common to every partner school (Paperloop moderates) |
+| Support | problems and requests from institutions, with an owner and notes |
+| Website | the website's real settings from `site.json` (launched, prices shown, contacts set) and its pages |
+| Simulator | owner only: opens the diary filled with a sample school as principal, class teacher, subject teacher or parent; switches the admin's own demo data on and off |
+| Team | owner only: people and roles (Owner: everything; Operations: everything but the team and simulator; Sales: enquiries, institutions, landing pages) and a log of every change |
+
+**Real records and demo data are kept apart.** The admin starts empty (the first visitor sets up the owner);
+the made-up records in `admin/js/sample.js` appear only while the founders switch demo data on in Simulator.
+
+**Not connected to a database yet.** Until the Paperloop database (Firebase, like the VenGuard dashboard) is
+connected, records, published landing pages and their enquiries are kept in the browser where they were made
+(`localStorage`: `pl_admin_live_v1`, demo `pl_admin_demo_v1`), and people sign in by picking their name; the
+admin says so in its menu. Connecting it means: a Paperloop Firebase project, Google sign-in for the team list,
+database rules per role, and the diary and landing pages reading and writing the same records.
 
 ## Common edits
 

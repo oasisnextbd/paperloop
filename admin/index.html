@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Paperloop Admin</title>
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="admin.css">
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<!-- Paperloop's own admin: institutions, enquiries and orders, app usage, landing pages, the common standard,
+     support and the team. Not linked from the website and not indexed. See README.md → Admin. -->
+<div class="app signed-out" id="app">
+  <aside class="rail">
+    <a class="brand" href="./" aria-label="Paperloop Admin">
+      <svg class="mark" viewBox="-51.3 -35.4 132.4 70.7" aria-hidden="true"><path class="a" d="M0 0L-14.14 -14.14A20.00 20.00 0 1 0 -14.14 14.14Z"/><path class="b" d="M0 0L22.88 -22.88A32.36 32.36 0 1 1 22.88 22.88Z"/></svg>
+      <span><b>Paperloop</b><small>Admin</small></span>
+    </a>
+    <button class="me" type="button" id="me" hidden></button>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+    <p class="demo-chip" id="demoChip" hidden>Demo data · kept in this browser</p>
+  </aside>
+  <main id="main"><p class="sub">Loading…</p></main>
+</div>
+<div id="drawerRoot"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
