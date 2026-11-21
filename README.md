@@ -66,7 +66,9 @@ a real school's own installation. The login and settings are remembered on that 
 School design (principal, **স্কুলের ডিজাইন** card): each school sets its own letterhead once, with no code
 change: Bangla and English name, motto, address, phone, email, EIIN, year founded, logo and the head teacher's
 name and signature (photos from the phone, shrunk in the browser), the school's colour, letterhead layout
-(logo centred, logo left, name only), certificate border, paper size (A4, Letter or Legal), ID-card fields and
+(logo centred, logo left, name only), a colour of its own for each part if it wants (school name, title strip,
+borders, ID-card band, page background, text, table lines, table headings; each left alone follows the school's
+colour), certificate border, paper size (A4, Letter or Legal), ID-card fields and
 validity, a footer line, and its own wording for the testimonial, transfer certificate and achievement
 certificate (`{নাম}`, `{শ্রেণি}`, `{রোল}` and the other placeholders shown under each box are filled in at print
 time; unknown ones are flagged). A live preview shows a mark sheet, receipt, testimonial or ID card. Every printout
