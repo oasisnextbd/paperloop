@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=eba5724f74" />
+  <link rel="stylesheet" href="diary.css?v=d9992a0157" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -2230,7 +2230,7 @@
         return `
           <div class="p-3 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
             <div class="flex items-center justify-between gap-2">
-              <div><span class="text-sm font-bold text-ink-900">${esc(st.name)}</span> <span class="text-xs text-ink-500">• ${st.role}</span></div>
+              <div><span class="text-sm font-bold text-ink-900">${esc(st.name)}</span> <span class="text-xs text-ink-500">• ${st.role}</span>${st.email ? `<span class="block text-[0.6875rem] text-ink-500">${esc(st.email)}</span>` : ''}</div>
               <span class="text-[0.6875rem] font-bold text-ink-600">এ মাসে ${bn(came)}/${bn(monthKeys.length)} দিন</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5">${pills}</div>
@@ -2488,7 +2488,11 @@
 
       applySettings();
       const saved = readStore(SESSION_KEY);
-      if (saved && ROLE_META[saved.role] && saved.code) startSession(saved, { restoring: true });
+      if (saved && ROLE_META[saved.role] && saved.code) {
+        // A real school's principal or teacher: their school's diary comes from the database (see DATABASE)
+        if (!DEMO && saved.role !== 'parent' && window.restoreFromDatabase) window.restoreFromDatabase(saved);
+        else startSession(saved, { restoring: true });
+      }
       else { switchMainView('login'); updateHeader(); }
     });
 
@@ -3495,7 +3499,7 @@
     const RELIGION_BOOKS = ['ইসলাম শিক্ষা', 'হিন্দুধর্ম শিক্ষা', 'বৌদ্ধধর্ম শিক্ষা', 'খ্রিস্টধর্ম শিক্ষা'];
     // Phone keyboards type য় ড় ঢ় either as one character or as letter + nukta; store and search one spelling.
     const oneSpelling = s => String(s).replace(/\u09AF\u09BC/g, '\u09DF').replace(/\u09A1\u09BC/g, '\u09DC').replace(/\u09A2\u09BC/g, '\u09DD');
-    const studentId = (cls, roll, year) => `${SCHOOL_CODE}${String(year).slice(2)}${CLASS_CODE[cls] || '99'}${String(roll).padStart(2, '0')}`;
+    const studentId = (cls, roll, year) => `${DEMO ? SCHOOL_CODE : appState.schoolCode}${String(year).slice(2)}${CLASS_CODE[cls] || '99'}${String(roll).padStart(2, '0')}`;
 
     // ---------- Sample records for ৩য় শ্রেণি (fictional) ----------
     const SAMPLE_FATHERS = ['আব্দুল করিম', 'জসিম উদ্দিন', 'রফিকুল ইসলাম', 'মোস্তফা কামাল', 'আনোয়ার হোসেন', 'শফিকুল ইসলাম', 'মিজানুর রহমান', 'আবুল কালাম', 'নজরুল ইসলাম', 'কামরুল হাসান'];
@@ -5964,6 +5968,245 @@
   </script>
   <script>
     // ==========================================
+    // DATABASE (real schools; see README.md → Firebase)
+    // A real school's diary is kept in the Paperloop database, not on the phone. The principal and teachers sign
+    // in with Google: Paperloop Admin gives the principal's Gmail, the principal gives each teacher's Gmail (শিক্ষক
+    // ও স্টাফ). The school's data is kept in parts ("slices") under schools/<CODE>/state/; each part is split into
+    // keys (a class, a notice, a receipt…) and only the keys that changed are written, so two people working at the
+    // same time do not overwrite each other. The demo (?demo=…) never touches the database.
+    // ==========================================
+    const schoolDb = (() => {
+      if (DEMO) return { active: false };
+      const fbModule = () => import('../assets/js/firebase.js');
+      let fb = null, code = null, last = {}, timer = null, ready = false;
+
+      // Dates survive the trip as { $d: milliseconds }
+      const encode = v => JSON.stringify(v, function (k, x) { const raw = this[k]; return raw instanceof Date ? { $d: raw.getTime() } : x; });
+      const decode = s => JSON.parse(s, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) && Object.keys(x).length === 1 && typeof x.$d === 'number') ? new Date(x.$d) : x);
+      const fill = (target, src) => { Object.keys(target).forEach(k => delete target[k]); Object.assign(target, src); };
+      const keyed = (prefix, obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [prefix + k, v]));
+      const pick = (map, prefix) => Object.fromEntries(Object.entries(map).filter(([k]) => k.startsWith(prefix)).map(([k, v]) => [k.slice(prefix.length), v]));
+
+      // What is kept, and who may change it (the database rules check the same; see firestore.rules)
+      const SLICES = {
+        // The principal: school design, staff and who teaches what, students, fees, routines
+        design: {
+          get: () => ({ brand: readStore(brandKey(code)) }),
+          set: m => { if (m.brand) writeStore(brandKey(code), m.brand); },
+          after: () => { applyBrandToApp(); }
+        },
+        staff: {
+          get: () => ({ list: staffList, classTeachers: CLASS_TEACHERS, subjectTeachers: SUBJECT_TEACHERS, ...keyed('att|', staffAtt.records) }),
+          set: m => {
+            if (m.list) staffList.splice(0, staffList.length, ...m.list);
+            if (m.classTeachers) Object.assign(CLASS_TEACHERS, m.classTeachers);
+            if (m.subjectTeachers) Object.entries(m.subjectTeachers).forEach(([c, v]) => { SUBJECT_TEACHERS[c] = { ...(SUBJECT_TEACHERS[c] || {}), ...v }; });
+            fill(staffAtt.records, pick(m, 'att|'));
+            staffList.forEach((_, i) => { if (!(i in staffAtt.draft)) staffAtt.draft[i] = 'present'; });
+          },
+          after: () => { syncTeachers(); TEACHER_NAME = CLASS_TEACHERS[TEACHER_CLASS]; buildTeacherLogin(); renderAssignPanel(); }
+        },
+        records: {
+          get: () => keyed('cls|', recordsByClass),
+          set: m => {
+            Object.entries(pick(m, 'cls|')).forEach(([c, list]) => { recordsByClass[c] = list; });
+            // The live class register follows the records (roll order)
+            const live = (recordsByClass[TEACHER_CLASS] || []).slice().sort((a, b) => a.roll - b.roll);
+            classRoster.splice(0, classRoster.length);
+            live.forEach(s => { classRoster[s.roll - 1] = s.name; rollNames[String(s.roll).padStart(2, '0')] = s.name; studentAtt.draft[s.roll] = studentAtt.draft[s.roll] || 'present'; });
+          }
+        },
+        fees: {
+          get: () => ({ structure: feeStructure, waivers, next: nextReceiptNo, serials, ...Object.fromEntries(receipts.map(r => ['r|' + r.no, r])) }),
+          set: m => {
+            if (m.structure) Object.assign(feeStructure, m.structure);
+            if (m.waivers) fill(waivers, m.waivers);
+            if (m.serials) Object.assign(serials, m.serials);
+            receipts.splice(0, receipts.length, ...Object.values(pick(m, 'r|')).sort((a, b) => a.no - b.no));
+            nextReceiptNo = Math.max(m.next || 0, ...receipts.map(r => r.no + 1), nextReceiptNo);
+          }
+        },
+        routines: {
+          get: () => keyed('cls|', routines),
+          set: m => fill(routines, pick(m, 'cls|'))
+        },
+        // The principal and teachers: notices
+        notices: {
+          get: () => Object.fromEntries(notices.map(n => ['n|' + n.id, n])),
+          set: m => {
+            notices.splice(0, notices.length, ...Object.values(pick(m, 'n|')).sort((a, b) => a.at - b.at));
+            // New notices get ids far apart for each person, so two people never make the same one
+            nextNoticeId = Math.max(Date.now(), ...notices.map(n => n.id + 1));
+          }
+        }
+      };
+      const rendersAfterLoad = ['renderAllAttendance', 'renderAllRoutines', 'renderSchoolRecords', 'renderAllFees', 'renderAllResults', 'renderComposerList'];
+
+      // Every key of every slice as text, to see what changed
+      const snapshot = () => Object.fromEntries(Object.entries(SLICES).map(([name, s]) => [name, Object.fromEntries(Object.entries(s.get()).map(([k, v]) => [k, encode(v === undefined ? null : v)]))]));
+
+      async function load(schoolCode) {
+        const { firebase } = await fbModule();
+        fb = await firebase({ auth: true, cache: true });
+        code = schoolCode;
+        const { F, db } = fb;
+        const docs = await F.getDocs(F.collection(db, 'schools', code, 'state'));
+        docs.forEach(d => {
+          const slice = SLICES[d.id]; if (!slice) return;
+          const m = {};
+          Object.entries(d.data()).forEach(([k, v]) => { try { m[k] = decode(v); } catch (e) { /* skip a broken key */ } });
+          slice.set(m);
+        });
+        Object.values(SLICES).forEach(s => s.after && s.after());
+        rendersAfterLoad.forEach(f => { if (typeof window[f] === 'function') try { window[f](); } catch (e) { /* that part is not open */ } });
+        last = snapshot();
+        ready = true;
+      }
+      // Write what changed since the last write
+      function check() {
+        if (!ready || !fb || !code) return;
+        const now = snapshot(), { F, db } = fb;
+        Object.entries(now).forEach(([name, keys]) => {
+          const before = last[name] || {}, change = {};
+          Object.entries(keys).forEach(([k, v]) => { if (before[k] !== v) change[k] = v; });
+          Object.keys(before).forEach(k => { if (!(k in keys)) change[k] = F.deleteField(); });
+          if (!Object.keys(change).length) return;
+          last[name] = keys;
+          F.setDoc(F.doc(db, 'schools', code, 'state', name), change, { merge: true }).catch(e => {
+            last[name] = before; // try again with the next change
+            showToast(e && e.code === 'permission-denied' ? 'সংরক্ষণ হয়নি: এটি বদলানোর অনুমতি আপনার নেই' : 'সংরক্ষণ হয়নি: ইন্টারনেট সংযোগ দেখুন');
+          });
+        });
+      }
+      const soon = () => { clearTimeout(timer); timer = setTimeout(check, 700); };
+      ['click', 'change', 'submit', 'input'].forEach(t => document.addEventListener(t, soon, true));
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') check(); });
+      setInterval(check, 5000);
+
+      // A teacher's Gmail: the principal gives or takes away a teacher's sign-in
+      async function setTeacherEmail(email, name, oldEmail) {
+        if (!fb || !code) return;
+        const { F, db } = fb;
+        if (oldEmail && oldEmail !== email) await F.deleteDoc(F.doc(db, 'members', oldEmail)).catch(() => {});
+        if (email) await F.setDoc(F.doc(db, 'members', email), { code, role: 'teacher', name });
+      }
+
+      // Google sign-in: who is this, and which school are they in?
+      async function signIn() {
+        const { firebase } = await fbModule();
+        const f = await firebase({ auth: true, cache: true });
+        const cred = await f.U.signInWithPopup(f.auth, new f.U.GoogleAuthProvider());
+        return whoIs(cred.user);
+      }
+      async function whoIs(user) {
+        const { firebase } = await fbModule();
+        const { F, db } = await firebase({ auth: true, cache: true });
+        const email = String(user.email || '').toLowerCase();
+        const m = await F.getDoc(F.doc(db, 'members', email));
+        if (!m.exists()) return { error: 'notMember', email };
+        const member = m.data();
+        let school = null;
+        try { const s = await F.getDoc(F.doc(db, 'schools', member.code)); school = s.exists() ? s.data() : null; } catch (e) { school = null; }
+        if (!school || !school.active) return { error: 'closed', email };
+        return { email, member, school };
+      }
+      async function signOut() {
+        ready = false; code = null; last = {};
+        const { firebase } = await fbModule();
+        const f = await firebase({ auth: true, cache: true });
+        await f.U.signOut(f.auth);
+      }
+      async function currentAccount() {
+        const { currentUser } = await fbModule();
+        const u = await currentUser();
+        return u ? whoIs(u) : null;
+      }
+      return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, get ready() { return ready; } };
+    })();
+
+    if (schoolDb.active) {
+      const LOGIN_ERRORS = {
+        notMember: email => `${email} কোনো স্কুলে যোগ করা নেই। প্রিন্সিপাল হলে Paperloop-কে, শিক্ষক হলে প্রিন্সিপালকে আপনার Gmail যোগ করতে বলুন।`,
+        closed: () => 'আপনার স্কুলের ডায়েরি এখন চালু নেই। Paperloop-এর সাথে যোগাযোগ করুন।',
+        offline: () => 'প্রবেশ করা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।',
+        blocked: () => 'ব্রাউজার Google-এর জানালা আটকে দিয়েছে। এই সাইটের জন্য পপ-আপ চালু করে আবার চেষ্টা করুন।'
+      };
+      // Open the school's diary for a signed-in principal or teacher
+      async function enterSchool(who, status) {
+        if (who.error) { await schoolDb.signOut().catch(() => {}); throw Object.assign(new Error(who.error), { shown: LOGIN_ERRORS[who.error](who.email) }); }
+        if (status) status('স্কুলের তথ্য আনা হচ্ছে…');
+        schoolNamesByCode[who.member.code] = who.school.name || '';
+        appState.schoolCode = who.member.code; // before loading: the school's design is kept under its code
+        await schoolDb.load(who.member.code);
+        const principal = who.member.role === 'principal';
+        startSession({ role: principal ? 'school' : 'teacher', code: who.member.code, userId: principal ? who.email : who.member.name, email: who.email }, { restoring: true });
+      }
+      window.restoreFromDatabase = async saved => {
+        switchMainView('login'); updateHeader();
+        const note = document.getElementById('db-restore-note');
+        if (note) note.classList.remove('hidden');
+        try {
+          const who = await schoolDb.currentAccount();
+          if (!who || who.error || who.email !== saved.email) {
+            if (who) await schoolDb.signOut().catch(() => {});
+            if (who && who.error) showToast(LOGIN_ERRORS[who.error](who.email));
+            writeStore(SESSION_KEY, null); return;
+          }
+          await enterSchool(who);
+        } catch (e) { showToast(LOGIN_ERRORS.offline()); }
+        finally { if (note) note.classList.add('hidden'); }
+      };
+      // Logging out also signs out of Google here
+      const plainLogout = logout;
+      logout = function () { plainLogout(); schoolDb.signOut().catch(() => {}); };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const note = document.createElement('p');
+        note.id = 'db-restore-note'; note.className = 'hidden text-sm text-ink-500 text-center';
+        note.textContent = 'আপনার স্কুলের ডায়েরি খোলা হচ্ছে…';
+        document.getElementById('form-login-school').before(note);
+        document.querySelector('[data-login-role="teacher"] span.text-ink-500').textContent = 'Gmail দিয়ে';
+        // Teachers and the principal: one Google button instead of code, ID and PIN
+        [['form-login-teacher', 'শিক্ষক'], ['form-login-school', 'প্রিন্সিপাল']].forEach(([id, who]) => {
+          const form = document.getElementById(id);
+          [...form.children].slice(1).forEach(el => { el.hidden = true; el.classList.add('hidden'); el.querySelectorAll('[required]').forEach(i => i.removeAttribute('required')); });
+          const box = document.createElement('div');
+          box.className = 'space-y-3';
+          box.innerHTML = `
+            <button type="button" data-google class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
+              <svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12h8"/><path d="M12 7v10"/></svg>
+              <span>Google দিয়ে প্রবেশ করুন</span>
+            </button>
+            <p class="text-xs text-ink-500">${who === 'শিক্ষক' ? 'প্রিন্সিপাল যে Gmail যোগ করেছেন, সেটি দিয়ে প্রবেশ করুন।' : 'Paperloop-কে দেওয়া Gmail দিয়ে প্রবেশ করুন।'}</p>
+            <p data-google-status class="hidden text-sm text-ink-600"></p>
+            <p data-google-error class="hidden text-sm font-bold text-ink-900"></p>`;
+          form.append(box);
+          form.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+          const btn = box.querySelector('[data-google]'), status = box.querySelector('[data-google-status]'), err = box.querySelector('[data-google-error]');
+          btn.addEventListener('click', async () => {
+            err.classList.add('hidden'); btn.disabled = true;
+            const show = t => { status.textContent = t; status.classList.remove('hidden'); };
+            try {
+              show('Google-এ প্রবেশ হচ্ছে…');
+              await enterSchool(await schoolDb.signIn(), show);
+              showToast(`${appState.schoolName || 'স্কুলের'} ডায়েরিতে স্বাগতম`);
+            } catch (e) {
+              if (e && ['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(e.code)) { /* closed the window */ }
+              else { err.textContent = e.shown || (e && e.code === 'auth/popup-blocked' ? LOGIN_ERRORS.blocked() : LOGIN_ERRORS.offline()); err.classList.remove('hidden'); }
+            } finally { btn.disabled = false; status.classList.add('hidden'); }
+          });
+        });
+        // The principal adds each teacher's Gmail with their name (শিক্ষক ও স্টাফ)
+        const add = document.getElementById('s-staff-add');
+        const mail = document.createElement('label');
+        mail.className = 'col-span-3 text-xs font-bold text-ink-600';
+        mail.innerHTML = 'শিক্ষকের Gmail (এটি দিয়েই শিক্ষক প্রবেশ করবেন)<input name="email" type="email" maxlength="120" autocomplete="off" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm font-normal" placeholder="name@gmail.com" />';
+        add.append(mail);
+      });
+    }
+  </script>
+  <script>
+    // ==========================================
     // DEMO START (see REAL OR DEMO at the top)
     // Sample-only parts of the page, adding staff in a real school, and the demo's automatic login as <who>.
     // ==========================================
@@ -5989,9 +6232,20 @@
       document.getElementById('s-staff-add').addEventListener('submit', e => {
         e.preventDefault();
         const f = e.target, name = oneSpelling(f.elements.name.value.trim());
+        const email = f.elements.email ? f.elements.email.value.trim().toLowerCase() : '';
         if (!name) return;
-        if (staffList.some(s => s.name === name)) { showToast('এই নামে আগেই আছে'); return; }
-        staffList.push({ name, role: f.elements.role.value });
+        const same = staffList.find(s => s.name === name);
+        // A real school: giving a Gmail to someone already listed lets them sign in (see DATABASE)
+        if (same && email && schoolDb.active) {
+          const old = same.email || '';
+          schoolDb.setTeacherEmail(email, name, old).then(() => { same.email = email; schoolDb.check(); f.reset(); showToast(`${name} এখন ${email} দিয়ে প্রবেশ করতে পারবেন`); })
+            .catch(() => showToast('Gmail যোগ করা গেল না। এই Gmail অন্য স্কুলে থাকতে পারে, অথবা ইন্টারনেট সংযোগ দেখুন।'));
+          return;
+        }
+        if (same) { showToast('এই নামে আগেই আছে'); return; }
+        if (email && staffList.some(s => s.email === email)) { showToast('এই Gmail আগেই একজনের'); return; }
+        if (email && schoolDb.active) schoolDb.setTeacherEmail(email, name).catch(() => showToast('Gmail যোগ করা গেল না। এই Gmail অন্য স্কুলে থাকতে পারে।'));
+        staffList.push(email ? { name, role: f.elements.role.value, email } : { name, role: f.elements.role.value });
         staffAtt.draft[staffList.length - 1] = 'present';
         syncTeachers(); buildTeacherLogin(); renderAssignPanel(); renderAllAttendance();
         f.reset();

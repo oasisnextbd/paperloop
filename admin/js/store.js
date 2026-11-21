@@ -121,7 +121,30 @@ export const store = {
     (data.activity = data.activity || []).unshift(rec); data.activity = data.activity.slice(0, 300);
     if (mode === 'live') liveWrite('set', 'activity', rec.id, strip(rec));
   },
-  subscribe: (f) => { subs.add(f); return () => subs.delete(f); }
+  subscribe: (f) => { subs.add(f); return () => subs.delete(f); },
+
+  // ---------- The smart diary's side of an institution (live only) ----------
+  // schools/{CODE} lets the school use the diary (active while on a demo, pilot or in use); members/{email}
+  // lets its principal sign in with Google. A school's diary data stays under its code even if it is deleted
+  // here, so a code is never given to another school.
+  linkSchool(inst, oldEmail = '') {
+    if (mode !== 'live' || !fb) return;
+    const { F, db } = fb, email = String(inst.principalEmail || '').trim().toLowerCase();
+    send(F.setDoc(F.doc(db, 'schools', inst.code), { name: inst.name, principal: email, active: ['demo', 'pilot', 'live'].includes(inst.stage), deleted: false, updated: Date.now() }, { merge: true }));
+    if (oldEmail && oldEmail !== email) send(F.deleteDoc(F.doc(db, 'members', oldEmail)));
+    if (email) send(F.setDoc(F.doc(db, 'members', email), { code: inst.code, role: 'principal', name: inst.contactName || '' }));
+  },
+  unlinkSchool(inst) {
+    if (mode !== 'live' || !fb) return;
+    const { F, db } = fb;
+    send(F.setDoc(F.doc(db, 'schools', inst.code), { active: false, deleted: true, principal: '', updated: Date.now() }, { merge: true }));
+    if (inst.principalEmail) send(F.deleteDoc(F.doc(db, 'members', inst.principalEmail)));
+  },
+  // Has a school ever used this code (also one deleted from the admin)?
+  async codeTaken(code) {
+    if (mode !== 'live' || !fb) return false;
+    try { return (await fb.F.getDoc(fb.F.doc(fb.db, 'schools', code))).exists(); } catch (e) { return false; }
+  }
 };
 
 // Roles: what each part of the team may do

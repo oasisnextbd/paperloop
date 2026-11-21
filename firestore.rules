@@ -74,6 +74,40 @@ service cloud.firestore {
       allow write: if hasRole(['owner', 'ops']);
     }
 
+    // ---------- The smart diary (real schools) ----------
+    // members/{google email}: who may open which school's diary, as principal or teacher. Paperloop Admin adds
+    // each principal; a principal adds and removes the teachers of their own school only.
+    function memberDoc() { return /databases/$(database)/documents/members/$(myEmail()); }
+    function isMember() { return signedIn() && exists(memberDoc()); }
+    function me() { return get(memberDoc()).data; }
+    function schoolOpen(code) { return get(/databases/$(database)/documents/schools/$(code)).data.get('active', false) == true; }
+    function staffOf(code) { return isMember() && me().code == code && schoolOpen(code); }
+    function principalOf(code) { return staffOf(code) && me().role == 'principal'; }
+
+    match /members/{email} {
+      allow get: if signedIn() && email == myEmail();
+      allow read: if anyRole() || (isMember() && me().role == 'principal' && resource.data.code == me().code);
+      allow create: if anyRole() || (principalOf(request.resource.data.code) && request.resource.data.role == 'teacher'
+        && email == email.lower() && request.resource.data.keys().hasOnly(['code', 'role', 'name']) && str(request.resource.data.name, 1, 60));
+      allow update: if anyRole() || (principalOf(resource.data.code) && resource.data.role == 'teacher'
+        && request.resource.data.code == resource.data.code && request.resource.data.role == 'teacher'
+        && request.resource.data.keys().hasOnly(['code', 'role', 'name']) && str(request.resource.data.name, 1, 60));
+      allow delete: if anyRole() || (principalOf(resource.data.code) && resource.data.role == 'teacher');
+    }
+
+    // schools/{CODE}: set up by Paperloop Admin (name, principal, active). Its diary is in schools/{CODE}/state/{part}:
+    // the school's principal and teachers read it; the principal changes every part, teachers the parts of their
+    // daily work.
+    match /schools/{code} {
+      allow read: if anyRole() || staffOf(code);
+      allow write: if anyRole();
+      match /state/{part} {
+        allow read: if staffOf(code);
+        allow write: if principalOf(code)
+          || (staffOf(code) && part in ['notices', 'attendance', 'exams', 'standard', 'homework', 'messages']);
+      }
+    }
+
     // The activity log: the team reads it and adds to it under their own name; nobody edits it
     match /activity/{id} {
       allow read: if anyRole();

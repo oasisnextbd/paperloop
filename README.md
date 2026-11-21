@@ -194,6 +194,9 @@ by `firestore.rules`:
 | `pages` | the team; **anyone** may read a live page and add one visit |
 | `tickets` (support), `settings/main` (standard & topics) | owner and operations (settings: the team reads) |
 | `activity` | the team reads and adds under their own email; nobody edits |
+| `schools/{CODE}` | set up by the admin from an institution (name, principal's Gmail, `active` from the stage Demo shown, Pilot or Using the app); the school's principal and teachers read it |
+| `members/{google email}` | who opens which school's diary: `{code, role: principal \| teacher, name}`; the admin adds the principal, the principal adds and removes their own teachers |
+| `schools/{CODE}/state/{part}` | the school's diary; its principal and teachers read it; the principal changes every part, teachers `notices`, `attendance`, `exams`, `standard`, `homework`, `messages` |
 
 Deleting is for the owner and operations. **After changing `firestore.rules`, publish it**: Firebase console →
 Firestore Database → Rules → paste the file → Publish (or `firebase deploy --only firestore:rules`).
@@ -203,8 +206,16 @@ Landing pages (`p/?page=<address>`) read the live page from the database and sen
 
 **Testing locally** with the Firebase emulators (Java needed): `npx firebase-tools emulators:start --only
 auth,firestore` in the repository, then open `http://localhost:8000/admin/?emulators=1` (and `p/?page=…&emulators=1`):
-nothing touches the real project. The smart diary is not on the database yet; it is next (principal, then teachers,
-then parents).
+nothing touches the real project; the diary the same way (`diary/?emulators=1`).
+
+**The smart diary on the database.** A real school's principal and teachers sign in with Google (the login page
+shows a Google button for them; the demo keeps the code-and-PIN screens). The diary is kept in parts under
+`schools/{CODE}/state/`: `design` (the school design), `staff` (staff, their Gmail, staff attendance, class and
+subject teachers), `records` (students per class), `fees` (fees, waivers, receipts, certificate numbers),
+`routines` and `notices`. Each part is split into keys (one class, one notice, one receipt) and the diary writes only
+the keys that changed, a moment after each change, so two people working at the same time do not overwrite each
+other; it reads everything when someone signs in or reloads. Next: teachers' daily work for every class
+(attendance, marks, monthly checks, homework, messages), then parents with a 6-digit PIN.
 
 ## Common edits
 
