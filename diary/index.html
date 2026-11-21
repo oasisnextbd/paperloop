@@ -570,7 +570,7 @@
 
           <div id="t-att-today" class="space-y-4">
             <div id="t-att-summary" class="grid grid-cols-3 gap-3"></div>
-            <p class="text-xs text-ink-500">সবাই উপস্থিত ধরা আছে। যে আসেনি তার রোলে ট্যাপ করুন; আবার ট্যাপ করলে ছুটি।</p>
+            <p class="text-xs text-ink-500">সবাই উপস্থিত ধরা আছে। যে আসেনি তার রোলে ট্যাপ করুন; আবার ট্যাপ করলে উপস্থিত। ছুটি আসে অভিভাবকের আবেদন থেকে।</p>
             <div id="t-att-grid" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
             <div id="t-att-requests"></div>
             <div id="t-att-status"></div>
@@ -1809,7 +1809,13 @@
       leave: { label: 'ছুটি', icon: 'leave', tile: 'border-2 border-dashed border-ink-400 bg-ink-50 text-ink-700' },
       late: { label: 'দেরিতে', icon: 'clock', tile: 'border-2 border-ink-500 bg-ink-100 text-ink-800' }
     };
-    const NEXT_STUDENT_STATUS = { present: 'absent', absent: 'leave', leave: 'present' };
+    // A tap only switches present ↔ absent, so a mistaken tap is undone by tapping again. Leave comes only from a
+    // parent's leave request; for such a student a tap goes leave → present (came anyway) → absent → leave.
+    function nextStudentStatus(roll, current) {
+      const requested = (studentAtt.leaveRequests[attKey] || {})[roll];
+      if (requested) return { leave: 'present', present: 'absent', absent: 'leave' }[current];
+      return current === 'absent' ? 'present' : 'absent';
+    }
 
     // Small icon-above-text count tile, used by every attendance summary.
     const countTile = (icon, label, value, accent = false) => `
@@ -2220,12 +2226,12 @@
         btn.addEventListener('click', () => { studentAtt.view = btn.getAttribute('data-att-view'); renderTeacherAttendance(); });
       });
 
-      // Tap a roll: present → absent → leave → present
+      // Tap a roll: present ↔ absent (see nextStudentStatus)
       document.getElementById('t-att-grid').addEventListener('click', e => {
         const tile = e.target.closest('[data-att-roll]');
         if (!tile) return;
         const r = Number(tile.getAttribute('data-att-roll'));
-        studentAtt.draft[r] = NEXT_STUDENT_STATUS[studentAtt.draft[r]];
+        studentAtt.draft[r] = nextStudentStatus(r, studentAtt.draft[r]);
         renderTeacherAttendance();
       });
       document.getElementById('t-att-reset').addEventListener('click', () => {
