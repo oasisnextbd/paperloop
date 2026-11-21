@@ -26,11 +26,10 @@ export default {
           <p class="sub small" style="margin-top:12px">Now showing: <b>${demo ? 'demo data' : 'live records'}</b>.</p></div>
       </div>`;
     main.querySelector('[data-mode]').addEventListener('click', () => {
-      // keep the founder signed in on the other side (demo has its own sample team)
-      const meName = store.me.name, to = demo ? 'live' : 'demo';
+      // keep the founder signed in on the other side (demo has its own sample team; live uses their Google sign-in)
+      const to = demo ? 'live' : 'demo';
       if (to === 'demo') sessionStorage.setItem('pl_admin_me_demo', 's1');
       switchMode(to);
-      if (to === 'live' && !store.me) toast(`Sign in as ${meName}`);
     });
     main.querySelector('[data-reset]').addEventListener('click', () => { if (confirm('Start the demo data again? Changes made in demo data are lost.')) { store.resetDemo(); toast('Demo data restarted'); } });
   }

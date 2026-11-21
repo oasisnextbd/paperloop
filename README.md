@@ -168,17 +168,43 @@ step): `admin/index.html`, `admin/admin.css`, `admin/js/app.js` (sign-in, menu),
 | Simulator | owner only: opens the diary filled with a sample school as principal, class teacher, subject teacher or parent; switches the admin's own demo data on and off |
 | Team | owner only: people and roles (Owner: everything; Operations: everything but the team and simulator; Sales: enquiries, institutions, landing pages) and a log of every change |
 
-**Real records and demo data are kept apart.** The admin starts empty (the first visitor sets up the owner);
-the made-up records in `admin/js/sample.js` appear only while the founders switch demo data on in Simulator, and
-**Turn demo data off** (Simulator, or the note at the bottom of the menu) goes back to the live records. The owner
-and operations can delete enquiries, institutions, landing pages and support items; a new landing page is saved
-only on Save or Publish.
+**Real records and demo data are kept apart.** The live records are in the Paperloop database (below) and start
+empty; the made-up records in `admin/js/sample.js` appear only while the founders switch demo data on in
+Simulator (kept only in that browser, `localStorage` `pl_admin_demo_v1`), and **Turn demo data off** (Simulator, or
+the note at the bottom of the menu) goes back to the live records. The owner and operations can delete enquiries,
+institutions, landing pages and support items; a new landing page is saved only on Save or Publish.
 
-**Not connected to a database yet.** Until the Paperloop database (Firebase, like the VenGuard dashboard) is
-connected, records, published landing pages and their enquiries are kept in the browser where they were made
-(`localStorage`: `pl_admin_live_v1`, demo `pl_admin_demo_v1`), and people sign in by picking their name; the
-admin says so in its menu. Connecting it means: a Paperloop Firebase project, Google sign-in for the team list,
-database rules per role, and the diary and landing pages reading and writing the same records.
+**Sign-in.** The team signs in with Google. Only a Google email the owner has added under Team gets in (anyone
+else sees "Not on the team"), and removing a person locks them out at once. The first owner was added by hand in
+the Firebase console (Firestore → `team` → document id = the owner's Google email, fields `name`, `role` =
+`owner`, `active` = true).
+
+## Firebase (the Paperloop database)
+
+Project `paperloop-50c10` (Spark plan), Firestore (default database), Google sign-in on, `oasisnextbd.github.io`
+in Authentication → Settings → Authorized domains. The web settings are in `assets/js/firebase.js` (they name the
+project and are not secret; the SDK loads from Google's CDN, version pinned there). What anyone may do is decided
+by `firestore.rules`:
+
+| Collection | Who |
+|---|---|
+| `team/{google email}` | the team reads; only the owner adds, changes, removes (never their own owner record) |
+| `leads` | the team; **anyone** may add one new enquiry in exactly the landing-page shape (cannot read any) |
+| `institutions` | the team |
+| `pages` | the team; **anyone** may read a live page and add one visit |
+| `tickets` (support), `settings/main` (standard & topics) | owner and operations (settings: the team reads) |
+| `activity` | the team reads and adds under their own email; nobody edits |
+
+Deleting is for the owner and operations. **After changing `firestore.rules`, publish it**: Firebase console →
+Firestore Database → Rules → paste the file → Publish (or `firebase deploy --only firestore:rules`).
+
+Landing pages (`p/?page=<address>`) read the live page from the database and send enquiries into it;
+`&preview=1` (the admin's preview) shows a draft to a signed-in team member; `&demo=1` uses the demo data.
+
+**Testing locally** with the Firebase emulators (Java needed): `npx firebase-tools emulators:start --only
+auth,firestore` in the repository, then open `http://localhost:8000/admin/?emulators=1` (and `p/?page=…&emulators=1`):
+nothing touches the real project. The smart diary is not on the database yet; it is next (principal, then teachers,
+then parents).
 
 ## Common edits
 

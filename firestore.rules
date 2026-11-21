@@ -1,0 +1,85 @@
+rules_version = '2';
+// Who may read and write what in the Paperloop database (Firestore). Publish these in the Firebase console
+// (Firestore Database → Rules → paste → Publish) or with `firebase deploy --only firestore:rules`.
+// The Paperloop team is the `team` collection: one record per person, kept under their Google email, with
+// role owner | ops | sales and active true. The first owner record is added once in the Firebase console.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function myRecord() { return get(/databases/$(database)/documents/team/$(myEmail())).data; }
+    function onTeam() {
+      return signedIn() && exists(/databases/$(database)/documents/team/$(myEmail())) && myRecord().get('active', false) == true;
+    }
+    function hasRole(roles) { return onTeam() && myRecord().role in roles; }
+    function anyRole() { return hasRole(['owner', 'ops', 'sales']); }
+    function canDelete() { return hasRole(['owner', 'ops']); }
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    // The team: everyone on it sees it; only the owner adds, changes or removes people.
+    // A person may read their own record (to find out whether they are on the team).
+    // The owner cannot remove themself or take away their own owner role.
+    match /team/{email} {
+      allow get: if signedIn() && email == myEmail();
+      allow read: if onTeam();
+      allow create: if hasRole(['owner']) && email == email.lower()
+        && request.resource.data.role in ['owner', 'ops', 'sales'] && str(request.resource.data.name, 1, 60);
+      allow update: if hasRole(['owner']) && request.resource.data.role in ['owner', 'ops', 'sales']
+        && (email != myEmail() || (request.resource.data.role == 'owner' && request.resource.data.get('active', true) == true));
+      allow delete: if hasRole(['owner']) && email != myEmail();
+    }
+
+    // Enquiries & orders: the whole team works on them. Anyone (a landing page visitor) may send a new one,
+    // and only in the exact shape the landing page sends; visitors cannot read, change or delete any.
+    match /leads/{id} {
+      allow read, update: if anyRole();
+      allow create: if anyRole() || (
+        request.resource.data.keys().hasOnly(['created', 'kind', 'status', 'source', 'page', 'summary', 'name', 'phone', 'org', 'upazila', 'message', 'owner', 'notes'])
+        && request.resource.data.keys().hasAll(['created', 'kind', 'status', 'source', 'page', 'name', 'phone'])
+        && request.resource.data.status == 'new' && request.resource.data.source == 'Landing page'
+        && request.resource.data.owner == '' && request.resource.data.notes == []
+        && request.resource.data.kind in ['diary', 'khata', 'a4', 'ring']
+        && request.resource.data.created is int
+        && str(request.resource.data.page, 1, 40) && str(request.resource.data.name, 1, 60) && str(request.resource.data.phone, 8, 20)
+        && str(request.resource.data.get('summary', ''), 0, 120) && str(request.resource.data.get('org', ''), 0, 80)
+        && str(request.resource.data.get('upazila', ''), 0, 40) && str(request.resource.data.get('message', ''), 0, 400));
+      allow delete: if canDelete();
+    }
+
+    // Institutions: the whole team; deleting is for the owner and operations
+    match /institutions/{id} {
+      allow read, create, update: if anyRole();
+      allow delete: if canDelete();
+    }
+
+    // Landing pages: anyone may read a published (live) page and add one visit to it; the team edits them
+    match /pages/{id} {
+      allow read: if anyRole() || resource.data.status == 'live';
+      allow create: if anyRole();
+      allow update: if anyRole() || (resource.data.status == 'live'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
+        && request.resource.data.views == resource.data.get('views', 0) + 1);
+      allow delete: if canDelete();
+    }
+
+    // Support: the owner and operations
+    match /tickets/{id} {
+      allow read, create, update, delete: if hasRole(['owner', 'ops']);
+    }
+
+    // The common standard and topics: the team reads them; the owner and operations change them
+    match /settings/{id} {
+      allow read: if anyRole();
+      allow write: if hasRole(['owner', 'ops']);
+    }
+
+    // The activity log: the team reads it and adds to it under their own name; nobody edits it
+    match /activity/{id} {
+      allow read: if anyRole();
+      allow create: if anyRole() && request.resource.data.byId == myEmail() && str(request.resource.data.text, 1, 500);
+      allow update: if false;
+      allow delete: if hasRole(['owner']);
+    }
+  }
+}

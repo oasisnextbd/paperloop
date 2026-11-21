@@ -24,7 +24,6 @@ export default {
     main.innerHTML = `
       <div class="head"><div><h1>Landing pages</h1><p class="sub">Pages for a campaign, an upazila or a product. Their form fills Enquiries & orders.</p></div>
         <button class="btn" type="button" data-new>${ICON('plus')}New landing page</button></div>
-      ${store.mode === 'live' ? '<div class="callout" style="margin-bottom:14px">Until the Paperloop database is connected, a published page and its enquiries are kept in this browser only. Connect the database to put pages on the internet.</div>' : ''}
       <div class="card">${pages.length ? `<div class="tbl-wrap"><table><thead><tr><th>Page</th><th>Address</th><th>Status</th><th>Visits</th><th>Enquiries</th><th>Changed</th><th></th></tr></thead><tbody>
         ${pages.map((p) => `<tr class="row" data-open="${p.id}"><td><b>${esc(p.title || '(no title)')}</b><br><span class="muted small">${esc((KINDS.find((k) => k[0] === p.kind) || ['', ''])[1])}</span></td>
           <td class="small">p/?page=${esc(p.slug)}</td><td><span class="st ${p.status === 'live' ? 'ink' : 'line'}">${p.status === 'live' ? 'Live' : 'Draft'}</span></td>
