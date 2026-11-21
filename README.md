@@ -103,7 +103,7 @@ the school's record, with the images in file storage.
 Each role's dashboard opens on its cards; a card opens its section as its own page with a back button (the
 address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh work).
 
-Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
+Every name and number is sample data (the presenter says so; the app itself shows no demo notice), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.
 
 | File | What it is |
