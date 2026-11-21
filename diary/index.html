@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=474eccf9ce" />
+  <link rel="stylesheet" href="diary.css?v=08a5634453" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -4249,8 +4249,7 @@
     // The principal prints, from the diary's own records: student ID cards (card size, nine per A4, blank
     // photo box, no QR or barcode), exam admit cards (two per A4), exam seat labels (fourteen per A4),
     // testimonial, transfer certificate (warns about unpaid fees) and achievement certificates (an event, or
-    // the top three of an exam). Every page carries a faint "ডেমো • নমুনা" mark: this is a public demo,
-    // and nothing printed from it may pass as a real school document.
+    // the top three of an exam). Printed pages carry no demo watermark (see demoMark).
     // ==========================================
     const prIcon = {
       id: '<rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.5-1.5 1.7-2 3-2s2.5.5 3 2"/><path d="M14 10h4"/><path d="M14 14h3"/>',
@@ -4268,7 +4267,7 @@
     const printState = { doc: 'id', cls: TEACHER_CLASS, scope: 'class', roll: 1, examId: null, awardMode: 'exam' };
     const serials = { testimonial: 1, tc: 1, award: 1 };
     const rollBn = r => bn(String(r).padStart(2, '0'));
-    const demoMark = '<div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none"><span class="-rotate-[24deg] text-ink-900/10 font-extrabold whitespace-nowrap" style="font-size:var(--wm,28pt)">ডেমো • নমুনা</span></div>';
+    const demoMark = ''; // printed pages carry no watermark (the builders below still place it, so one can be added back here)
 
     // ---------- Document builders (each returns an HTML string) ----------
     // Sizes fit inside both A4 and Letter pages (phones often default to Letter); the school's colour,
@@ -5142,7 +5141,7 @@
         </div>`;
       }).join('')}</div>`;
     }
-    const printFooter = () => `<p class="mt-[6mm] text-center text-[8pt]">${brand().footer ? `${esc(brand().footer)} • ` : ''}Paperloop স্মার্ট ডায়েরি • ডেমো: নমুনা তথ্য, আসল শিক্ষার্থীর নয়</p>`;
+    const printFooter = () => `<p class="mt-[6mm] text-center text-[8pt]">${brand().footer ? `${esc(brand().footer)} • ` : ''}Paperloop স্মার্ট ডায়েরি</p>`;
     // A certificate template with {placeholders}; values are already-formatted HTML
     const fillTemplate = (tpl, values) => esc(tpl).replace(/\{([^{}]+)\}/g, (m, k) => (k in values ? values[k] : m)).replace(/\n/g, '<br>');
 

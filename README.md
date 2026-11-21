@@ -77,9 +77,8 @@ copies; due list, cash book and fee settings per class, with half or full waiver
 their receipts. There is no online payment; the method (cash, bKash, Nagad, bank) is only recorded. Printables
 (principal): student ID cards (nine per page, blank photo box, no QR or barcode), admit cards and exam seat labels
 for model and term exams, testimonial, transfer certificate (warns about unpaid fees) and achievement
-certificates (an event, or the top three of an exam). Every printed page carries a faint "ডেমো • নমুনা" mark
-so nothing printed from the public demo can pass as a real school document; remove it (`demoMark`) only for
-a real school's own installation. The login and settings are remembered on that phone until logout (browser storage).
+certificates (an event, or the top three of an exam). Printed pages carry no demo watermark (on the
+owner's decision); `demoMark` in `diary/index.html` can put one back. The login and settings are remembered on that phone until logout (browser storage).
 
 School design (principal, **স্কুলের ডিজাইন** card): each school sets its own letterhead once, with no code
 change: Bangla and English name, motto, address, phone, email, EIIN, year founded, logo and the head teacher's
