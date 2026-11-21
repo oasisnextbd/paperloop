@@ -42,9 +42,11 @@ domain, change `site.json → base_url`.
 
 A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.io/paperloop/diary/`.
 It opens on a login page where the person chooses **অভিভাবক** (School Code + Class + Roll), **শিক্ষক** or
-**স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see; the header's
-**প্রোফাইল** button opens their details, settings (text size; absent alerts for parents; another child's
-diary) and logout. Notices sit behind the header's **নোটিশ** button (with an unread count): the
+**স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see. The header scrolls away with the page;
+a floating three-line **মেনু** button stays in the corner (with the unread-notice count) and opens a menu with
+notices, profile and settings, every section of that dashboard, the Paperloop website and logout; its cross closes
+it back to the button. **প্রোফাইল ও সেটিংস** opens their details, settings (text size; absent alerts for parents; another child's
+diary) and logout. Notices sit behind the menu's **নোটিশ** (with an unread count): the
 principal sends to everyone, parents, teachers or one class; a class teacher sends to her class's parents.
 The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
 khatas for that day). Results: the class teacher enters marks on one screen per subject; weekly tests are

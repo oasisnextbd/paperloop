@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=c22d34ef09" />
+  <link rel="stylesheet" href="diary.css?v=f9da698890" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -31,9 +31,9 @@
     </div>
   </div>
 
-  <!-- Top Header with Single-Color Line-Icon Navigation -->
-  <header class="bg-white border-b border-ink-200 sticky top-0 z-30">
-    <div class="max-w-3xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+  <!-- Top header: scrolls away with the page; the floating menu button (below) stays -->
+  <header class="bg-white border-b border-ink-200">
+    <div class="max-w-3xl mx-auto pl-4 pr-20 py-2.5 flex flex-wrap items-center justify-between gap-3">
       <!-- Brand & School Name -->
       <div class="flex items-center gap-3">
         <a href="../" class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex items-center justify-center" aria-label="Paperloop ওয়েবসাইট">
@@ -48,23 +48,18 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5">
-      <!-- Notices button (only after login): notices meant for this person, with an unread count -->
-      <button id="btn-notices" type="button" aria-haspopup="dialog" aria-controls="notice-dialog"
-        class="hidden relative icon-tile flex-col items-center justify-center min-w-[60px] px-2 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50">
-        <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        <span class="text-[0.6875rem] font-bold leading-none">নোটিশ</span>
-        <span id="notice-badge" class="hidden absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-gold-600 text-white text-[0.6875rem] font-extrabold flex items-center justify-center"></span>
-      </button>
-      <!-- Profile button (only after login): account details, settings and logout -->
-      <button id="btn-profile" type="button" aria-haspopup="dialog" aria-controls="profile-dialog"
-        class="hidden icon-tile flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50">
-        <svg class="line-icon mb-1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-        <span class="text-[0.6875rem] font-bold leading-none">প্রোফাইল</span>
-      </button>
-      </div>
     </div>
   </header>
+
+
+  <!-- Floating menu button (after login): three lines; opens the menu sheet. It sits in the header's row and,
+       once the header has scrolled away, floats at the top corner. -->
+  <button id="btn-menu" type="button" aria-haspopup="dialog" aria-controls="menu-dialog" aria-label="মেনু"
+    class="hidden fixed z-40 icon-tile floating-card w-14 h-14 rounded-2xl text-ink-900 flex-col items-center justify-center" style="top:12px;right:16px">
+    <svg class="line-icon" viewBox="0 0 24 24"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+    <span class="text-[0.625rem] font-bold leading-none mt-0.5">মেনু</span>
+    <span id="menu-badge" class="hidden absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-gold-600 text-white text-[0.6875rem] font-extrabold flex items-center justify-center"></span>
+  </button>
 
   <!-- Main Content -->
   <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-5">
@@ -1158,7 +1153,7 @@
   </dialog>
 
   <!-- ==========================================
-       NOTICE PANEL: notices meant for the signed-in person (opened from the header's নোটিশ button)
+       NOTICE PANEL: notices meant for the signed-in person (opened from the menu's নোটিশ)
        ========================================== -->
   <dialog id="notice-dialog" class="profile-sheet" aria-labelledby="notice-title">
     <div class="flex flex-col h-full">
@@ -1179,7 +1174,57 @@
   </dialog>
 
   <!-- ==========================================
-       PROFILE PANEL: account details, settings, logout (opened from the header's প্রোফাইল button)
+       MENU: notices, profile and settings, every section of this dashboard, logout (opened from the floating
+       menu button; the cross closes it back to the button)
+       ========================================== -->
+  <dialog id="menu-dialog" class="profile-sheet" aria-labelledby="menu-title">
+    <div class="flex flex-col h-full">
+      <div class="p-5 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <h2 id="menu-title" class="text-lg font-bold text-ink-900 leading-tight">মেনু</h2>
+          <p id="menu-subtitle" class="text-xs text-ink-500 mt-0.5 truncate"></p>
+        </div>
+        <button type="button" data-menu-close aria-label="মেনু বন্ধ করুন" class="icon-tile w-14 h-14 rounded-2xl border border-ink-200 bg-white text-ink-800 hover:bg-ink-50 flex flex-col items-center justify-center shrink-0">
+          <svg class="line-icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          <span class="text-[0.625rem] font-bold leading-none mt-0.5">বন্ধ</span>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        <nav class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200 overflow-hidden" aria-label="অ্যাকাউন্ট">
+          <!-- Notices: notices meant for this person, with an unread count -->
+          <button id="btn-notices" type="button" aria-haspopup="dialog" aria-controls="notice-dialog" data-menu-item
+            class="hidden w-full items-center gap-3 px-4 py-3 text-left text-ink-900 hover:bg-ink-50">
+            <span class="w-10 h-10 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+            <span class="flex-1 text-sm font-bold">নোটিশ</span>
+            <span id="notice-badge" class="hidden min-w-[1.5rem] h-6 px-1.5 rounded-full bg-gold-600 text-white text-xs font-extrabold flex items-center justify-center"></span>
+          </button>
+          <!-- Profile: account details, settings and logout -->
+          <button id="btn-profile" type="button" aria-haspopup="dialog" aria-controls="profile-dialog" data-menu-item
+            class="hidden w-full items-center gap-3 px-4 py-3 text-left text-ink-900 hover:bg-ink-50">
+            <span class="w-10 h-10 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>
+            <span class="flex-1 text-sm font-bold">প্রোফাইল ও সেটিংস</span>
+          </button>
+        </nav>
+        <section class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">সেকশন</h3>
+          <nav id="menu-sections" class="grid grid-cols-3 gap-2.5" aria-label="সেকশন"></nav>
+        </section>
+        <a href="../" class="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-ink-200 text-ink-900 hover:bg-ink-50">
+          <span class="w-10 h-10 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+          <span class="flex-1 text-sm font-bold">Paperloop ওয়েবসাইট</span>
+        </a>
+      </div>
+      <div class="p-5 border-t border-ink-200">
+        <button type="button" data-menu-logout class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>লগআউট</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==========================================
+       PROFILE PANEL: account details, settings, logout (opened from the menu's প্রোফাইল ও সেটিংস)
        ========================================== -->
   <dialog id="profile-dialog" class="profile-sheet" aria-labelledby="profile-title">
     <div class="flex flex-col h-full">
@@ -5108,6 +5153,76 @@
       routeFromHash();
     });
 
+  </script>
+  <script>
+    // ==========================================
+    // MENU (floating)
+    // After login the header scrolls away with the page and a floating three-line menu button stays in the
+    // corner. It opens a sheet with notices (unread count), profile and settings, every section of this
+    // dashboard, the Paperloop website and logout; the cross closes it back to the floating button.
+    // ==========================================
+    const menuDialog = () => document.getElementById('menu-dialog');
+    function placeMenuButton() {
+      const btn = document.getElementById('btn-menu');
+      if (btn.classList.contains('hidden')) return;
+      const h = document.querySelector('header').getBoundingClientRect();
+      btn.style.top = `${Math.max(12, Math.round(h.top + (h.height - btn.offsetHeight) / 2))}px`;
+      btn.style.right = `${Math.max(16, Math.round((document.documentElement.clientWidth - 768) / 2 + 16))}px`;
+    }
+    function syncMenuButton() {
+      const btn = document.getElementById('btn-menu');
+      btn.classList.toggle('hidden', !session); btn.classList.toggle('flex', !!session);
+      if (!session && menuDialog().open) menuDialog().close();
+      requestAnimationFrame(placeMenuButton);
+    }
+    function renderMenu() {
+      if (!session) return;
+      const role = session.role, here = decodeURIComponent(location.hash.slice(1));
+      document.getElementById('menu-subtitle').textContent = `${appState.schoolName} • ${ROLE_META[role].label}`;
+      const tile = (name, icon, label, on) => `
+        <button type="button" data-menu-section="${esc(name)}" aria-current="${on ? 'page' : 'false'}"
+          class="icon-tile flex flex-col items-center justify-center text-center gap-1 px-1 py-3 rounded-2xl border ${on ? 'tile-active' : 'border-ink-200 bg-white text-ink-800 hover:bg-ink-50'}">
+          ${icon}<span class="text-[0.6875rem] font-bold leading-tight">${esc(label)}</span></button>`;
+      const home = '<svg class="line-icon" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+      document.getElementById('menu-sections').innerHTML = tile('', home, 'হোম', !here) +
+        Array.from(cardsOf(role)).map(c => {
+          const name = c.getAttribute(`data-${role}-panel`), title = c.querySelector('.font-extrabold');
+          const icon = c.querySelector('svg').cloneNode(true); icon.setAttribute('class', 'line-icon');
+          return tile(name, icon.outerHTML, title ? title.textContent.trim() : name, here === name);
+        }).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const dlg = menuDialog(), btn = document.getElementById('btn-menu');
+      btn.addEventListener('click', () => { renderMenu(); dlg.showModal(); });
+      dlg.querySelector('[data-menu-close]').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); // tap outside the sheet
+      // Notices and profile open their own panels; the menu closes first (capture runs before their handlers)
+      dlg.addEventListener('click', e => { if (e.target.closest('[data-menu-item]')) dlg.close(); }, true);
+      dlg.addEventListener('click', e => {
+        const go = e.target.closest('[data-menu-section]');
+        if (go) {
+          dlg.close();
+          const name = go.getAttribute('data-menu-section');
+          openedFromHome = false; // the section's back button then returns to the cards, not to the last section
+          if (!name) { history.pushState(null, '', location.pathname + location.search); routeFromHash(); }
+          else if (location.hash.slice(1) === name) routeFromHash(); else location.hash = name;
+          return;
+        }
+        if (e.target.closest('[data-menu-logout]')) { dlg.close(); logout(); }
+      });
+      // The unread count shows on the floating button too
+      const badge = document.getElementById('notice-badge'), copy = document.getElementById('menu-badge');
+      const mirror = () => { copy.textContent = badge.textContent; copy.classList.toggle('hidden', badge.classList.contains('hidden')); btn.setAttribute('aria-label', badge.classList.contains('hidden') ? 'মেনু' : `মেনু, ${badge.textContent}টি নতুন নোটিশ`); };
+      new MutationObserver(mirror).observe(badge, { attributes: true, childList: true, characterData: true, subtree: true });
+      mirror();
+      window.addEventListener('scroll', placeMenuButton, { passive: true });
+      window.addEventListener('resize', placeMenuButton);
+      window.addEventListener('hashchange', () => requestAnimationFrame(placeMenuButton));
+      syncMenuButton();
+    });
+    const prevMenuHook = window.onDiarySessionChange;
+    window.onDiarySessionChange = () => { if (prevMenuHook) prevMenuHook(); syncMenuButton(); };
   </script>
 </body>
 </html>
