@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=ef90ecc688" />
+  <link rel="stylesheet" href="diary.css?v=474eccf9ce" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -293,9 +293,7 @@
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">উন্নতি রিপোর্ট</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Improvement</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
-              +১৪% অগ্রগতি
-            </div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-improvement">—</div>
           </button>
 
           <!-- Floating Card 4: Weekly & Monthly Topics Covered -->
@@ -401,47 +399,8 @@
            FLOATING PANEL 3: IMPROVEMENT REPORTS (উন্নতি রিপোর্ট)
            ========================================== -->
       <div id="panel-parent-improvement" class="parent-subpanel hidden space-y-4">
-        <div class="floating-card rounded-2xl p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-base font-bold text-ink-900">শিক্ষার্থীর উন্নতি ও অগ্রগতি রিপোর্ট (Improvement Report)</h3>
-              <p class="text-xs text-ink-500">গত মাসের তুলনায় এই মাসে খাতার লেখা, বানান ও গণিতে অগ্রগতি</p>
-            </div>
-            <span class="px-3 py-1 rounded-xl bg-gold-50 text-gold-900 border border-gold-200 text-xs font-extrabold">
-              সার্বিক উন্নতি: +১৪%
-            </span>
-          </div>
-
-          <!-- Subject Progress Comparison Bars (Last Month vs This Month) -->
-          <div id="improvement-bars-list" class="space-y-3"></div>
-
-          <!-- 2 Floating Actionable Insight Cards: Strengths vs Home Practice Focus -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div class="p-4 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
-              <div class="flex items-center gap-2 text-ink-900 font-bold text-xs sm:text-sm">
-                <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-                <span>যেসব বিষয়ে দারুণ উন্নতি হয়েছে</span>
-              </div>
-              <ul class="text-xs text-ink-700 space-y-1.5 list-disc list-inside">
-                <li><strong>Paperloop ৪-দাগ খাতায়:</strong> ইংরেজি Capital ও Small অক্ষরের লাইন ঠিক রাখা (+১৮%)।</li>
-                <li><strong>গণিত বক্স খাতায়:</strong> সমহর ভগ্নাংশের যোগ ও ১–১২ ঘরের নামতা নির্ভুলভাবে লেখা।</li>
-                <li><strong>বাংলা যুক্তবর্ণ:</strong> ‘আমার বাংলা বই’-এর শব্দের বানান ভুল আগের চেয়ে অনেক কমেছে।</li>
-              </ul>
-            </div>
-
-            <div class="p-4 rounded-2xl bg-gold-50/60 border border-gold-200 space-y-2">
-              <div class="flex items-center gap-2 text-ink-900 font-bold text-xs sm:text-sm">
-                <svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                <span>বাসায় প্রতিদিন ১০ মিনিট যা দেখবেন</span>
-              </div>
-              <ul class="text-xs text-ink-700 space-y-1.5 list-disc list-inside">
-                <li><strong>ইংরেজি Word Meaning:</strong> প্রতিদিন রাতে ৫টি করে নতুন শব্দের বানান মুখে ধরা।</li>
-                <li><strong>গণিত কথার অংক:</strong> প্রশ্নের ডাক পড়ে যোগ নাকি বিয়োগ হবে তা নিজে বলতে উৎসাহিত করা।</li>
-                <li><strong>বিজ্ঞান চিত্র:</strong> সালোকসংশ্লেষণ ও উদ্ভিদের অংশগুলোর নাম খাতায় লিখে অনুশীলন।</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <!-- Monthly progress against the common minimum standard (see LEARNING STANDARD) -->
+        <div id="p-standard" class="space-y-4"></div>
       </div>
 
       <!-- ==========================================
@@ -589,7 +548,18 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Students</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-records">—</div>
           </button>
+        <button type="button" data-teacher-panel="standard" class="teacher-floating-card floating-card icon-tile col-span-2 sm:col-span-3 rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/><path d="M3 9h18" stroke-dasharray="2 3"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">মাসিক মূল্যায়ন ও রিপোর্ট</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monthly check</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-standard">—</div>
+          </button>
       </div>
+
+      <!-- ==========================================
+           TEACHER PANEL: MONTHLY CHECK & PERSONAL REPORTS (see LEARNING STANDARD)
+           ========================================== -->
+      <div id="panel-teacher-standard" class="teacher-subpanel hidden space-y-4"></div>
 
       <!-- ==========================================
            TEACHER PANEL 1: MORNING ATTENDANCE (সকালের হাজিরা)
@@ -1393,13 +1363,6 @@
       }
     ];
 
-    // Improvement Reports Dataset
-    const improvementMetrics = [
-      { subject: 'গণিত (ভগ্নাংশ ও নামতা)', prev: 74, curr: 94, diff: '+২০%', detail: 'Paperloop বক্স খাতায় নিয়মিত অনুশীলনে সংখ্যার সারি ও যোগ-বিয়োগ নির্ভুল হয়েছে।' },
-      { subject: 'ইংরেজি (৪-দাগ হাতের লেখা ও বানান)', prev: 72, curr: 88, diff: '+১৬%', detail: 'Capital ও Small letter-এর লাইন মেইনটেইন করা অনেক উন্নত হয়েছে।' },
-      { subject: 'বাংলা (যুক্তবর্ণ ও বাক্য গঠন)', prev: 82, curr: 92, diff: '+১০%', detail: 'বানান ভুল কমেছে এবং হাতের লেখার গতি বেড়েছে।' },
-      { subject: 'প্রাথমিক বিজ্ঞান (চিত্র ও সংজ্ঞা)', prev: 80, curr: 90, diff: '+১০%', detail: 'সালোকসংশ্লেষণ ও খাদ্যশৃঙ্খলের মূল ধারণা পরিষ্কার হয়েছে।' }
-    ];
 
     // Weekly & Monthly Topics Covered Dataset
     const topicsCoveredData = {
@@ -1573,26 +1536,8 @@
       renderParentFees();
     }
 
-    function renderImprovementPanel() {
-      const box = document.getElementById('improvement-bars-list');
-      box.innerHTML = improvementMetrics.map(m => `
-        <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 space-y-2">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs sm:text-sm font-bold text-ink-900">${m.subject}</span>
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-ink-500">গত মাস: ${m.prev}%</span>
-              <span>→</span>
-              <span class="font-extrabold text-ink-900">এই মাস: ${m.curr}%</span>
-              <span class="px-2 py-0.5 rounded-md bg-gold-100 text-gold-950 font-extrabold">${m.diff}</span>
-            </div>
-          </div>
-          <div class="w-full h-2.5 bg-ink-200 rounded-full overflow-hidden">
-            <div class="h-full bg-ink-900 rounded-full" style="width: ${m.curr}%;"></div>
-          </div>
-          <p class="text-xs text-ink-600">${m.detail}</p>
-        </div>
-      `).join('');
-    }
+    // The improvement report is drawn by LEARNING STANDARD (monthly progress against the common minimum)
+    function renderImprovementPanel() { if (typeof renderParentStandard === 'function') renderParentStandard(); }
 
     function renderTopicsPanel() {
       document.querySelectorAll('.topic-scope-btn').forEach(btn => {
@@ -4610,6 +4555,390 @@
       renderPrintPanel();
     });
 
+  </script>
+  <script>
+    // ==========================================
+    // LEARNING STANDARD (মাসিক অগ্রগতি ও ন্যূনতম মান)
+    // The aim is not to be first in class but that every child reaches at least a common minimum in each
+    // subject, like outcome-based assessment. Each month a subject's level is the average of its published
+    // exam marks that month and the class teacher's monthly skill check (handwriting, reading aloud, khata
+    // work and short written tasks, out of 100); with only one of the two, that one is used.
+    // Parents see one bar per subject: their child, the minimum line and the class average (no rank and no
+    // other child's marks), the teacher's note and Paperloop's practice tips. The class teacher enters the
+    // skill checks and opens a detailed personal report per student for counselling (printable). The
+    // principal sees how many students in each class meet the minimum. The grade sheet, GPA and position in
+    // RESULTS stay as they are.
+    // The minimum is common to every partner school: the schools agree on it together and Paperloop
+    // moderates, so no school changes it on its own. The demo uses a sample value.
+    // ==========================================
+    const STD_SUBJECTS = EXAM_KINDS.model.subjects;
+    const STANDARD = { pct: 60, sample: true };
+    const standardFor = () => STANDARD.pct; // (cls, subject) once the agreed table differs by class or subject
+    const STD_MONTHS = [new Date(attDate.getFullYear(), attDate.getMonth(), 1), new Date(attDate.getFullYear(), attDate.getMonth() - 1, 1)];
+    const monthKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const monthName = d => `${BN_MONTHS[d.getMonth()]} ${bn(d.getFullYear())}`;
+    const MIN_FOR_AVERAGE = 5; // a class average from fewer students could reveal one child's marks
+
+    // skillChecks[cls][month][subject][roll] = 0–100; teacherNotes[cls][month][roll] = text
+    const skillChecks = {}, teacherNotes = {};
+    const skillBox = (cls, mk, subject) => (((skillChecks[cls] = skillChecks[cls] || {})[mk] = skillChecks[cls][mk] || {})[subject] = skillChecks[cls][mk][subject] || {});
+    const noteBox = (cls, mk) => ((teacherNotes[cls] = teacherNotes[cls] || {})[mk] = teacherNotes[cls][mk] || {});
+    (function seedStandard() {
+      const ability = r => r === 7 ? 0.86 : 0.45 + 0.5 * seededRandom(r * 7919 + 11);
+      STD_MONTHS.forEach((m, mi) => STD_SUBJECTS.forEach((s, si) => {
+        if (mi === 0 && s === 'ধর্ম শিক্ষা') return; // this month: the teacher has not entered this subject yet
+        const box = skillBox(TEACHER_CLASS, monthKey(m), s);
+        classRoster.forEach((_, i) => {
+          const r = i + 1, noise = seededRandom(mi * 977 + si * 61 + r * 13) * 0.2 - 0.1, growth = mi === 0 ? 0.05 : 0;
+          box[r] = Math.max(15, Math.min(100, Math.round(100 * (ability(r) + noise + growth))));
+        });
+      }));
+      // The sample child (roll 07) finds maps hard this month: below the minimum in one subject
+      // (rising from last month, when the model test went poorly in that subject too)
+      skillBox(TEACHER_CLASS, monthKey(STD_MONTHS[0]), 'বাংলাদেশ ও বিশ্বপরিচয়')[7] = 56;
+      skillBox(TEACHER_CLASS, monthKey(STD_MONTHS[1]), 'বাংলাদেশ ও বিশ্বপরিচয়')[7] = 44;
+      const lastModel = exams.find(e => e.cls === TEACHER_CLASS && e.publishedAt && e.date.getMonth() === STD_MONTHS[1].getMonth() && e.subjects.includes('বাংলাদেশ ও বিশ্বপরিচয়'));
+      if (lastModel) lastModel.marks['বাংলাদেশ ও বিশ্বপরিচয়'][7] = 45;
+      noteBox(TEACHER_CLASS, monthKey(STD_MONTHS[0]))[7] = 'বাংলাদেশ ও বিশ্বপরিচয়ে মানচিত্রে দিক চিনতে এখনো একটু সমস্যা হচ্ছে, তবে গত মাসের চেয়ে ভালো করেছে। বাকি সব বিষয়ে সে ভালো করছে; বাসায় অল্প অল্প অনুশীলন করালেই হবে।';
+    })();
+
+    const inMonth = (d, m) => d.getFullYear() === m.getFullYear() && d.getMonth() === m.getMonth();
+    // { exam, skill, level } in percent (null when there is nothing for that month)
+    function levelOf(cls, roll, subject, month) {
+      const ex = exams.filter(e => e.cls === cls && e.publishedAt && inMonth(e.date, month) && e.subjects.includes(subject) && roll <= e.rosterSize)
+        .map(e => { const v = e.marks[subject][roll]; return typeof v === 'number' ? (v / e.full) * 100 : null; })
+        .filter(v => v !== null);
+      const exam = ex.length ? Math.round(ex.reduce((a, v) => a + v, 0) / ex.length) : null;
+      const sv = (((skillChecks[cls] || {})[monthKey(month)] || {})[subject] || {})[roll];
+      const skill = typeof sv === 'number' ? sv : null;
+      const level = exam !== null && skill !== null ? Math.round((exam + skill) / 2) : exam !== null ? exam : skill;
+      return { exam, skill, level };
+    }
+    function classAverage(cls, subject, month) {
+      const v = rosterFor(cls).map((_, i) => levelOf(cls, i + 1, subject, month).level).filter(x => x !== null);
+      return v.length >= MIN_FOR_AVERAGE ? Math.round(v.reduce((a, x) => a + x, 0) / v.length) : null;
+    }
+    function studentSummary(cls, roll, month) {
+      const subs = STD_SUBJECTS.map(s => {
+        const now = levelOf(cls, roll, s, month), prev = levelOf(cls, roll, s, new Date(month.getFullYear(), month.getMonth() - 1, 1));
+        return { subject: s, ...now, prev: prev.level, avg: classAverage(cls, s, month), min: standardFor(cls, s) };
+      });
+      const rated = subs.filter(x => x.level !== null);
+      return { subs, rated: rated.length, met: rated.filter(x => x.level >= x.min).length, below: rated.filter(x => x.level < x.min) };
+    }
+
+    // Paperloop's practice tips: picked automatically from each subject's level (a fixed list, written for home)
+    const TIPS = {
+      'বাংলা': ['প্রতিদিন ১০ মিনিট জোরে পড়ুক; যে শব্দে আটকায় সেটি খাতায় ৩ বার লিখুক।', 'Paperloop দাগ খাতায় দিনে এক পৃষ্ঠা যুক্তবর্ণ লেখা।'],
+      'ইংরেজি': ['দিনে ৫টি নতুন শব্দের অর্থ ও বানান; পরদিন মুখে জিজ্ঞেস করুন।', '৪-দাগ খাতায় capital ও small letter লাইন মেনে লেখা।'],
+      'গণিত': ['প্রতিদিন একটি নামতা মুখে বলা ও খাতায় লেখা।', 'বক্স খাতায় অঙ্কের সারি সোজা রেখে দিনে ৫টি অঙ্ক।'],
+      'বিজ্ঞান': ['অধ্যায়ের ছবি খাতায় এঁকে নাম লিখুক।', 'চারপাশের জিনিস দেখিয়ে “এটা কেন হয়?” প্রশ্নের খেলা।'],
+      'বাংলাদেশ ও বিশ্বপরিচয়': ['মানচিত্রে দিক ও জেলা খোঁজার খেলা, দিনে ১০ মিনিট।', 'পাঠের বিষয় নিয়ে পরিবারের সাথে ছোট গল্প বা আলাপ।'],
+      'ধর্ম শিক্ষা': ['দিনের পাঠ ছোট করে মুখে বলুক।', 'শেখা বিষয় নিজের ভাষায় খাতায় ২–৩ লাইনে লিখুক।']
+    };
+    function tipsFor(sum) {
+      if (!sum.rated) return [];
+      const list = sum.below.length ? sum.below : [...sum.subs].filter(x => x.level !== null).sort((a, b) => a.level - b.level).slice(0, 1);
+      return list.map(x => ({ subject: x.subject, below: x.level < x.min, tips: TIPS[x.subject] || [], far: x.level < x.min - 15 }));
+    }
+    const sIcon = {
+      check: '<path d="M20 6 9 17l-5-5"/>', up: '<path d="m18 15-6-6-6 6"/>', note: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+      bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+      flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>'
+    };
+    const sSvg = (n, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${sIcon[n]}</svg>`;
+    const pctBn = v => v === null ? '—' : `${bn(v)}%`;
+
+    // One subject's bar: the child (fill), the minimum (upright line) and the class average (small marker below)
+    function standardBar(x) {
+      const met = x.level !== null && x.level >= x.min;
+      return `
+        <div class="relative pt-1.5 pb-3">
+          <div class="h-3 rounded-full bg-ink-200 overflow-hidden"><div class="h-full rounded-full ${met ? 'bg-ink-800' : 'bg-gold-500'}" style="width:${x.level || 0}%"></div></div>
+          <div class="absolute top-0 h-6 w-[3px] -ml-[1.5px] rounded bg-ink-950" style="left:${x.min}%" title="ন্যূনতম মান"></div>
+          ${x.avg !== null ? `<div class="absolute bottom-0 -ml-[5px] w-0 h-0 border-x-[5px] border-x-transparent border-b-[7px] border-b-ink-500" style="left:${x.avg}%" title="ক্লাসের গড়"></div>` : ''}
+        </div>`;
+    }
+    const legend = `
+      <div class="flex flex-wrap gap-x-4 gap-y-1 text-[0.6875rem] text-ink-600">
+        <span class="flex items-center gap-1.5"><span class="w-5 h-2.5 rounded-full bg-ink-800"></span>আপনার সন্তান</span>
+        <span class="flex items-center gap-1.5"><span class="w-[3px] h-3.5 rounded bg-ink-950"></span>ন্যূনতম মান</span>
+        <span class="flex items-center gap-1.5"><span class="w-0 h-0 border-x-[5px] border-x-transparent border-b-[7px] border-b-ink-500"></span>ক্লাসের গড়</span>
+      </div>`;
+    function subjectRow(x, { teacher = false } = {}) {
+      const met = x.level !== null && x.level >= x.min, diff = x.level !== null && x.prev !== null ? x.level - x.prev : null;
+      if (x.level === null) return `
+        <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-between gap-2">
+          <span class="text-sm font-bold text-ink-900">${esc(x.subject)}</span><span class="text-[0.6875rem] text-ink-500">এ মাসের মূল্যায়ন এখনো আসেনি</span>
+        </div>`;
+      return `
+        <div class="p-3.5 rounded-2xl border space-y-1.5 ${met ? 'bg-ink-50 border-ink-200' : 'bg-gold-50/60 border-gold-200'}">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-sm font-bold text-ink-900">${esc(x.subject)}</span>
+            <span class="px-2 py-0.5 rounded-lg text-[0.6875rem] font-extrabold flex items-center gap-1 ${met ? 'bg-white border border-ink-200 text-ink-800' : 'bg-white border border-gold-300 text-gold-900'}">${met ? sSvg('check') + 'ন্যূনতম মান অর্জিত' : 'আরও অনুশীলন দরকার'}</span>
+          </div>
+          ${standardBar(x)}
+          <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-600">
+            <span>এই মাস <b class="text-ink-900">${pctBn(x.level)}</b></span>
+            ${x.prev !== null ? `<span>গত মাস ${pctBn(x.prev)}${diff ? ` <b class="text-ink-900">(${diff > 0 ? '+' : '−'}${bn(Math.abs(diff))})</b>` : ''}</span>` : ''}
+            <span>ন্যূনতম ${pctBn(x.min)}</span>
+            ${x.avg !== null ? `<span>ক্লাসের গড় ${pctBn(x.avg)}</span>` : ''}
+          </div>
+          <div class="text-[0.6875rem] text-ink-500">${[x.exam !== null && `পরীক্ষা ${pctBn(x.exam)}`, x.skill !== null && `মাসিক দক্ষতা যাচাই ${pctBn(x.skill)}`].filter(Boolean).join(' • ')}</div>
+        </div>`;
+    }
+    function tipsCard(sum) {
+      const t = tipsFor(sum);
+      if (!t.length) return '';
+      return `
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-gold-50 border border-gold-200 text-ink-900 flex items-center justify-center">${sSvg('bulb')}</span>
+            <div><h4 class="text-sm font-bold text-ink-900">Paperloop-এর পরামর্শ</h4><p class="text-[0.6875rem] text-ink-500">মাসিক মান দেখে স্বয়ংক্রিয়ভাবে বাছাই করা; বকাঝকা নয়, প্রতিদিন অল্প অনুশীলন</p></div></div>
+          ${t.map(x => `
+            <div class="p-3 rounded-xl bg-ink-50 border border-ink-200 space-y-1">
+              <div class="text-xs font-bold text-ink-900">${esc(x.subject)}${x.below ? '' : ' (সবচেয়ে কম যে বিষয়ে, তবু মান অর্জিত)'}</div>
+              <ul class="text-xs text-ink-700 list-disc pl-4 space-y-0.5">${x.tips.map(tip => `<li>${esc(tip)}</li>`).join('')}${x.far ? '<li>শ্রেণি শিক্ষকের সাথে কথা বলে প্রতি সপ্তাহে একটি ছোট লক্ষ্য ঠিক করুন।</li>' : ''}</ul>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    // ---------- Parent ----------
+    const stdState = { parentMonth: 0, teacher: { month: 0, tab: 'check', subject: STD_SUBJECTS[0], roll: null, onlyBelow: false } };
+    function renderParentStandard() {
+      const el = document.getElementById('p-standard'), stat = document.getElementById('stat-improvement');
+      if (!el) return;
+      const cls = appState.studentClass, roll = currentRollNo(), month = STD_MONTHS[stdState.parentMonth];
+      const hasData = rosterFor(cls).length && roll;
+      const sum = hasData ? studentSummary(cls, roll, month) : null;
+      const statSum = hasData ? studentSummary(cls, roll, STD_MONTHS[0]) : null;
+      stat.textContent = statSum && statSum.rated ? `${bn(statSum.met)}/${bn(statSum.rated)} বিষয়ে মান অর্জিত` : '—';
+      const note = hasData ? noteBox(cls, monthKey(month))[roll] : '';
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">মাসিক অগ্রগতি ও ন্যূনতম মান</h3>
+            <p class="text-xs text-ink-500">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে।</p>
+          </div>
+          <div class="grid grid-cols-2 gap-2">${STD_MONTHS.map((m, i) => `<button type="button" data-pstd-month="${i}" aria-pressed="${i === stdState.parentMonth}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${i === stdState.parentMonth ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${i ? 'গত মাস' : 'এই মাস'} • ${monthName(m)}</button>`).join('')}</div>
+          ${!hasData ? '<p class="text-sm text-ink-500 text-center py-6">এই শ্রেণির মাসিক মূল্যায়ন ডেমোতে নেই।</p>' : `
+          <div class="p-3.5 rounded-2xl ${sum.below.length ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'}">
+            <div class="text-sm font-extrabold text-ink-900">${sum.rated ? `${bn(sum.rated)}টির মধ্যে ${bn(sum.met)}টি বিষয়ে ন্যূনতম মান অর্জিত` : 'এ মাসের মূল্যায়ন এখনো আসেনি'}</div>
+            <div class="text-xs text-ink-600 mt-0.5">${sum.below.length ? `${sum.below.map(x => esc(x.subject)).join(', ')}: আরও অনুশীলন দরকার। নিচে শিক্ষকের নোট ও পরামর্শ দেখুন।` : sum.rated ? 'সব বিষয়ে প্রত্যাশিত শিখন হচ্ছে। এভাবেই চালিয়ে যান।' : ''}</div>
+          </div>
+          ${legend}
+          <div class="space-y-3">${sum.subs.map(x => subjectRow(x)).join('')}</div>`}
+          <p class="text-[0.6875rem] text-ink-500">ন্যূনতম মান সব পার্টনার স্কুল মিলে ঠিক করে, Paperloop সমন্বয় করে${STANDARD.sample ? ' (ডেমোতে নমুনা মান ' + pctBn(STANDARD.pct) + ')' : ''}। মাসিক মান = সেই মাসের প্রকাশিত পরীক্ষা ও শিক্ষকের মাসিক দক্ষতা যাচাইয়ের গড়। পরীক্ষার গ্রেড, GPA ও মেধাক্রম আগের মতো “গ্রেড ও নম্বর”-এ।</p>
+        </div>
+        ${note ? `
+        <div class="floating-card rounded-2xl p-5 space-y-2">
+          <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('note')}</span>
+            <div><h4 class="text-sm font-bold text-ink-900">শ্রেণি শিক্ষকের নোট</h4><p class="text-[0.6875rem] text-ink-500">${esc(TEACHER_NAME)} • ${monthName(month)}</p></div></div>
+          <p class="text-sm text-ink-800 leading-relaxed">${esc(note)}</p>
+        </div>` : ''}
+        ${hasData ? tipsCard(sum) : ''}`;
+    }
+
+    // ---------- Teacher: monthly skill check and personal reports ----------
+    function attendanceFor(roll, month) {
+      let present = 0, counted = 0;
+      Object.keys(studentAtt.records).forEach(k => {
+        const [y, m] = k.split('-').map(Number), st = studentAtt.records[k].statuses[roll];
+        if (y === month.getFullYear() && m === month.getMonth() + 1 && st) { counted += 1; if (st === 'present') present += 1; }
+      });
+      return counted ? { present, counted, pct: Math.round((present / counted) * 100) } : null;
+    }
+    function renderTeacherStandard() {
+      const el = document.getElementById('panel-teacher-standard'), st = stdState.teacher, cls = TEACHER_CLASS, month = STD_MONTHS[st.month], mk = monthKey(month);
+      const roster = rosterFor(cls);
+      const doneFor = s => roster.filter((_, i) => typeof skillBox(cls, mk, s)[i + 1] === 'number').length;
+      const thisMk = monthKey(STD_MONTHS[0]), pending = STD_SUBJECTS.filter(s => roster.filter((_, i) => typeof skillBox(cls, thisMk, s)[i + 1] === 'number').length < roster.length);
+      document.getElementById('t-stat-standard').textContent = pending.length ? `${bn(pending.length)}টি বিষয়ের যাচাই বাকি` : 'এ মাসের যাচাই সম্পন্ন';
+      const chip = (attr, val, label, on) => `<button type="button" ${attr}="${esc(String(val))}" aria-pressed="${on}" class="icon-tile px-3 py-2 rounded-xl border text-xs font-bold ${on ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${label}</button>`;
+      const head = `
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <div><h3 class="text-base font-bold text-ink-900">মাসিক মূল্যায়ন ও ব্যক্তিগত রিপোর্ট</h3>
+            <p class="text-xs text-ink-500">${esc(cls)} • ন্যূনতম মান ${pctBn(STANDARD.pct)}${STANDARD.sample ? ' (নমুনা)' : ''}, সব পার্টনার স্কুলের জন্য একই</p></div>
+          <div class="grid grid-cols-2 gap-2">${chip('data-tstd-tab', 'check', 'দক্ষতা যাচাইয়ের নম্বর', st.tab === 'check')}${chip('data-tstd-tab', 'report', 'শিক্ষার্থীর রিপোর্ট', st.tab === 'report')}</div>
+          <div class="grid grid-cols-2 gap-2">${STD_MONTHS.map((m, i) => chip('data-tstd-month', i, `${i ? 'গত মাস' : 'এই মাস'} • ${monthName(m)}`, i === st.month)).join('')}</div>
+        </div>`;
+      let body = '';
+      if (st.tab === 'check') {
+        const box = skillBox(cls, mk, st.subject);
+        body = `
+          <div class="floating-card rounded-2xl p-5 space-y-4">
+            <div class="grid grid-cols-3 gap-2">${STD_SUBJECTS.map(s => `
+              <button type="button" data-tstd-subject="${esc(s)}" aria-pressed="${s === st.subject}" class="icon-tile flex flex-col items-center justify-center py-2 px-1 rounded-xl border ${s === st.subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-700 hover:bg-ink-50'}">
+                <span class="text-xs font-bold leading-tight text-center">${esc(shortSubject(s))}</span>
+                <span class="text-[0.625rem] font-bold mt-0.5 ${doneFor(s) === roster.length ? 'text-ink-500' : 'text-gold-900'}">${doneFor(s) === roster.length ? 'সম্পন্ন' : `${bn(doneFor(s))}/${bn(roster.length)}`}</span></button>`).join('')}</div>
+            <p class="text-xs text-ink-500">মাসের খাতার কাজ, জোরে পড়া/মুখে বলা ও ছোট লিখিত কাজ মিলিয়ে ১০০-এর মধ্যে নম্বর দিন। লিখলেই সংরক্ষণ হয়; Enter চাপলে পরের রোলে যাবে।</p>
+            <div class="bg-white rounded-2xl border border-ink-200 px-3 divide-y divide-ink-200">${roster.map((name, i) => {
+              const r = i + 1, v = box[r];
+              return `<label class="flex items-center gap-3 py-2">
+                <span class="w-9 text-sm font-extrabold text-ink-900">${rollLabel(r)}</span>
+                <span class="flex-1 min-w-0 text-sm text-ink-800 truncate">${esc(name)}</span>
+                <input type="text" inputmode="numeric" maxlength="3" data-tstd-score="${r}" value="${typeof v === 'number' ? bn(v) : ''}" aria-label="রোল ${rollLabel(r)}: ${esc(shortSubject(st.subject))} যাচাইয়ের নম্বর" class="w-16 px-2 py-2 rounded-xl border border-ink-300 bg-white text-center text-sm font-bold" />
+              </label>`;
+            }).join('')}</div>
+          </div>`;
+      } else if (st.roll) {
+        body = teacherReport(cls, st.roll, month);
+      } else {
+        const rows = roster.map((name, i) => ({ roll: i + 1, name, sum: studentSummary(cls, i + 1, month) }));
+        const below = rows.filter(x => x.sum.below.length);
+        const shown = st.onlyBelow ? below : rows;
+        body = `
+          <div class="floating-card rounded-2xl p-5 space-y-3">
+            <div class="grid grid-cols-2 gap-2">${chip('data-tstd-filter', 'all', `সবাই (${bn(rows.length)})`, !st.onlyBelow)}${chip('data-tstd-filter', 'below', `সাহায্য দরকার (${bn(below.length)})`, st.onlyBelow)}</div>
+            <p class="text-xs text-ink-500">এই তালিকা শুধু আপনি দেখেন; অভিভাবক শুধু নিজের সন্তানেরটা দেখেন। নাম চাপলে বিস্তারিত রিপোর্ট খুলবে।</p>
+            <div class="space-y-2">${shown.length ? shown.map(x => `
+              <button type="button" data-tstd-roll="${x.roll}" class="icon-tile w-full p-3 rounded-2xl border flex items-center gap-3 text-left ${x.sum.below.length ? 'bg-gold-50/60 border-gold-200' : 'bg-ink-50 border-ink-200 hover:bg-white'}">
+                <span class="w-9 text-sm font-extrabold text-ink-900">${rollLabel(x.roll)}</span>
+                <span class="flex-1 min-w-0"><span class="block text-sm font-bold text-ink-900 truncate">${esc(x.name)}</span>
+                  <span class="block text-[0.6875rem] text-ink-600 truncate">${x.sum.below.length ? `দরকার: ${x.sum.below.map(b => esc(shortSubject(b.subject))).join(', ')}` : 'সব বিষয়ে মান অর্জিত'}</span></span>
+                <span class="shrink-0 px-2 py-0.5 rounded-lg bg-white border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">${bn(x.sum.met)}/${bn(x.sum.rated)}</span>
+              </button>`).join('') : '<p class="text-sm text-ink-500 text-center py-4">এ মাসে সবাই ন্যূনতম মান অর্জন করেছে।</p>'}</div>
+          </div>`;
+      }
+      el.innerHTML = head + body;
+    }
+    function teacherReport(cls, roll, month) {
+      const sum = studentSummary(cls, roll, month), name = rosterFor(cls)[roll - 1], att = attendanceFor(roll, month);
+      const strong = sum.subs.filter(x => x.level !== null && x.level >= x.min + 15);
+      const note = noteBox(cls, monthKey(month))[roll] || '';
+      return `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0"><h3 class="text-base font-bold text-ink-900 truncate">${esc(name)}</h3>
+              <p class="text-xs text-ink-500">রোল ${rollLabel(roll)} • ${esc(cls)} • ${monthName(month)}</p></div>
+            <button type="button" data-tstd-list class="icon-tile shrink-0 px-3 py-2 rounded-xl border border-ink-200 bg-white hover:bg-ink-50 text-xs font-bold text-ink-700">সব শিক্ষার্থী</button>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="p-2.5 rounded-xl bg-ink-50 border border-ink-200"><div class="text-[0.6875rem] text-ink-500">মান অর্জিত</div><div class="text-sm font-extrabold text-ink-900">${bn(sum.met)}/${bn(sum.rated)} বিষয়</div></div>
+            <div class="p-2.5 rounded-xl bg-ink-50 border border-ink-200"><div class="text-[0.6875rem] text-ink-500">উপস্থিতি</div><div class="text-sm font-extrabold text-ink-900">${att ? `${pctBn(att.pct)}` : '—'}</div></div>
+            <div class="p-2.5 rounded-xl bg-ink-50 border border-ink-200"><div class="text-[0.6875rem] text-ink-500">শক্তির জায়গা</div><div class="text-sm font-extrabold text-ink-900 truncate">${strong.length ? esc(strong.map(x => shortSubject(x.subject)).join(', ')) : '—'}</div></div>
+          </div>
+          ${legend.replace('আপনার সন্তান', 'শিক্ষার্থী')}
+          <div class="space-y-3">${sum.subs.map(x => subjectRow(x, { teacher: true })).join('')}</div>
+        </div>
+        ${tipsCard(sum)}
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <label for="tstd-note" class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('note')}</span>
+            <span><span class="block text-sm font-bold text-ink-900">অভিভাবকের জন্য নোট</span><span class="block text-[0.6875rem] text-ink-500">অভিভাবক “উন্নতি রিপোর্ট”-এ এটি দেখবেন</span></span></label>
+          <textarea id="tstd-note" data-tstd-note="${roll}" rows="4" maxlength="500" placeholder="যেমন: কোথায় ভালো করছে, কোথায় সাহায্য দরকার, বাসায় কী করলে ভালো হয়" class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm leading-relaxed">${esc(note)}</textarea>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" data-tstd-save-note="${roll}" class="py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm">নোট সংরক্ষণ</button>
+            <button type="button" data-tstd-print="${roll}" class="icon-tile py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>রিপোর্ট প্রিন্ট / PDF</span></button>
+          </div>
+        </div>`;
+    }
+    // The personal report on paper, for a counselling meeting with the guardian
+    function printStudentReport(cls, roll, month) {
+      const sum = studentSummary(cls, roll, month), name = rosterFor(cls)[roll - 1], att = attendanceFor(roll, month), rec = findRecord(cls, roll);
+      const note = noteBox(cls, monthKey(month))[roll] || '';
+      const tips = tipsFor(sum);
+      const info = `<div class="grid grid-cols-2 gap-1 text-sm mb-4">
+        <div>নাম: <b>${esc(name)}</b></div><div>শ্রেণি: <b>${esc(cls)}</b></div>
+        <div>রোল: <b>${rollLabel(roll)}</b></div><div>আইডি: <b>${esc(rec ? rec.id : '—')}</b></div>
+        <div>মাস: <b>${monthName(month)}</b></div><div>উপস্থিতি: <b>${att ? `${bn(att.present)}/${bn(att.counted)} দিন (${pctBn(att.pct)})` : '—'}</b></div></div>`;
+      const table = printTable(['বিষয়', 'পরীক্ষা', 'দক্ষতা যাচাই', 'মাসিক মান', 'গত মাস', 'ক্লাসের গড়', 'ন্যূনতম', 'অবস্থা'],
+        sum.subs.map(x => [esc(x.subject), pctBn(x.exam), pctBn(x.skill), `<b>${pctBn(x.level)}</b>`, pctBn(x.prev), pctBn(x.avg), pctBn(x.min),
+          x.level === null ? '—' : x.level >= x.min ? 'অর্জিত' : '<b>অনুশীলন দরকার</b>']));
+      const summary = `<p class="mt-3 text-sm"><b>${bn(sum.rated)}টির মধ্যে ${bn(sum.met)}টি বিষয়ে ন্যূনতম মান অর্জিত।</b> ${sum.below.length ? `অনুশীলন দরকার: ${sum.below.map(x => esc(x.subject)).join(', ')}।` : ''}</p>`;
+      const tipsHtml = tips.length ? `<div class="mt-3 text-sm"><b>বাসায় অনুশীলনের পরামর্শ (Paperloop):</b><ul class="list-disc pl-5 mt-1">${tips.flatMap(x => x.tips.map(t => `<li>${esc(x.subject)}: ${esc(t)}</li>`)).join('')}</ul></div>` : '';
+      const noteHtml = `<div class="mt-3 text-sm"><b>শ্রেণি শিক্ষকের মন্তব্য:</b><div class="mt-1 min-h-[18mm] border border-ink-900 rounded p-2">${esc(note)}</div></div>`;
+      const aim = '<p class="mt-3 text-xs">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে। ন্যূনতম মান সব পার্টনার স্কুল মিলে ঠিক করে, Paperloop সমন্বয় করে।</p>';
+      printDoc(`ব্যক্তিগত অগ্রগতি রিপোর্ট • ${monthName(month)}`, info + table + summary + tipsHtml + noteHtml + aim, ['শ্রেণি শিক্ষক', 'অভিভাবক']);
+    }
+
+    // ---------- Principal: how many students meet the minimum (inside the results section) ----------
+    function schoolStandardCard(cls) {
+      const month = STD_MONTHS[0], roster = rosterFor(cls);
+      const rows = STD_SUBJECTS.map(s => {
+        const lv = roster.map((_, i) => levelOf(cls, i + 1, s, month).level).filter(x => x !== null);
+        return { s, n: lv.length, met: lv.filter(x => x >= standardFor(cls, s)).length };
+      });
+      const all = roster.map((_, i) => studentSummary(cls, i + 1, month)).filter(x => x.rated);
+      const allMet = all.filter(x => !x.below.length).length;
+      return `
+        <div data-school-standard class="floating-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('flag')}</span>
+            <div><h3 class="text-base font-bold text-ink-900">ন্যূনতম মান • ${esc(cls)}</h3><p class="text-[0.6875rem] text-ink-500">${monthName(month)} • মান ${pctBn(STANDARD.pct)}${STANDARD.sample ? ' (নমুনা)' : ''}, সব পার্টনার স্কুলের জন্য একই</p></div></div>
+          ${!roster.length ? '<p class="text-sm text-ink-500">এই শ্রেণির মাসিক মূল্যায়ন ডেমোতে নেই।</p>' : `
+          <div class="p-3 rounded-xl bg-ink-50 border border-ink-200 text-sm font-bold text-ink-900">${bn(all.length)} জনের মধ্যে ${bn(allMet)} জন সব বিষয়ে ন্যূনতম মান অর্জন করেছে</div>
+          <div class="space-y-2">${rows.map(x => {
+            const pct = x.n ? Math.round((x.met / x.n) * 100) : null;
+            return `<div class="space-y-1">
+              <div class="flex justify-between text-xs"><span class="font-bold text-ink-900">${esc(x.s)}</span><span class="text-ink-600">${x.n ? `${bn(x.met)}/${bn(x.n)} জন (${pctBn(pct)})` : 'মূল্যায়ন বাকি'}</span></div>
+              <div class="h-2.5 rounded-full bg-ink-200 overflow-hidden"><div class="h-full rounded-full bg-ink-800" style="width:${pct || 0}%"></div></div></div>`;
+          }).join('')}</div>`}
+        </div>`;
+    }
+    const baseRenderSchoolResults = renderSchoolResults;
+    renderSchoolResults = function () {
+      baseRenderSchoolResults();
+      const el = document.getElementById('panel-school-results');
+      const first = el.firstElementChild;
+      if (first) first.insertAdjacentHTML('afterend', schoolStandardCard(resultsState.school.cls));
+    };
+    // Published results change the monthly levels
+    const baseRenderAllResults = renderAllResults;
+    renderAllResults = function () { baseRenderAllResults(); renderParentStandard(); renderTeacherStandard(); };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('p-standard').addEventListener('click', e => {
+        const m = e.target.closest('[data-pstd-month]');
+        if (m) { stdState.parentMonth = Number(m.getAttribute('data-pstd-month')); renderParentStandard(); }
+      });
+      const el = document.getElementById('panel-teacher-standard'), st = stdState.teacher;
+      el.addEventListener('click', e => {
+        const t = e.target;
+        const tab = t.closest('[data-tstd-tab]');
+        if (tab) { st.tab = tab.getAttribute('data-tstd-tab'); st.roll = null; renderTeacherStandard(); return; }
+        const m = t.closest('[data-tstd-month]');
+        if (m) { st.month = Number(m.getAttribute('data-tstd-month')); renderTeacherStandard(); return; }
+        const s = t.closest('[data-tstd-subject]');
+        if (s) { st.subject = s.getAttribute('data-tstd-subject'); renderTeacherStandard(); return; }
+        const f = t.closest('[data-tstd-filter]');
+        if (f) { st.onlyBelow = f.getAttribute('data-tstd-filter') === 'below'; renderTeacherStandard(); return; }
+        const r = t.closest('[data-tstd-roll]');
+        if (r) { st.roll = Number(r.getAttribute('data-tstd-roll')); renderTeacherStandard(); window.scrollTo(0, 0); return; }
+        if (t.closest('[data-tstd-list]')) { st.roll = null; renderTeacherStandard(); return; }
+        const sv = t.closest('[data-tstd-save-note]');
+        if (sv) {
+          const roll = Number(sv.getAttribute('data-tstd-save-note')), text = oneSpelling(el.querySelector('[data-tstd-note]').value.trim());
+          const box = noteBox(TEACHER_CLASS, monthKey(STD_MONTHS[st.month]));
+          if (text) box[roll] = text; else delete box[roll];
+          renderParentStandard();
+          showToast(text ? 'নোট সংরক্ষণ হয়েছে; অভিভাবক উন্নতি রিপোর্টে দেখবেন' : 'নোট মুছে ফেলা হয়েছে');
+          return;
+        }
+        const pr = t.closest('[data-tstd-print]');
+        if (pr) printStudentReport(TEACHER_CLASS, Number(pr.getAttribute('data-tstd-print')), STD_MONTHS[st.month]);
+      });
+      el.addEventListener('input', e => {
+        const inp = e.target.closest('[data-tstd-score]');
+        if (!inp) return;
+        const raw = toAsciiDigits(inp.value).replace(/[^0-9]/g, ''), box = skillBox(TEACHER_CLASS, monthKey(STD_MONTHS[st.month]), st.subject), r = Number(inp.getAttribute('data-tstd-score'));
+        const v = raw === '' ? null : Math.min(100, Number(raw));
+        if (v === null) delete box[r]; else box[r] = v;
+        inp.classList.toggle('border-gold-600', raw !== '' && Number(raw) > 100);
+        renderParentStandard();
+        // update this subject's count without redrawing the list (keeps the keyboard open)
+        const done = rosterFor(TEACHER_CLASS).filter((_, i) => typeof box[i + 1] === 'number').length, n = rosterFor(TEACHER_CLASS).length;
+        const tile = el.querySelector(`[data-tstd-subject="${CSS.escape(st.subject)}"] span:last-child`);
+        if (tile) { tile.textContent = done === n ? 'সম্পন্ন' : `${bn(done)}/${bn(n)}`; tile.className = `text-[0.625rem] font-bold mt-0.5 ${done === n ? 'text-ink-500' : 'text-gold-900'}`; }
+      });
+      el.addEventListener('keydown', e => {
+        const inp = e.target.closest('[data-tstd-score]');
+        if (!inp || e.key !== 'Enter') return;
+        e.preventDefault();
+        const all = [...el.querySelectorAll('[data-tstd-score]')], next = all[all.indexOf(inp) + 1];
+        if (next) next.focus(); else { inp.blur(); renderTeacherStandard(); }
+      });
+      el.addEventListener('focusout', e => { if (e.target.closest('[data-tstd-score]') && !el.contains(e.relatedTarget)) renderTeacherStandard(); });
+      renderTeacherStandard();
+      renderParentStandard();
+    });
   </script>
   <script>
     // ==========================================

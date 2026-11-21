@@ -53,7 +53,17 @@ The principal sets each class's routine; parents see it with **ব্যাগ�
 khatas for that day). Results: the class teacher enters marks on one screen per subject; weekly tests are
 published by the teacher, model and term exams by the principal (Bangladesh primary grading, any F means an
 overall F, positions only for students who passed). Parents see and print the mark sheet; the principal sees
-the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Student records: the principal sees class-wise counts, searches the class list, opens and edits
+the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Monthly progress against a common minimum (the parent's
+**উন্নতি রিপোর্ট**): the aim is not to be first in class but that every child reaches at least a minimum in each
+subject, as in outcome-based assessment. A subject's monthly level is the average of that month's published exam
+marks and the class teacher's monthly skill check (out of 100). Parents see one bar per subject with their
+child's level, the minimum line and the class average (shown only when at least five students have a level; no
+rank and no other child's marks), the change since last month, the teacher's note and Paperloop's practice tips
+(picked automatically from a fixed list for subjects below the minimum). The class teacher's **মাসিক মূল্যায়ন ও
+রিপোর্ট** card enters the skill checks and opens each student's detailed report for counselling, with a note for
+the guardian and a printable copy; the principal's results page shows how many students in each class meet the
+minimum. The minimum is the same for every partner school (agreed by the schools, moderated by Paperloop); the
+demo uses a sample 60%. The grade sheet, GPA and position stay as they are. Student records: the principal sees class-wise counts, searches the class list, opens and edits
 a student's profile, admits new students (they join the attendance register at once and every exam created
 after) and prints the class list; the class teacher sees her class read-only; parents see their child's
 record in the profile panel. Sample records have no phone numbers on purpose. Fees: the principal or office collects fees (tick the months
