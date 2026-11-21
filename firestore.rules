@@ -101,6 +101,14 @@ service cloud.firestore {
     match /schools/{code} {
       allow read: if anyRole() || staffOf(code);
       allow write: if anyRole();
+      // Student photos: one small JPEG per student, given by the principal or a teacher of the school
+      match /photos/{studentId} {
+        allow read: if staffOf(code);
+        allow delete: if staffOf(code);
+        allow create, update: if staffOf(code) && request.resource.data.keys().hasOnly(['cls', 'roll', 'img', 'at'])
+          && request.resource.data.img is string && request.resource.data.img.size() < 120000
+          && request.resource.data.img.matches('^data:image/jpeg;base64,[A-Za-z0-9+/=]+$');
+      }
       match /state/{part} {
         allow read: if staffOf(code);
         allow write: if principalOf(code)

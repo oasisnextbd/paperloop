@@ -196,6 +196,7 @@ by `firestore.rules`:
 | `activity` | the team reads and adds under their own email; nobody edits |
 | `schools/{CODE}` | set up by the admin from an institution (name, principal's Gmail, `active` from the stage Demo shown, Pilot or Using the app); the school's principal and teachers read it |
 | `members/{google email}` | who opens which school's diary: `{code, role: principal \| teacher, name}`; the admin adds the principal, the principal adds and removes their own teachers |
+| `schools/{CODE}/photos/{student ID}` | one student photo (small JPEG, checked by the rules); the school's principal and teachers read and give them |
 | `schools/{CODE}/state/{part}` | the school's diary; its principal and teachers read it; the principal changes every part, teachers `notices`, `attendance`, `exams`, `standard`, `homework`, `messages` |
 
 Deleting is for the owner and operations. **After changing `firestore.rules`, publish it**: Firebase console →
@@ -214,6 +215,9 @@ shows a Google button for them; the demo keeps the code-and-PIN screens). The di
 subject teachers), `records` (students per class), `fees` (fees, waivers, receipts, certificate numbers),
 `routines`, `notices`, `attendance` (every class's register), `exams` (each subject's marks a key of its own),
 `standard` (monthly topic checks, added topics, comments, the class teacher's note) and `homework` (per class).
+Student photos are kept one per student under `schools/{CODE}/photos/` (see STUDENT PHOTOS in
+`diary/index.html`): the principal, or the class teacher for their class, gives one from the student's record
+(camera or gallery); the phone crops it to passport shape and makes it about 15 KB; ID cards and admit cards print it.
 In a real school every class with students has its own register and roster; a class teacher's pages show their
 own class, with a switch when they lead more than one, and the principal sees every class's attendance. Each part is split into keys (one class, one notice, one receipt) and the diary writes only
 the keys that changed, a moment after each change, so two people working at the same time do not overwrite each

@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=3ae60f8694" />
+  <link rel="stylesheet" href="diary.css?v=c898310e64" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -4300,7 +4300,8 @@
             <div class="font-bold text-[7.5pt] leading-snug">${esc(b.name)}</div>
             <div class="text-[6pt] mt-[0.5mm] opacity-80">শিক্ষার্থী পরিচয়পত্র</div>
           </div>
-          <div class="mx-auto mt-[2mm] w-[19mm] h-[22mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-ink-400 text-[6pt]">ছবি</div>
+          ${photoOf(s) ? `<img src="${photoOf(s)}" alt="" class="mx-auto mt-[2mm] w-[19mm] h-[25mm] shrink-0 rounded-[1.5mm] border border-ink-300" style="object-fit:cover">`
+            : '<div class="mx-auto mt-[2mm] w-[19mm] h-[22mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-ink-400 text-[6pt]">ছবি</div>'}
           <div class="text-center font-bold text-[8.5pt] mt-[1.2mm] px-[2mm] leading-snug">${esc(s.name)}</div>
           <div class="px-[3.5mm] mt-[1.2mm] space-y-[0.6mm]">
             ${row('শ্রেণি', `${s.cls} • রোল ${rollBn(s.roll)}`)}${row('আইডি', s.id)}${row('পিতা', s.father)}
@@ -4323,7 +4324,8 @@
               <span>নাম:</span><b>${esc(s.name)}</b><span>শ্রেণি:</span><b>${esc(s.cls)}</b><span>রোল:</span><b>${rollBn(s.roll)}</b>
               <span>আইডি:</span><b>${esc(s.id)}</b><span>পিতা:</span><b>${esc(s.father)}</b><span>মাতা:</span><b>${esc(s.mother)}</b>
             </div>
-            <div class="w-[24mm] h-[29mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-[8pt] text-ink-400">ছবি</div>
+            ${photoOf(s) ? `<img src="${photoOf(s)}" alt="" class="w-[24mm] h-[32mm] shrink-0 rounded-[1.5mm] border border-ink-300" style="object-fit:cover">`
+              : '<div class="w-[24mm] h-[29mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-[8pt] text-ink-400">ছবি</div>'}
           </div>
           <div class="mt-[3mm] text-[9pt]"><b>পরীক্ষার বিষয়:</b> ${exam.subjects.map(esc).join(', ')}</div>
           <ol class="mt-[2mm] text-[8.5pt] list-decimal pl-[5mm] space-y-[0.3mm]">
@@ -6204,7 +6206,18 @@
         const u = await currentUser();
         return u ? whoIs(u) : null;
       }
-      return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, get ready() { return ready; } };
+      // Student photos: one small document per student (schools/<CODE>/photos/<student ID>), read a class at a time
+      async function savePhoto(s, img) {
+        const { F, db } = fb, ref = F.doc(db, 'schools', code, 'photos', s.id);
+        if (img) await F.setDoc(ref, { cls: s.cls, roll: s.roll, img, at: Date.now() });
+        else await F.deleteDoc(ref);
+      }
+      async function loadPhotos(cls) {
+        const { F, db } = fb, out = {};
+        (await F.getDocs(F.query(F.collection(db, 'schools', code, 'photos'), F.where('cls', '==', cls)))).forEach(d => { out[d.id] = d.data().img; });
+        return out;
+      }
+      return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, savePhoto, loadPhotos, get ready() { return ready; } };
     })();
 
     // A real school: the class teacher's pages (register, weekly tests, monthly progress…) show this class
@@ -6308,6 +6321,134 @@
         add.append(mail);
       });
     }
+  </script>
+  <script>
+    // ==========================================
+    // STUDENT PHOTOS
+    // The principal, or the class teacher for their own class, gives each student a photo from the student's
+    // record (ফোনের ক্যামেরা বা গ্যালারি). It is cropped to passport shape and made small (about 20 KB) on the
+    // phone, then kept with the school (a real school: schools/<CODE>/photos/<student ID> in the database; the
+    // demo: this browser). ID cards and admit cards print it; the student's record and list show it.
+    // ==========================================
+    const studentPhotos = {}; // student ID → small JPEG (data URL)
+    const photoOf = s => (s && studentPhotos[s.id]) || '';
+    const PHOTO_KEY = 'pl_diary_photos';
+    const photosLoaded = new Set();
+    if (DEMO) Object.assign(studentPhotos, readStore(PHOTO_KEY) || {});
+
+    // Portrait 3:4, 240 × 320, JPEG
+    function readPhoto(file) {
+      return new Promise((resolve, reject) => {
+        if (!file || !/^image\//.test(file.type)) return reject(new Error('type'));
+        if (file.size > 15 * 1024 * 1024) return reject(new Error('size'));
+        const url = URL.createObjectURL(file), img = new Image();
+        img.onload = () => {
+          const W = 240, H = 320, k = Math.max(W / img.width, H / img.height);
+          const w = img.width * k, h = img.height * k;
+          const c = document.createElement('canvas'); c.width = W; c.height = H;
+          const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+          g.drawImage(img, (W - w) / 2, (H - h) / 2.6, w, h); // a little above centre: faces sit high in a photo
+          URL.revokeObjectURL(url);
+          resolve(c.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('read')); };
+        img.src = url;
+      });
+    }
+    async function setPhoto(s, img) {
+      if (schoolDb.active) await schoolDb.savePhoto(s, img);
+      if (img) studentPhotos[s.id] = img; else delete studentPhotos[s.id];
+      if (DEMO) writeStore(PHOTO_KEY, studentPhotos);
+    }
+    // A real school: a class's photos are read the first time that class is shown
+    async function loadPhotos(cls) {
+      if (!schoolDb.active || !schoolDb.ready || !cls || photosLoaded.has(cls)) return;
+      photosLoaded.add(cls);
+      try { Object.assign(studentPhotos, await schoolDb.loadPhotos(cls)); }
+      catch (e) { photosLoaded.delete(cls); return; }
+      ['renderSchoolRecords', 'renderTeacherRecords', 'renderPrintPanel'].forEach(f => { if (typeof window[f] === 'function') try { window[f](); } catch (x) { /* not open */ } });
+      if (document.getElementById('student-dialog').open) renderStudentSheet();
+    }
+    const photoImg = (s, cls) => photoOf(s) ? `<img src="${photoOf(s)}" alt="" class="${cls}" style="object-fit:cover">` : '';
+
+    // The record's own photo, with buttons to give or change it
+    const plainStudentSheet = renderStudentSheet;
+    renderStudentSheet = function () {
+      plainStudentSheet();
+      const s = findRecord(studentSheet.cls, studentSheet.roll);
+      if (!s) return;
+      loadPhotos(s.cls);
+      const avatar = document.getElementById('student-dialog-avatar');
+      avatar.innerHTML = photoOf(s) ? photoImg(s, 'w-full h-full rounded-2xl') : esc(initialsOf(s.name));
+      avatar.classList.toggle('overflow-hidden', !!photoOf(s));
+      const canPhoto = studentSheet.mode === 'school' || (studentSheet.mode === 'teacher' && isClassTeacher() && s.cls === TEACHER_CLASS);
+      if (!canPhoto || studentSheet.editing) return;
+      document.getElementById('student-dialog-body').insertAdjacentHTML('afterbegin', `
+        <div class="bg-white rounded-2xl border border-ink-200 p-3.5 flex items-center gap-3">
+          <div class="w-[3.75rem] h-20 rounded-xl border ${photoOf(s) ? 'border-ink-200' : 'border-dashed border-ink-300'} bg-ink-50 flex items-center justify-center overflow-hidden shrink-0 text-[0.6875rem] text-ink-400">${photoOf(s) ? photoImg(s, 'w-full h-full') : 'ছবি'}</div>
+          <div class="flex-1 min-w-0 space-y-2">
+            <p class="text-xs text-ink-500">${photoOf(s) ? 'পরিচয়পত্র ও প্রবেশপত্রে এই ছবি ছাপা হয়।' : 'মুখ সামনে রেখে হালকা রঙের দেয়ালের সামনে ছবি তুলুন। পরিচয়পত্র ও প্রবেশপত্রে ছাপা হবে।'}</p>
+            <div class="flex flex-wrap gap-2">
+              <label class="icon-tile cursor-pointer px-3 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-xs font-bold">${photoOf(s) ? 'ছবি বদলান' : 'ছবি দিন'}<input type="file" accept="image/*" data-student-photo class="sr-only" /></label>
+              ${photoOf(s) ? '<button type="button" data-student-photo-remove class="icon-tile px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">মুছুন</button>' : ''}
+            </div>
+            <p data-photo-error class="hidden text-xs font-bold text-ink-900"></p>
+          </div>
+        </div>`);
+    };
+
+    // The student list shows the photo in place of the roll box (the roll stays on it)
+    const plainStudentRow = studentRow;
+    studentRow = function (s, mode) {
+      const html = plainStudentRow(s, mode);
+      if (!photoOf(s)) return html;
+      return html.replace(/<span class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex flex-col items-center justify-center shrink-0">[\s\S]*?<\/span>\s*<\/span>/,
+        `<span class="relative w-11 h-11 rounded-xl border border-ink-200 overflow-hidden shrink-0">${photoImg(s, 'w-full h-full')}<span class="absolute bottom-0 inset-x-0 bg-ink-900/70 text-white text-[0.625rem] font-extrabold text-center leading-tight">${bn(String(s.roll).padStart(2, '0'))}</span></span>`);
+    };
+    const plainSchoolRecords = renderSchoolRecords;
+    renderSchoolRecords = function () { plainSchoolRecords(); loadPhotos(recordsState.cls); };
+    const plainTeacherRecords = renderTeacherRecords;
+    renderTeacherRecords = function () { plainTeacherRecords(); loadPhotos(TEACHER_CLASS); };
+    const plainPrintPanel = renderPrintPanel;
+    renderPrintPanel = function () { plainPrintPanel(); loadPhotos(printState.cls); };
+    // Signed in: the classes on screen get their photos
+    const prevPhotoHook = window.onDiarySessionChange;
+    window.onDiarySessionChange = () => {
+      if (prevPhotoHook) prevPhotoHook();
+      if (session && session.role !== 'parent') [TEACHER_CLASS, recordsState.cls, printState.cls].forEach(c => loadPhotos(c));
+    };
+
+    // The parent's profile panel shows the child's photo
+    const photoPlainProfile = renderProfile;
+    renderProfile = function () {
+      photoPlainProfile();
+      if (!session || session.role !== 'parent') return;
+      const s = findRecord(appState.studentClass, currentRollNo());
+      if (photoOf(s)) document.getElementById('profile-info').insertAdjacentHTML('afterbegin', `<div class="px-4 py-3 flex justify-center">${photoImg(s, 'w-20 h-[6.75rem] rounded-xl border border-ink-200')}</div>`);
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const dlg = document.getElementById('student-dialog');
+      dlg.addEventListener('change', async e => {
+        if (!e.target.matches('[data-student-photo]')) return;
+        const s = findRecord(studentSheet.cls, studentSheet.roll), err = dlg.querySelector('[data-photo-error]');
+        try {
+          await setPhoto(s, await readPhoto(e.target.files[0]));
+          renderStudentSheet(); renderSchoolRecords(); renderTeacherRecords();
+          showToast('ছবি সংরক্ষণ হয়েছে');
+        } catch (x) {
+          err.textContent = x.message === 'size' ? 'ছবিটি অনেক বড়; অন্য ছবি দিন।' : x.message === 'type' || x.message === 'read' ? 'এই ফাইলটি ছবি হিসেবে পড়া গেল না।' : 'ছবি সংরক্ষণ হয়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।';
+          err.classList.remove('hidden');
+        }
+      });
+      dlg.addEventListener('click', async e => {
+        if (!e.target.closest('[data-student-photo-remove]')) return;
+        if (!confirm('এই শিক্ষার্থীর ছবি মুছে ফেলবেন?')) return;
+        const s = findRecord(studentSheet.cls, studentSheet.roll);
+        try { await setPhoto(s, ''); renderStudentSheet(); renderSchoolRecords(); renderTeacherRecords(); showToast('ছবি মুছে ফেলা হয়েছে'); }
+        catch (x) { showToast('ছবি মুছে ফেলা যায়নি। ইন্টারনেট সংযোগ দেখুন।'); }
+      });
+    });
   </script>
   <script>
     // ==========================================
