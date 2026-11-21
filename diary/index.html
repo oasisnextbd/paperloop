@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=d9992a0157" />
+  <link rel="stylesheet" href="diary.css?v=3ae60f8694" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -496,6 +496,8 @@
           <div class="text-base font-bold" id="teacher-banner-count">—</div>
         </div>
       </div>
+      <!-- A real school: a teacher who leads more than one class chooses which one these pages show -->
+      <div id="teacher-class-switch" class="flex flex-wrap gap-2 empty:hidden"></div>
 
       <!-- Teacher floating cards: Morning attendance / Homework / Notices / Routine -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
@@ -1761,15 +1763,17 @@
           return;
         }
 
+        const hwClass = document.getElementById('t-class-select').value;
         homeworks.unshift({
           id: Date.now(),
+          cls: hwClass,
           subject: subj,
           khata: khata,
           instruction: instr,
           due: 'আগামীকাল সকাল ৮:৩০',
           doneByParent: false,
           totalCompleted: 0,
-          totalStudents: 30
+          totalStudents: DEMO ? 30 : rosterFor(hwClass).length
         });
 
         instrInput.value = '';
@@ -1882,6 +1886,9 @@
     // records[dateKey] = { statuses: { roll: 'present' | 'absent' | 'leave' }, submittedAt }
     // leaveRequests[dateKey] = { roll: true }  (sent by parents, upcoming days only)
     const studentAtt = { records: {}, draft: {}, leaveRequests: {}, view: 'today', tapMode: 'absent' };
+    // A real school: every class's register, { records, leave } per class; studentAtt shows the teacher's own
+    // class (see setTeacherClass in DATABASE). The demo has one live class.
+    const attByClass = {};
 
     (function seedStudentHistory() {
       if (!DEMO) return; // sample data only in demo
@@ -1901,9 +1908,10 @@
     })();
 
     function resetStudentDraft() {
-      const requests = studentAtt.leaveRequests[attKey] || {};
+      const requests = studentAtt.leaveRequests[attKey] || {}, sent = studentAtt.records[attKey];
       studentAtt.draft = {};
-      for (let r = 1; r <= classRoster.length; r++) studentAtt.draft[r] = requests[r] ? 'leave' : 'present';
+      // Today's register already sent (e.g. opened again later): start from what was sent
+      for (let r = 1; r <= classRoster.length; r++) studentAtt.draft[r] = sent && sent.statuses[r] ? sent.statuses[r] : requests[r] ? 'leave' : 'present';
     }
     resetStudentDraft();
 
@@ -2139,10 +2147,13 @@
     ];
 
     function renderSchoolStudentAttendance() {
-      const rows = schoolClassAttendance.map(row => {
+      // A real school: every class that has students
+      const list = DEMO ? schoolClassAttendance : CLASSES.filter(c => rosterFor(c).length).map(cls => ({ cls, live: true }));
+      const rows = list.map(row => {
         if (!row.live) return row;
-        const rec = studentAtt.records[attKey];
-        return { cls: row.cls, total: classRoster.length, present: rec ? countStatuses(rec.statuses).present : null, at: rec ? rec.submittedAt : null };
+        const records = row.cls === TEACHER_CLASS ? studentAtt.records : (attByClass[row.cls] || { records: {} }).records;
+        const rec = records[attKey];
+        return { cls: row.cls, total: rosterFor(row.cls).length, present: rec ? countStatuses(rec.statuses).present : null, at: rec ? rec.submittedAt : null };
       });
       const totalStudents = rows.reduce((a, r) => a + r.total, 0);
       const done = rows.filter(r => r.present !== null);
@@ -2521,7 +2532,7 @@
     };
     const nIcon = (name, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${noticeIcons[name]}</svg>`;
     const CLASSES = ['Play', 'KG', '১ম শ্রেণি', '২য় শ্রেণি', '৩য় শ্রেণি', '৪র্থ শ্রেণি', '৫ম শ্রেণি'];
-    const TEACHER_CLASS = '৩য় শ্রেণি';
+    let TEACHER_CLASS = '৩য় শ্রেণি'; // the class shown in the class teacher's pages (a real school: the teacher's own class)
 
     // ---------- Notices ----------
     const minutesAgo = m => new Date(Date.now() - m * 60000);
@@ -2951,7 +2962,16 @@
     // Weekly tests are practice checks: marks only, no grades, GPA or position. Their marks count towards the
     // monthly progress (LEARNING STANDARD). Grade sheets are for model, half-yearly and annual exams.
     const isGraded = e => e.kind !== 'weekly';
-    const rosterFor = cls => cls === TEACHER_CLASS ? classRoster : []; // only ৩য় শ্রেণি has students in this demo
+    // Student names by roll (index = roll - 1). The demo has students only in ৩য় শ্রেণি; a real school, in every
+    // class the principal admits them to (STUDENT RECORDS).
+    const rosterFor = cls => cls === TEACHER_CLASS ? classRoster : DEMO ? [] : rosterOf(cls);
+    function rosterOf(cls) {
+      let list = [];
+      try { list = recordsByClass[cls] || []; } catch (e) { /* the records are not set up yet */ }
+      const names = [];
+      list.forEach(s => { names[s.roll - 1] = s.name; });
+      return Array.from(names, n => n || '—');
+    }
     const resIcon = {
       print: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
       award: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
@@ -3160,7 +3180,9 @@
           <span class="block text-[0.6875rem] ${e.publishedAt ? 'text-ink-500' : 'text-gold-900'}">${e.publishedAt ? 'প্রকাশিত' : `নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`}</span>
         </button>`).join('');
       if (!exam || !examRoster(exam).length) {
-        el.innerHTML = `<div class="floating-card rounded-2xl p-5 space-y-3">${classChips}${examChips}<p class="text-sm text-ink-500">${rosterFor(st.cls).length ? 'এই শ্রেণির কোনো পরীক্ষা এখনো তৈরি হয়নি।' : 'এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।'}</p></div>`;
+        // The class teacher can start the first weekly test here
+        const first = ct && rosterFor(st.cls).length ? `<button type="button" data-tmarks-new class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">${rIcon('plus')}নতুন সাপ্তাহিক টেস্ট</button>` : '';
+        el.innerHTML = `<div class="floating-card rounded-2xl p-5 space-y-3">${classChips}${examChips}<p class="text-sm text-ink-500">${rosterFor(st.cls).length ? 'এই শ্রেণির কোনো পরীক্ষা এখনো তৈরি হয়নি।' : 'এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।'}</p>${first}</div>`;
         return;
       }
       const myHere = exam.subjects.filter(s => mine.includes(s));
@@ -5640,6 +5662,19 @@
     function applyTeacherIdentity() {
       if (!isTeacher()) { currentTeacher = null; ROLE_META.teacher.label = 'শ্রেণি শিক্ষক'; return; }
       currentTeacher = TEACHERS.includes(session.userId) ? session.userId : CLASS_TEACHERS[TEACHER_CLASS];
+      // A real school: the class teacher's pages show their own class (a choice when they lead more than one)
+      if (!DEMO) {
+        const led = classesLedBy(me());
+        if (led.length && !led.includes(TEACHER_CLASS)) setTeacherClass(led[0]);
+        const sw = document.getElementById('teacher-class-switch');
+        if (sw) sw.innerHTML = led.length > 1 ? led.map(c => `<button type="button" data-teacher-class="${esc(c)}" aria-pressed="${c === TEACHER_CLASS}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === TEACHER_CLASS ? 'tile-active' : 'border-ink-200 bg-white text-ink-600'}">${esc(c)}</button>`).join('') : '';
+        // Homework goes to a class this teacher teaches
+        const mineCls = myClasses(), hw = document.getElementById('t-class-select');
+        if (hw && mineCls.length) {
+          [...hw.options].forEach(o => { o.hidden = !mineCls.includes(o.value); o.disabled = o.hidden; });
+          if (!mineCls.includes(hw.value)) hw.value = mineCls.includes(TEACHER_CLASS) ? TEACHER_CLASS : mineCls[0];
+        }
+      }
       const ct = isClassTeacher();
       ROLE_META.teacher.label = ct ? 'শ্রেণি শিক্ষক' : 'বিষয় শিক্ষক';
       document.getElementById('teacher-banner-name').textContent = me();
@@ -5986,6 +6021,15 @@
       const fill = (target, src) => { Object.keys(target).forEach(k => delete target[k]); Object.assign(target, src); };
       const keyed = (prefix, obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [prefix + k, v]));
       const pick = (map, prefix) => Object.fromEntries(Object.entries(map).filter(([k]) => k.startsWith(prefix)).map(([k, v]) => [k.slice(prefix.length), v]));
+      // Nested maps as keys "a|b|c" (depth levels), and back
+      const flat = (prefix, obj, depth, path = [], out = {}) => {
+        Object.entries(obj).forEach(([k, v]) => {
+          if (path.length + 1 === depth) out[prefix + [...path, k].join('|')] = v;
+          else if (v && typeof v === 'object') flat(prefix, v, depth, [...path, k], out);
+        });
+        return out;
+      };
+      const unflat = (target, map) => Object.entries(map).forEach(([k, v]) => { const keys = k.split('|'), lastKey = keys.pop(); keys.reduce((x, key) => (x[key] = x[key] || {}), target)[lastKey] = v; });
 
       // What is kept, and who may change it (the database rules check the same; see firestore.rules)
       const SLICES = {
@@ -6008,13 +6052,7 @@
         },
         records: {
           get: () => keyed('cls|', recordsByClass),
-          set: m => {
-            Object.entries(pick(m, 'cls|')).forEach(([c, list]) => { recordsByClass[c] = list; });
-            // The live class register follows the records (roll order)
-            const live = (recordsByClass[TEACHER_CLASS] || []).slice().sort((a, b) => a.roll - b.roll);
-            classRoster.splice(0, classRoster.length);
-            live.forEach(s => { classRoster[s.roll - 1] = s.name; rollNames[String(s.roll).padStart(2, '0')] = s.name; studentAtt.draft[s.roll] = studentAtt.draft[s.roll] || 'present'; });
-          }
+          set: m => { Object.entries(pick(m, 'cls|')).forEach(([c, list]) => { recordsByClass[c] = list; }); }
         },
         fees: {
           get: () => ({ structure: feeStructure, waivers, next: nextReceiptNo, serials, ...Object.fromEntries(receipts.map(r => ['r|' + r.no, r])) }),
@@ -6030,6 +6068,50 @@
           get: () => keyed('cls|', routines),
           set: m => fill(routines, pick(m, 'cls|'))
         },
+        // The class teachers: each class's register; keys a|<class>|<day> and l|<class>|<day> (leave asked for)
+        attendance: {
+          get: () => {
+            const o = {};
+            Object.entries(attByClass).forEach(([c, box]) => {
+              Object.entries(box.records).forEach(([d, rec]) => { o[`a|${c}|${d}`] = rec; });
+              Object.entries(box.leave).forEach(([d, req]) => { o[`l|${c}|${d}`] = req; });
+            });
+            return o;
+          },
+          set: m => {
+            Object.values(attByClass).forEach(box => { fill(box.records, {}); fill(box.leave, {}); });
+            Object.entries(m).forEach(([k, v]) => {
+              const [kind, c, d] = k.split('|');
+              const box = attByClass[c] = attByClass[c] || { records: {}, leave: {} };
+              (kind === 'a' ? box.records : box.leave)[d] = v;
+            });
+          }
+        },
+        // Exams: e|<id> the exam, m|<id>|<subject> its marks (each subject teacher writes only their own)
+        exams: {
+          get: () => {
+            const o = {};
+            exams.forEach(e => { const { marks, ...meta } = e; o['e|' + e.id] = meta; Object.entries(marks || {}).forEach(([s, mk]) => { o[`m|${e.id}|${s}`] = mk; }); });
+            return o;
+          },
+          set: m => {
+            const list = Object.values(pick(m, 'e|')).map(meta => ({ ...meta, marks: Object.fromEntries((meta.subjects || []).map(s => [s, m[`m|${meta.id}|${s}`] || {}])) }));
+            exams.splice(0, exams.length, ...list.sort((a, b) => a.date - b.date));
+            nextExamId = Math.max(Date.now(), ...exams.map(e => e.id + 1));
+          }
+        },
+        // Monthly progress: topic checks, added topics, comments and the class teacher's note
+        standard: {
+          get: () => ({ ...flat('lv|', topicLevels, 4), ...flat('x|', extraTopics, 3), ...flat('nt|', teacherNotes, 2), ...flat('cm|', subjectComments, 3), ...flat('ca|', commentAuthors, 3) }),
+          set: m => {
+            [[topicLevels, 'lv|'], [extraTopics, 'x|'], [teacherNotes, 'nt|'], [subjectComments, 'cm|'], [commentAuthors, 'ca|']].forEach(([target, prefix]) => { fill(target, {}); unflat(target, pick(m, prefix)); });
+            nextTopicId = Date.now();
+          }
+        },
+        homework: {
+          get: () => Object.fromEntries(homeworks.map(h => ['h|' + h.id, h])),
+          set: m => homeworks.splice(0, homeworks.length, ...Object.values(pick(m, 'h|')).sort((a, b) => b.id - a.id))
+        },
         // The principal and teachers: notices
         notices: {
           get: () => Object.fromEntries(notices.map(n => ['n|' + n.id, n])),
@@ -6040,7 +6122,7 @@
           }
         }
       };
-      const rendersAfterLoad = ['renderAllAttendance', 'renderAllRoutines', 'renderSchoolRecords', 'renderAllFees', 'renderAllResults', 'renderComposerList'];
+      const rendersAfterLoad = ['renderAllAttendance', 'renderAllRoutines', 'renderSchoolRecords', 'renderAllFees', 'renderAllResults', 'renderComposerList', 'renderTeacherDashboard', 'renderParentDashboard'];
 
       // Every key of every slice as text, to see what changed
       const snapshot = () => Object.fromEntries(Object.entries(SLICES).map(([name, s]) => [name, Object.fromEntries(Object.entries(s.get()).map(([k, v]) => [k, encode(v === undefined ? null : v)]))]));
@@ -6058,6 +6140,7 @@
           slice.set(m);
         });
         Object.values(SLICES).forEach(s => s.after && s.after());
+        setTeacherClass(TEACHER_CLASS);
         rendersAfterLoad.forEach(f => { if (typeof window[f] === 'function') try { window[f](); } catch (e) { /* that part is not open */ } });
         last = snapshot();
         ready = true;
@@ -6124,7 +6207,28 @@
       return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, get ready() { return ready; } };
     })();
 
+    // A real school: the class teacher's pages (register, weekly tests, monthly progress…) show this class
+    function setTeacherClass(cls) {
+      if (DEMO || !cls) return;
+      if (!attByClass[TEACHER_CLASS]) attByClass[TEACHER_CLASS] = { records: studentAtt.records, leave: studentAtt.leaveRequests };
+      TEACHER_CLASS = cls;
+      const box = attByClass[cls] = attByClass[cls] || { records: {}, leave: {} };
+      studentAtt.records = box.records; studentAtt.leaveRequests = box.leave;
+      classRoster.splice(0, classRoster.length, ...rosterOf(cls));
+      classRoster.forEach((n, i) => { rollNames[String(i + 1).padStart(2, '0')] = n; });
+      resetStudentDraft();
+      TEACHER_NAME = CLASS_TEACHERS[cls] || '';
+      resultsState.teacher.cls = cls; resultsState.teacher.examId = null;
+      stdState.teacher.cls = cls; stdState.teacher.roll = null;
+      ['renderAllAttendance', 'renderAllResults', 'renderTeacherRecords', 'renderTeacherStandard'].forEach(f => { if (typeof window[f] === 'function') try { window[f](); } catch (e) { /* not open */ } });
+    }
     if (schoolDb.active) {
+      document.addEventListener('click', e => {
+        const b = e.target.closest('[data-teacher-class]');
+        if (!b) return;
+        setTeacherClass(b.getAttribute('data-teacher-class'));
+        if (typeof applyTeacherIdentity === 'function') applyTeacherIdentity();
+      });
       const LOGIN_ERRORS = {
         notMember: email => `${email} কোনো স্কুলে যোগ করা নেই। প্রিন্সিপাল হলে Paperloop-কে, শিক্ষক হলে প্রিন্সিপালকে আপনার Gmail যোগ করতে বলুন।`,
         closed: () => 'আপনার স্কুলের ডায়েরি এখন চালু নেই। Paperloop-এর সাথে যোগাযোগ করুন।',

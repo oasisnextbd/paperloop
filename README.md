@@ -212,10 +212,13 @@ nothing touches the real project; the diary the same way (`diary/?emulators=1`).
 shows a Google button for them; the demo keeps the code-and-PIN screens). The diary is kept in parts under
 `schools/{CODE}/state/`: `design` (the school design), `staff` (staff, their Gmail, staff attendance, class and
 subject teachers), `records` (students per class), `fees` (fees, waivers, receipts, certificate numbers),
-`routines` and `notices`. Each part is split into keys (one class, one notice, one receipt) and the diary writes only
+`routines`, `notices`, `attendance` (every class's register), `exams` (each subject's marks a key of its own),
+`standard` (monthly topic checks, added topics, comments, the class teacher's note) and `homework` (per class).
+In a real school every class with students has its own register and roster; a class teacher's pages show their
+own class, with a switch when they lead more than one, and the principal sees every class's attendance. Each part is split into keys (one class, one notice, one receipt) and the diary writes only
 the keys that changed, a moment after each change, so two people working at the same time do not overwrite each
-other; it reads everything when someone signs in or reloads. Next: teachers' daily work for every class
-(attendance, marks, monthly checks, homework, messages), then parents with a 6-digit PIN.
+other; it reads everything when someone signs in or reloads. Next: parents with a 6-digit PIN (and with them,
+messages between parents and the class teacher).
 
 ## Common edits
 
