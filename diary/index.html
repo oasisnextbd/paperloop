@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=af4dead497" />
+  <link rel="stylesheet" href="diary.css?v=bb75fa6e27" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -292,7 +292,7 @@
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">গ্রেড ও নম্বর</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Grades & Marks</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-grade">
               গড়: A+ (৯২%)
             </div>
           </button>
@@ -396,49 +396,11 @@
            ========================================== -->
       <div id="panel-parent-grades" class="parent-subpanel hidden space-y-4">
         <div class="floating-card rounded-2xl p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 class="text-base font-bold text-ink-900">গ্রেড ও পরীক্ষার ফলাফল (Grades & Assessment)</h3>
-              <p class="text-xs text-ink-500">সাপ্তাহিক বৃহস্পতিবার ক্লাস টেস্ট ও সাময়িক পরীক্ষার নম্বরপত্র</p>
-            </div>
-            <!-- Exam Term Selector Pills -->
-            <div class="flex gap-1.5 bg-ink-100 p-1 rounded-xl border border-ink-200">
-              <button type="button" data-grade-term="weekly" class="grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ink-900 text-white">
-                সাপ্তাহিক টেস্ট
-              </button>
-              <button type="button" data-grade-term="monthly" class="grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold text-ink-600 hover:bg-white">
-                মাসিক ও BKA মডেল
-              </button>
-            </div>
+          <div>
+            <h3 class="text-base font-bold text-ink-900">ফলাফল ও মার্কশিট (Results)</h3>
+            <p class="text-xs text-ink-500">শিক্ষক বা প্রিন্সিপাল প্রকাশ করলে পরীক্ষার ফল এখানে আসে</p>
           </div>
-
-          <!-- Top Grade Summary Floating Mini-Cards -->
-          <div class="grid grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
-              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-              <div class="text-[0.6875rem] text-ink-500 font-semibold">প্রাপ্ত গ্রেড</div>
-              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-letter">A+ (৯২%)</div>
-            </div>
-            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
-              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-              </svg>
-              <div class="text-[0.6875rem] text-ink-500 font-semibold">মেধাক্রম (Rank)</div>
-              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-rank">৩য় স্থান (৩০ জনে)</div>
-            </div>
-            <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-col items-center text-center">
-              <svg class="line-icon mb-1 text-ink-700" viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/>
-              </svg>
-              <div class="text-[0.6875rem] text-ink-500 font-semibold">মোট নম্বর</div>
-              <div class="text-base sm:text-lg font-extrabold text-ink-900 mt-0.5" id="grade-overall-marks">৯২ / ১০০</div>
-            </div>
-          </div>
-
-          <!-- Subject-wise Floating Grade Rows -->
-          <div id="grades-subject-list" class="space-y-2.5"></div>
+          <div id="p-results"></div>
         </div>
       </div>
 
@@ -637,7 +599,7 @@
       </div>
 
       <!-- Teacher floating cards: Morning attendance / Homework / Notices / Routine -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
         <button type="button" data-teacher-panel="attendance" class="teacher-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">সকালের হাজিরা</div>
@@ -661,6 +623,12 @@
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস রুটিন</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-routine">—</div>
+          </button>
+        <button type="button" data-teacher-panel="marks" class="teacher-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">নম্বর দিন</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Marks</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-marks">—</div>
           </button>
       </div>
 
@@ -727,6 +695,9 @@
           <div id="t-routine" data-routine-view="teacher"></div>
         </div>
       </div>
+
+      <!-- TEACHER PANEL 5: MARKS ENTRY (one screen per subject, a box per roll) -->
+      <div id="panel-teacher-marks" class="teacher-subpanel hidden space-y-4"></div>
 
       <div id="panel-teacher-homework" class="teacher-subpanel hidden space-y-5">
       <form id="teacher-hw-form" class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-5">
@@ -939,6 +910,12 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-routine">—</div>
           </button>
+        <button type="button" data-school-panel="results" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ফলাফল</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Results</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-results">—</div>
+          </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
@@ -951,7 +928,7 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
-        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
@@ -973,6 +950,9 @@
           <div id="s-routine" data-routine-view="school"></div>
         </div>
       </div>
+
+      <!-- PRINCIPAL PANEL: RESULTS (publish, merit list, tabulation, failed subjects, summary) -->
+      <div id="panel-school-results" class="school-subpanel hidden space-y-4"></div>
 
       <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
       <div id="panel-school-students" class="school-subpanel space-y-4">
@@ -1065,6 +1045,9 @@
 
   </main>
 
+
+  <!-- Filled just before printing; on paper it is the only thing shown (see diary.input.css) -->
+  <div id="print-sheet" aria-hidden="true"></div>
 
   <!-- ==========================================
        NOTICE PANEL: notices meant for the signed-in person (opened from the header's নোটিশ button)
@@ -1195,7 +1178,6 @@
       activeView: 'login', // The app always starts on the login page; a saved session reopens its own dashboard
       loginSection: 'parent',
       activeParentPanel: 'assignments', // 'assignments', 'grades', 'improvement', 'topics'
-      gradeTerm: 'weekly', // 'weekly', 'monthly'
       topicScope: 'weekly', // 'weekly', 'monthly'
       schoolCode: 'KSB',
       schoolName: 'কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি',
@@ -1265,32 +1247,6 @@
         totalStudents: 30
       }
     ];
-
-    // Grades Dataset (Weekly vs Monthly/BKA Model)
-    const gradesData = {
-      weekly: {
-        overallLetter: 'A+ (৯২%)',
-        overallRank: '৩য় স্থান (৩০ জনে)',
-        overallMarks: '৯২ / ১০০',
-        items: [
-          { subject: 'গণিত', exam: 'সাপ্তাহিক বৃহস্পতিবার টেস্ট (ভগ্নাংশ ও নামতা)', marks: '২৪ / ২৫', grade: 'A+', note: 'সবগুলো অংক নির্ভুল হয়েছে' },
-          { subject: 'ইংরেজি', exam: 'English 4-Line Dictation & Word Meaning', marks: '২২ / ২৫', grade: 'A', note: '২টি বানানে ছোট ভুল ছিল' },
-          { subject: 'বাংলা', exam: 'যুক্তবর্ণ ও এক কথায় প্রকাশ মূল্যায়ন', marks: '২৩ / ২৫', grade: 'A+', note: 'হাতের লেখা অত্যন্ত পরিষ্কার' },
-          { subject: 'বিজ্ঞান', exam: 'উদ্ভিদ ও সালোকসংশ্লেষণ সংক্ষিপ্ত প্রশ্ন', marks: '২৩ / ২৫', grade: 'A+', note: 'চিত্রসহ সুন্দর উত্তর' }
-        ]
-      },
-      monthly: {
-        overallLetter: 'A+ (৯০.৫%)',
-        overallRank: '২য় স্থান (ট্যালেন্টপুল জোন)',
-        overallMarks: '৩৬২ / ৪০০',
-        items: [
-          { subject: 'গণিত', exam: 'BKA বৃত্তি মডেল পরীক্ষা (১০০ নম্বর)', marks: '৯৪ / ১০০', grade: 'A+', note: 'জ্যামিতি ও ভগ্নাংশে পূর্ণ নম্বর' },
-          { subject: 'ইংরেজি', exam: 'BKA English Grammar & Composition', marks: '৮৬ / ১০০', grade: 'A', note: 'Tense ও Translation আরও অনুশীলন প্রয়োজন' },
-          { subject: 'বাংলা', exam: 'আমার বাংলা বই ও ব্যাকরণ (১০০ নম্বর)', marks: '৯১ / ১০০', grade: 'A+', note: 'রচনা ও ব্যাকরণে চমৎকার নম্বর' },
-          { subject: 'বিজ্ঞান', exam: 'প্রাথমিক বিজ্ঞান ও সাধারণ জ্ঞান (১০০ নম্বর)', marks: '৯১ / ১০০', grade: 'A+', note: 'ট্যালেন্টপুল বৃত্তির যোগ্য স্কোর' }
-        ]
-      }
-    };
 
     // Improvement Reports Dataset
     const improvementMetrics = [
@@ -1471,45 +1427,6 @@
       renderParentAttendance();
     }
 
-    function renderGradesPanel() {
-      const g = gradesData[appState.gradeTerm] || gradesData.weekly;
-      document.getElementById('grade-overall-letter').textContent = g.overallLetter;
-      document.getElementById('grade-overall-rank').textContent = g.overallRank;
-      document.getElementById('grade-overall-marks').textContent = g.overallMarks;
-
-      document.querySelectorAll('.grade-term-btn').forEach(btn => {
-        const active = btn.getAttribute('data-grade-term') === appState.gradeTerm;
-        btn.className = active
-          ? 'grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ink-900 text-white'
-          : 'grade-term-btn px-3 py-1.5 rounded-lg text-xs font-bold text-ink-600 hover:bg-white';
-      });
-
-      const box = document.getElementById('grades-subject-list');
-      box.innerHTML = g.items.map(item => {
-        const sMeta = subjectMeta[item.subject] || { svg: lineIcons.bangla };
-        return `
-          <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
-                <div class="mb-1">${sMeta.svg}</div>
-                <span class="text-[0.6875rem] font-extrabold leading-none">${item.subject}</span>
-              </div>
-              <div>
-                <div class="text-sm font-bold text-ink-900">${item.exam}</div>
-                <div class="text-xs text-ink-500 mt-0.5">শিক্ষকের মন্তব্য: ${item.note}</div>
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="text-sm font-extrabold text-ink-900">${item.marks}</div>
-              <span class="inline-block mt-0.5 px-2.5 py-0.5 rounded-md bg-gold-50 text-gold-900 border border-gold-200 text-xs font-extrabold">
-                গ্রেড: ${item.grade}
-              </span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
     function renderImprovementPanel() {
       const box = document.getElementById('improvement-bars-list');
       box.innerHTML = improvementMetrics.map(m => `
@@ -1626,14 +1543,6 @@
       document.querySelectorAll('.parent-floating-card').forEach(card => {
         card.addEventListener('click', () => {
           switchParentFloatingPanel(card.getAttribute('data-parent-panel'));
-        });
-      });
-
-      // Grades Term Toggle
-      document.querySelectorAll('.grade-term-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          appState.gradeTerm = btn.getAttribute('data-grade-term');
-          renderGradesPanel();
         });
       });
 
@@ -2978,6 +2887,501 @@
 
       refreshNotices();
       renderAllRoutines();
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // RESULTS
+    // Teacher: enters marks on one screen per subject (a box per roll, Enter jumps to the next roll).
+    // Weekly tests are published by the class teacher; model and term exams by the principal.
+    // Parent: the published mark sheet (grade, GPA, position, class highest), printable.
+    // Principal: publishes exams and sees the merit list, tabulation sheet, failed subjects and summary.
+    // Grading: Bangladesh primary scale. Any F makes the overall result F, and only students who
+    // passed get a position (equal totals share a position).
+    // ==========================================
+    const GRADE_SCALE = [[80, 'A+', 5], [70, 'A', 4], [60, 'A-', 3.5], [50, 'B', 3], [40, 'C', 2], [33, 'D', 1], [0, 'F', 0]];
+    const gradeFor = pct => GRADE_SCALE.find(g => pct >= g[0]);
+    const letterForGpa = g => g >= 5 ? 'A+' : g >= 4 ? 'A' : g >= 3.5 ? 'A-' : g >= 3 ? 'B' : g >= 2 ? 'C' : g >= 1 ? 'D' : 'F';
+    const POS = ['১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম'];
+    const posLabel = n => n <= 10 ? POS[n - 1] : `${bn(n)}তম`;
+    const num = v => bn(Number.isInteger(v) ? v : v.toFixed(1));
+
+    const EXAM_KINDS = {
+      weekly: { label: 'সাপ্তাহিক টেস্ট', full: 25, publisher: 'teacher', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান'] },
+      model: { label: 'মডেল টেস্ট', full: 100, publisher: 'school', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা'] },
+      half: { label: 'অর্ধবার্ষিক পরীক্ষা', full: 100, publisher: 'school', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা'] },
+      annual: { label: 'বার্ষিক পরীক্ষা', full: 100, publisher: 'school', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা'] }
+    };
+    const rosterFor = cls => cls === TEACHER_CLASS ? classRoster : []; // only ৩য় শ্রেণি has students in this demo
+    const resIcon = {
+      print: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
+      award: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+      sum: '<path d="M18 7V4H6l6 8-6 8h12v-3"/>',
+      plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+      lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>'
+    };
+    const rIcon = (n, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${resIcon[n]}</svg>`;
+
+    // ---------- Sample exams for ৩য় শ্রেণি ----------
+    let nextExamId = 1;
+    const exams = [];
+    function makeExam(kind, cls, name, date) {
+      const k = EXAM_KINDS[kind];
+      const exam = { id: nextExamId++, kind, cls, name, date, full: k.full, subjects: k.subjects.slice(), publisher: k.publisher, marks: {}, publishedAt: null };
+      exam.subjects.forEach(s => { exam.marks[s] = {}; });
+      exams.push(exam);
+      return exam;
+    }
+    function seedMarks(exam, subjects, seed) {
+      const ability = r => r === 7 ? 0.9 : 0.42 + 0.5 * seededRandom(r * 7919 + 11);
+      subjects.forEach((s, si) => {
+        classRoster.forEach((_, i) => {
+          const r = i + 1, noise = seededRandom(seed * 131 + si * 37 + r * 17) * 0.24 - 0.13;
+          if (seededRandom(seed * 7 + si * 3 + r) < 0.01) { exam.marks[s][r] = 'ab'; return; }
+          exam.marks[s][r] = Math.max(0, Math.min(exam.full, Math.round(exam.full * (ability(r) + noise))));
+        });
+      });
+    }
+    (function seedExams() {
+      const lastThursday = new Date(attDate); while (lastThursday.getDay() !== 4) lastThursday.setDate(lastThursday.getDate() - 1);
+      const lastMonth = new Date(attDate.getFullYear(), attDate.getMonth() - 1, 28);
+      const thisMonth = new Date(attDate.getFullYear(), attDate.getMonth(), Math.min(18, attDate.getDate()));
+      const oct = makeExam('model', TEACHER_CLASS, `মডেল টেস্ট — ${BN_MONTHS[lastMonth.getMonth()]}`, lastMonth);
+      seedMarks(oct, oct.subjects, 3); oct.publishedAt = new Date(lastMonth.getTime() + 3 * 86400000);
+      const wk = makeExam('weekly', TEACHER_CLASS, `সাপ্তাহিক টেস্ট — ${bn(lastThursday.getDate())} ${BN_MONTHS[lastThursday.getMonth()]}`, lastThursday);
+      seedMarks(wk, wk.subjects, 5); wk.publishedAt = new Date(lastThursday.getTime() + 86400000 / 2);
+      const nov = makeExam('model', TEACHER_CLASS, `মডেল টেস্ট — ${BN_MONTHS[thisMonth.getMonth()]}`, thisMonth);
+      seedMarks(nov, nov.subjects.slice(0, 3), 9); // the teacher is still entering the other three subjects
+    })();
+
+    const enteredCount = (exam, s) => rosterFor(exam.cls).filter((_, i) => exam.marks[s][i + 1] !== undefined).length;
+    const subjectDone = (exam, s) => rosterFor(exam.cls).length > 0 && enteredCount(exam, s) === rosterFor(exam.cls).length;
+    const examComplete = exam => exam.subjects.every(s => subjectDone(exam, s));
+    const subjectsDone = exam => exam.subjects.filter(s => subjectDone(exam, s)).length;
+
+    function computeResults(exam) {
+      const rows = rosterFor(exam.cls).map((name, i) => {
+        const r = i + 1;
+        const subs = exam.subjects.map(s => {
+          const m = exam.marks[s][r];
+          const marks = m === 'ab' || m === undefined ? 0 : m;
+          const g = gradeFor((marks / exam.full) * 100);
+          return { subject: s, marks, absent: m === 'ab', letter: g[1], gp: g[2] };
+        });
+        const total = subs.reduce((a, x) => a + x.marks, 0);
+        const failed = subs.filter(x => x.letter === 'F').map(x => x.subject);
+        const gpa = failed.length ? 0 : subs.reduce((a, x) => a + x.gp, 0) / subs.length;
+        return { roll: r, name, subs, total, failed, gpa, letter: failed.length ? 'F' : letterForGpa(gpa), position: null };
+      });
+      const passed = rows.filter(x => !x.failed.length).sort((a, b) => b.total - a.total || b.gpa - a.gpa);
+      passed.forEach((x, i) => { x.position = i > 0 && x.total === passed[i - 1].total ? passed[i - 1].position : i + 1; });
+      const highest = {};
+      exam.subjects.forEach((s, si) => { highest[s] = Math.max(0, ...rows.map(x => x.subs[si].marks)); });
+      return { rows, passedCount: passed.length, highest };
+    }
+    const examDate = e => `${bn(e.date.getDate())} ${BN_MONTHS[e.date.getMonth()]}`;
+    const gradePill = (letter, big = false) => `<span class="inline-block ${big ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs'} rounded-md font-extrabold ${letter === 'F' ? 'bg-ink-900 text-white' : 'bg-gold-50 text-gold-900 border border-gold-200'}">${letter}</span>`;
+
+    // ---------- Printing (mark sheet, merit list, tabulation) ----------
+    function printDoc(title, inner) {
+      const sheet = document.getElementById('print-sheet');
+      sheet.innerHTML = `
+        <div class="text-center mb-4">
+          <div class="text-xl font-bold">${esc(appState.schoolName)}</div>
+          <div class="text-sm">স্কুল কোড: ${esc(appState.schoolCode)}</div>
+          <div class="text-base font-bold mt-2">${title}</div>
+        </div>
+        ${inner}
+        <div class="mt-12 flex justify-between text-sm"><span class="border-t border-ink-900 pt-1 px-6">শ্রেণি শিক্ষক</span><span class="border-t border-ink-900 pt-1 px-6">প্রধান শিক্ষক</span></div>
+        <p class="mt-8 text-center text-xs">Paperloop স্মার্ট ডায়েরি • ডেমো: নমুনা তথ্য, আসল শিক্ষার্থীর নয়</p>`;
+      window.print();
+    }
+    window.addEventListener('afterprint', () => { document.getElementById('print-sheet').innerHTML = ''; });
+    const printTable = (head, rows) => `
+      <table class="w-full text-sm border-collapse">
+        <thead><tr>${head.map(h => `<th class="border border-ink-900 px-2 py-1 text-left">${h}</th>`).join('')}</tr></thead>
+        <tbody>${rows.map(r => `<tr>${r.map(c => `<td class="border border-ink-900 px-2 py-1">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>`;
+
+    // ---------- Parent: mark sheet ----------
+    const resultsState = { parentExam: null, teacher: { examId: null, subject: null }, school: { cls: TEACHER_CLASS, examId: null, view: 'merit', creating: false } };
+
+    function renderGradesPanel() {
+      const box = document.getElementById('p-results'), stat = document.getElementById('stat-grade');
+      const roll = currentRollNo();
+      const list = exams.filter(e => e.cls === appState.studentClass && e.publishedAt).sort((a, b) => b.date - a.date);
+      if (!list.length || !roll) {
+        box.innerHTML = '<p class="text-sm text-ink-500 text-center py-6">এখনো কোনো ফলাফল প্রকাশ হয়নি।</p>';
+        stat.textContent = '—';
+        return;
+      }
+      if (!list.some(e => e.id === resultsState.parentExam)) resultsState.parentExam = list[0].id;
+      const exam = list.find(e => e.id === resultsState.parentExam);
+      const res = computeResults(exam), me = res.rows.find(x => x.roll === roll);
+      const latest = computeResults(list[0]).rows.find(x => x.roll === roll);
+      stat.textContent = latest.letter === 'F' ? 'সর্বশেষ: F' : `সর্বশেষ: GPA ${bn(latest.gpa.toFixed(2))}`;
+      const fullTotal = exam.full * exam.subjects.length;
+      box.innerHTML = `
+        <div class="space-y-4">
+          <div class="flex flex-wrap gap-2">${list.slice(0, 5).map(e => `
+            <button type="button" data-result-exam="${e.id}" aria-pressed="${e.id === exam.id}" class="icon-tile px-3 py-2 rounded-xl border text-left ${e.id === exam.id ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+              <span class="block text-xs font-bold">${esc(e.name)}</span><span class="block text-[0.6875rem] text-ink-500">${bn(e.full)} নম্বর করে</span>
+            </button>`).join('')}</div>
+          <div class="grid grid-cols-3 gap-3">
+            ${countTile('check', 'গ্রেড / GPA', me.letter === 'F' ? 'F' : `${me.letter} • ${bn(me.gpa.toFixed(2))}`, me.letter === 'F')}
+            ${countTile('userCheck', 'মেধাক্রম', me.position ? `${posLabel(me.position)} (${bn(res.rows.length)} জনে)` : '—')}
+            ${countTile('clock', 'মোট নম্বর', `${num(me.total)} / ${bn(fullTotal)}`)}
+          </div>
+          ${me.failed.length ? `<p class="text-xs font-bold text-ink-900 bg-gold-50 border border-gold-200 rounded-xl px-3 py-2">${me.failed.map(esc).join(', ')}-এ পাস নম্বর (৩৩%) আসেনি। শ্রেণি শিক্ষকের সঙ্গে কথা বলুন।</p>` : ''}
+          <div class="space-y-2.5">${me.subs.map(x => {
+            const meta = subjectMeta[x.subject] || { svg: lineIcons.bangla };
+            return `
+              <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-14 py-2 px-1.5 rounded-xl bg-white border border-ink-300 text-ink-800 flex flex-col items-center justify-center text-center shrink-0">
+                    <div class="mb-1">${meta.svg}</div><span class="text-[0.6875rem] font-extrabold leading-none">${shortSubject(x.subject)}</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-bold text-ink-900">${esc(x.subject)}</div>
+                    <div class="text-xs text-ink-500">ক্লাসে সর্বোচ্চ: ${num(res.highest[x.subject])}</div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-sm font-extrabold text-ink-900">${x.absent ? 'অনুপস্থিত' : `${num(x.marks)} / ${bn(exam.full)}`}</div>
+                  <div class="mt-0.5">${gradePill(x.letter)}</div>
+                </div>
+              </div>`;
+          }).join('')}</div>
+          <button type="button" data-print-marksheet class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>মার্কশিট প্রিন্ট / PDF</span></button>
+        </div>`;
+    }
+
+    function printMarksheet() {
+      const exam = exams.find(e => e.id === resultsState.parentExam), roll = currentRollNo();
+      if (!exam || !roll) return;
+      const res = computeResults(exam), me = res.rows.find(x => x.roll === roll);
+      const info = `<div class="grid grid-cols-2 gap-1 text-sm mb-4">
+        <div>নাম: <b>${esc(me.name)}</b></div><div>শ্রেণি: <b>${esc(exam.cls)}</b></div>
+        <div>রোল: <b>${bn(String(roll).padStart(2, '0'))}</b></div><div>পরীক্ষা: <b>${esc(exam.name)}</b></div></div>`;
+      const table = printTable(['বিষয়', 'পূর্ণমান', 'প্রাপ্ত নম্বর', 'গ্রেড', 'গ্রেড পয়েন্ট', 'ক্লাসে সর্বোচ্চ'],
+        me.subs.map(x => [esc(x.subject), bn(exam.full), x.absent ? 'অনুপস্থিত' : num(x.marks), x.letter, bn(x.gp), num(res.highest[x.subject])]));
+      const summary = `<div class="grid grid-cols-3 gap-2 text-sm mt-4">
+        <div>মোট: <b>${num(me.total)} / ${bn(exam.full * exam.subjects.length)}</b></div>
+        <div>GPA: <b>${me.letter === 'F' ? 'F' : `${bn(me.gpa.toFixed(2))} (${me.letter})`}</b></div>
+        <div>মেধাক্রম: <b>${me.position ? `${posLabel(me.position)} (${bn(res.rows.length)} জনে)` : '—'}</b></div></div>`;
+      printDoc('মার্কশিট', info + table + summary);
+    }
+
+    // ---------- Teacher: marks entry ----------
+    function teacherExams() { return exams.filter(e => e.cls === TEACHER_CLASS).sort((a, b) => (!!a.publishedAt - !!b.publishedAt) || b.date - a.date); }
+
+    function renderTeacherMarks() {
+      const el = document.getElementById('panel-teacher-marks'), st = resultsState.teacher;
+      const list = teacherExams();
+      if (!list.some(e => e.id === st.examId)) st.examId = list.length ? list[0].id : null;
+      const exam = exams.find(e => e.id === st.examId);
+      const examChips = list.map(e => `
+        <button type="button" data-tmarks-exam="${e.id}" aria-pressed="${e.id === st.examId}" class="icon-tile px-3 py-2 rounded-xl border text-left ${e.id === st.examId ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+          <span class="block text-xs font-bold">${esc(e.name)}</span>
+          <span class="block text-[0.6875rem] ${e.publishedAt ? 'text-ink-500' : 'text-gold-900'}">${e.publishedAt ? 'প্রকাশিত' : `নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`}</span>
+        </button>`).join('');
+      if (!exam) { el.innerHTML = `<div class="floating-card rounded-2xl p-5">${examChips}</div>`; return; }
+      if (!exam.subjects.includes(st.subject)) st.subject = exam.subjects.find(s => !subjectDone(exam, s)) || exam.subjects[0];
+      const locked = !!exam.publishedAt;
+      const subjectTiles = exam.subjects.map(s => {
+        const meta = subjectMeta[s] || { svg: lineIcons.bangla }, done = subjectDone(exam, s);
+        return `<button type="button" data-tmarks-subject="${esc(s)}" aria-pressed="${s === st.subject}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${s === st.subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+          ${meta.svg}<span class="text-[0.6875rem] font-bold mt-1 leading-tight">${shortSubject(s)}</span>
+          <span data-subject-count="${esc(s)}" class="text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}">${done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(classRoster.length)}`}</span>
+        </button>`;
+      }).join('');
+      const rows = classRoster.map((name, i) => {
+        const r = i + 1, m = exam.marks[st.subject][r], absent = m === 'ab';
+        return `
+          <div class="flex items-center gap-2.5 py-2 border-b border-ink-200 last:border-0">
+            <span class="w-8 text-sm font-extrabold text-ink-900 text-center shrink-0">${rollLabel(r)}</span>
+            <span class="flex-1 min-w-0 text-sm text-ink-800 truncate">${esc(name)}</span>
+            <input type="text" inputmode="decimal" autocomplete="off" data-mark-roll="${r}" aria-label="রোল ${rollLabel(r)} ${esc(name)}: ${esc(st.subject)}-এর নম্বর"
+              value="${absent || m === undefined ? '' : bn(m)}" placeholder="${absent ? 'অনু.' : '—'}" ${absent || locked ? 'disabled' : ''}
+              class="w-16 px-2 py-2 rounded-xl border border-ink-300 bg-white text-center text-sm font-bold disabled:bg-ink-100 disabled:text-ink-500 aria-[invalid=true]:border-gold-600 aria-[invalid=true]:bg-gold-50" />
+            <button type="button" data-mark-absent="${r}" aria-pressed="${absent}" ${locked ? 'disabled' : ''} title="পরীক্ষায় অনুপস্থিত"
+              class="icon-tile w-12 py-2 rounded-xl border text-[0.6875rem] font-bold shrink-0 ${absent ? 'tile-active' : 'border-ink-200 bg-white text-ink-500 hover:bg-ink-50'} disabled:opacity-50">অনু.</button>
+          </div>`;
+      }).join('');
+      const complete = examComplete(exam);
+      const footer = locked
+        ? `<p class="flex items-center gap-2 text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${rIcon('lock')}<span>ফলাফল প্রকাশিত, তাই নম্বর আর বদলানো যাবে না। ভুল থাকলে প্রিন্সিপালকে জানান।</span></p>`
+        : exam.publisher === 'teacher'
+          ? `<button type="button" data-tmarks-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'}</span></button>`
+          : `<p class="text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${complete ? 'সব বিষয়ের নম্বর দেওয়া হয়েছে। প্রিন্সিপাল ফলাফল প্রকাশ করবেন।' : 'সব বিষয়ের নম্বর দেওয়া হলে প্রিন্সিপাল ফলাফল প্রকাশ করবেন।'}</p>`;
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">নম্বর দিন — ${esc(TEACHER_CLASS)}</h3>
+              <p class="text-xs text-ink-500">নম্বর লিখলেই সংরক্ষণ হয়। Enter চাপলে পরের রোলে যাবে।</p>
+            </div>
+            <button type="button" data-tmarks-new class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">${rIcon('plus')}নতুন সাপ্তাহিক টেস্ট</button>
+          </div>
+          <div class="flex flex-wrap gap-2">${examChips}</div>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">${subjectTiles}</div>
+          <div class="flex items-center justify-between text-xs font-bold text-ink-600">
+            <span>${esc(st.subject)} • পূর্ণমান ${bn(exam.full)}</span>
+            <span data-entry-progress>${bn(enteredCount(exam, st.subject))}/${bn(classRoster.length)} জনের নম্বর দেওয়া</span>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 px-3">${rows}</div>
+          <p data-mark-error class="hidden text-xs font-bold text-gold-900"></p>
+          ${footer}
+        </div>`;
+    }
+
+    function updateEntryProgress() {
+      const exam = exams.find(e => e.id === resultsState.teacher.examId), s = resultsState.teacher.subject;
+      const el = document.getElementById('panel-teacher-marks');
+      el.querySelector('[data-entry-progress]').textContent = `${bn(enteredCount(exam, s))}/${bn(classRoster.length)} জনের নম্বর দেওয়া`;
+      const tile = el.querySelector(`[data-subject-count="${CSS.escape(s)}"]`);
+      if (tile) {
+        const done = subjectDone(exam, s);
+        tile.textContent = done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(classRoster.length)}`;
+        tile.className = `text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}`;
+      }
+      const pub = el.querySelector('[data-tmarks-publish]');
+      if (pub) { const c = examComplete(exam); pub.disabled = !c; pub.querySelector('span').textContent = c ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'; }
+      renderResultStats();
+    }
+
+    // ---------- Principal: results ----------
+    function renderSchoolResults() {
+      const el = document.getElementById('panel-school-results'), st = resultsState.school;
+      const list = exams.filter(e => e.cls === st.cls).sort((a, b) => b.date - a.date);
+      if (!list.some(e => e.id === st.examId)) st.examId = list.length ? list[0].id : null;
+      const exam = list.find(e => e.id === st.examId);
+      const classChips = CLASSES.map(c => `<button type="button" data-sres-class="${c}" aria-pressed="${c === st.cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === st.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('');
+      const statusOf = e => e.publishedAt ? ['প্রকাশিত', false] : examComplete(e) ? ['প্রকাশের জন্য প্রস্তুত', true] : [`নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`, true];
+      const examRows = list.length ? list.map(e => {
+        const [label, attention] = statusOf(e);
+        return `<button type="button" data-sres-exam="${e.id}" aria-pressed="${e.id === st.examId}" class="icon-tile w-full p-3 rounded-2xl border flex items-center justify-between gap-3 text-left ${e.id === st.examId ? 'tile-active' : 'border-ink-200 bg-ink-50 hover:bg-white'}">
+          <span><span class="block text-sm font-bold text-ink-900">${esc(e.name)}</span><span class="block text-[0.6875rem] text-ink-500">${examDate(e)} • ${EXAM_KINDS[e.kind].publisher === 'teacher' ? 'শ্রেণি শিক্ষক প্রকাশ করেন' : 'আপনি প্রকাশ করবেন'}</span></span>
+          <span class="shrink-0 px-2.5 py-1 rounded-lg text-[0.6875rem] font-extrabold ${attention ? 'bg-gold-50 border border-gold-200 text-gold-900' : 'bg-white border border-ink-200 text-ink-700'}">${label}</span>
+        </button>`;
+      }).join('') : '<p class="text-sm text-ink-500">এই শ্রেণির কোনো পরীক্ষা এখনো তৈরি হয়নি।</p>';
+      const createForm = st.creating ? `
+        <div class="p-4 rounded-2xl bg-white border border-ink-200 space-y-3">
+          <div class="text-sm font-bold text-ink-900">${esc(st.cls)}: নতুন পরীক্ষা</div>
+          <div class="grid grid-cols-3 gap-2">${['model', 'half', 'annual'].map(k => `
+            <button type="button" data-sres-create="${k}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-700">
+              ${rIcon('award', 'line-icon mb-1')}<span class="text-[0.6875rem] font-bold text-center leading-tight">${EXAM_KINDS[k].label}</span><span class="text-[0.625rem] text-ink-500">${bn(EXAM_KINDS[k].subjects.length)} বিষয় • ${bn(EXAM_KINDS[k].full)} নম্বর</span>
+            </button>`).join('')}</div>
+          <p class="text-[0.6875rem] text-ink-500">সাপ্তাহিক টেস্ট শ্রেণি শিক্ষক নিজেই তৈরি ও প্রকাশ করেন।</p>
+        </div>` : '';
+      let detail = '';
+      if (exam) {
+        const complete = examComplete(exam), roster = rosterFor(exam.cls);
+        const publishBtn = !exam.publishedAt && exam.publisher === 'school' ? `
+          <button type="button" data-sres-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
+        if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই।</p>';
+        else if (!complete) {
+          detail = `<div class="space-y-2">${exam.subjects.map(s => `
+            <div class="flex items-center justify-between p-3 rounded-xl bg-ink-50 border border-ink-200 text-sm">
+              <span class="font-bold text-ink-900">${esc(s)}</span>
+              <span class="text-xs font-bold ${subjectDone(exam, s) ? 'text-ink-600' : 'text-gold-900'}">${subjectDone(exam, s) ? 'নম্বর দেওয়া হয়েছে' : `${bn(enteredCount(exam, s))}/${bn(roster.length)} জনের নম্বর`}</span>
+            </div>`).join('')}</div>`;
+        } else {
+          const views = [['merit', 'মেধাতালিকা'], ['tabulation', 'ট্যাবুলেশন'], ['failed', 'ফেল করা বিষয়'], ['summary', 'সারসংক্ষেপ']];
+          detail = `
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">${views.map(([k, l]) => `<button type="button" data-sres-view="${k}" aria-pressed="${k === st.view}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${k === st.view ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>
+            <div data-sres-body>${schoolResultView(exam, st.view)}</div>
+            ${st.view === 'merit' || st.view === 'tabulation' ? `<button type="button" data-sres-print class="icon-tile w-full py-2.5 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>${st.view === 'merit' ? 'মেধাতালিকা' : 'ট্যাবুলেশন শিট'} প্রিন্ট / PDF</span></button>` : ''}`;
+        }
+        detail = publishBtn + detail;
+      }
+      el.innerHTML = `
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-base font-bold text-ink-900">পরীক্ষা ও ফলাফল</h3>
+              <p class="text-xs text-ink-500">শিক্ষকেরা নম্বর দেন; সব বিষয়ের নম্বর এলে আপনি প্রকাশ করেন।</p>
+            </div>
+            <button type="button" data-sres-new aria-expanded="${st.creating}" class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">${rIcon('plus')}নতুন পরীক্ষা</button>
+          </div>
+          <div class="flex flex-wrap gap-2">${classChips}</div>
+          ${createForm}
+          <div class="space-y-2">${examRows}</div>
+        </div>
+        ${exam ? `<div class="floating-card rounded-2xl p-5 space-y-4"><h3 class="text-base font-bold text-ink-900">${esc(exam.name)} • ${esc(exam.cls)}</h3>${detail}</div>` : ''}`;
+    }
+
+    function schoolResultView(exam, view) {
+      const res = computeResults(exam);
+      if (view === 'merit') {
+        const ranked = res.rows.filter(x => x.position).sort((a, b) => a.position - b.position);
+        return `<div class="space-y-2">${ranked.map(x => `
+          <div class="flex items-center gap-3 p-2.5 rounded-xl ${x.position <= 3 ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'}">
+            <span class="w-12 text-center text-sm font-extrabold text-ink-900">${posLabel(x.position)}</span>
+            <span class="flex-1 min-w-0 text-sm text-ink-800 truncate">রোল ${rollLabel(x.roll)} • ${esc(x.name)}</span>
+            <span class="text-xs font-bold text-ink-700">${num(x.total)}</span>${gradePill(x.letter)}
+          </div>`).join('')}
+          ${res.rows.length - ranked.length ? `<p class="text-xs text-ink-500 pt-1">${bn(res.rows.length - ranked.length)} জন এক বা একাধিক বিষয়ে ফেল করায় মেধাক্রম পায়নি।</p>` : ''}</div>`;
+      }
+      if (view === 'tabulation') {
+        const th = 'px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap border-l border-ink-200';
+        return `<div class="overflow-x-auto rounded-xl border border-ink-200">
+          <table class="text-xs min-w-full">
+            <thead class="bg-ink-50"><tr><th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600">রোল</th>
+              ${exam.subjects.map(s => `<th class="${th}">${shortSubject(s)}</th>`).join('')}<th class="${th}">মোট</th><th class="${th}">GPA</th><th class="${th}">মেধা</th></tr></thead>
+            <tbody>${res.rows.map(x => `<tr class="border-t border-ink-200">
+              <th class="sticky left-0 bg-white px-2 py-1.5 text-left font-bold text-ink-900 whitespace-nowrap">${rollLabel(x.roll)} ${esc(x.name.split(' ')[0])}</th>
+              ${x.subs.map(s => `<td class="px-2 py-1.5 border-l border-ink-200 whitespace-nowrap ${s.letter === 'F' ? 'font-extrabold text-ink-900 bg-gold-50' : 'text-ink-700'}">${s.absent ? 'অনু.' : num(s.marks)}</td>`).join('')}
+              <td class="px-2 py-1.5 border-l border-ink-200 font-bold text-ink-900">${num(x.total)}</td>
+              <td class="px-2 py-1.5 border-l border-ink-200 font-bold">${x.letter === 'F' ? 'F' : bn(x.gpa.toFixed(2))}</td>
+              <td class="px-2 py-1.5 border-l border-ink-200 font-bold whitespace-nowrap">${x.position ? posLabel(x.position) : '—'}</td></tr>`).join('')}</tbody>
+          </table></div>`;
+      }
+      if (view === 'failed') {
+        const failed = res.rows.filter(x => x.failed.length);
+        return failed.length ? `<div class="space-y-2">${failed.map(x => `
+          <div class="p-3 rounded-xl bg-ink-50 border border-ink-200">
+            <div class="flex items-center justify-between gap-2"><span class="text-sm font-bold text-ink-900">রোল ${rollLabel(x.roll)} • ${esc(x.name)}</span><span class="text-xs font-extrabold text-ink-900">F${bn(x.failed.length)}</span></div>
+            <div class="text-xs text-ink-600 mt-1">${x.failed.map(esc).join(', ')}</div>
+          </div>`).join('')}</div>` : '<p class="text-sm text-ink-500">কেউ কোনো বিষয়ে ফেল করেনি।</p>';
+      }
+      const dist = { 'A+': 0, 'A': 0, 'A-': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0 };
+      res.rows.forEach(x => { dist[x.letter] += 1; });
+      const avg = res.rows.reduce((a, x) => a + x.total, 0) / (res.rows.length || 1);
+      const best = Math.max(...res.rows.map(x => x.total));
+      return `
+        <div class="grid grid-cols-3 gap-3">
+          ${countTile('userCheck', 'পাস', `${bn(res.passedCount)}/${bn(res.rows.length)} (${bn(Math.round(100 * res.passedCount / res.rows.length))}%)`)}
+          ${countTile('clock', 'গড় নম্বর', num(Math.round(avg * 10) / 10))}
+          ${countTile('check', 'সর্বোচ্চ মোট', num(best))}
+        </div>
+        <div class="grid grid-cols-7 gap-1.5 mt-3">${Object.entries(dist).map(([g, c]) => `
+          <div class="py-2 rounded-xl border text-center ${g === 'F' ? 'bg-ink-900 text-white border-ink-900' : 'bg-ink-50 border-ink-200 text-ink-900'}">
+            <div class="text-xs font-extrabold">${g}</div><div class="text-sm font-bold">${bn(c)}</div>
+          </div>`).join('')}</div>`;
+    }
+
+    function printSchoolView() {
+      const st = resultsState.school, exam = exams.find(e => e.id === st.examId);
+      if (!exam) return;
+      const res = computeResults(exam);
+      if (st.view === 'merit') {
+        const ranked = res.rows.filter(x => x.position).sort((a, b) => a.position - b.position);
+        printDoc(`মেধাতালিকা • ${esc(exam.name)} • ${esc(exam.cls)}`, printTable(['মেধাক্রম', 'রোল', 'নাম', 'মোট নম্বর', 'GPA'],
+          ranked.map(x => [posLabel(x.position), rollLabel(x.roll), esc(x.name), num(x.total), `${bn(x.gpa.toFixed(2))} (${x.letter})`])));
+      } else {
+        printDoc(`ট্যাবুলেশন শিট • ${esc(exam.name)} • ${esc(exam.cls)}`, printTable(['রোল', 'নাম', ...exam.subjects.map(shortSubject), 'মোট', 'GPA', 'মেধা'],
+          res.rows.map(x => [rollLabel(x.roll), esc(x.name), ...x.subs.map(s => s.absent ? 'অনু.' : num(s.marks)), num(x.total), x.letter === 'F' ? 'F' : bn(x.gpa.toFixed(2)), x.position ? posLabel(x.position) : '—'])));
+      }
+    }
+
+    function publishExam(exam) {
+      exam.publishedAt = new Date();
+      notices.push({ id: nextNoticeId++, from: exam.publisher, fromName: exam.publisher === 'school' ? 'প্রিন্সিপাল' : TEACHER_NAME,
+        audience: 'class', cls: exam.cls, important: false, at: new Date(),
+        title: `ফলাফল প্রকাশিত: ${exam.name}`, body: 'ডায়েরির "গ্রেড ও নম্বর" কার্ডে মার্কশিট দেখুন ও প্রিন্ট করুন।' });
+      refreshNotices();
+      renderAllResults();
+      showToast(`${possessive(exam.name)} ফলাফল প্রকাশ হয়েছে। অভিভাবকেরা নোটিশ পাবেন।`);
+    }
+
+    function renderResultStats() {
+      const t = teacherExams().filter(e => !e.publishedAt);
+      const left = t.reduce((a, e) => a + e.subjects.length - subjectsDone(e), 0);
+      document.getElementById('t-stat-marks').textContent = left ? `${bn(left)}টি বিষয় বাকি` : 'সব দেওয়া হয়েছে';
+      const ready = exams.filter(e => !e.publishedAt && e.publisher === 'school' && examComplete(e)).length;
+      const pending = exams.filter(e => !e.publishedAt).length;
+      document.getElementById('s-stat-results').textContent = ready ? `${bn(ready)}টি প্রকাশের অপেক্ষায়` : `${bn(pending)}টি চলমান`;
+    }
+
+    function renderAllResults() {
+      renderGradesPanel();
+      renderTeacherMarks();
+      renderSchoolResults();
+      renderResultStats();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Parent
+      document.getElementById('p-results').addEventListener('click', e => {
+        const chip = e.target.closest('[data-result-exam]');
+        if (chip) { resultsState.parentExam = Number(chip.getAttribute('data-result-exam')); renderGradesPanel(); return; }
+        if (e.target.closest('[data-print-marksheet]')) printMarksheet();
+      });
+
+      // Teacher
+      const tPanel = document.getElementById('panel-teacher-marks'), tst = resultsState.teacher;
+      tPanel.addEventListener('click', e => {
+        const ex = e.target.closest('[data-tmarks-exam]');
+        if (ex) { tst.examId = Number(ex.getAttribute('data-tmarks-exam')); tst.subject = null; renderTeacherMarks(); return; }
+        const sub = e.target.closest('[data-tmarks-subject]');
+        if (sub) { tst.subject = sub.getAttribute('data-tmarks-subject'); renderTeacherMarks(); return; }
+        const ab = e.target.closest('[data-mark-absent]');
+        if (ab) {
+          const exam = exams.find(x => x.id === tst.examId), r = Number(ab.getAttribute('data-mark-absent'));
+          if (exam.marks[tst.subject][r] === 'ab') delete exam.marks[tst.subject][r]; else exam.marks[tst.subject][r] = 'ab';
+          renderTeacherMarks(); renderSchoolResults(); renderResultStats();
+          return;
+        }
+        if (e.target.closest('[data-tmarks-new]')) {
+          const exists = exams.find(x => x.cls === TEACHER_CLASS && x.kind === 'weekly' && dateKey(x.date) === attKey);
+          if (exists) { tst.examId = exists.id; showToast('এই দিনের সাপ্তাহিক টেস্ট আগেই তৈরি আছে'); }
+          else { tst.examId = makeExam('weekly', TEACHER_CLASS, `সাপ্তাহিক টেস্ট — ${bn(attDate.getDate())} ${BN_MONTHS[attDate.getMonth()]}`, new Date(attDate)).id; showToast('নতুন সাপ্তাহিক টেস্ট তৈরি হয়েছে'); }
+          tst.subject = null; renderAllResults();
+          return;
+        }
+        if (e.target.closest('[data-tmarks-publish]')) publishExam(exams.find(x => x.id === tst.examId));
+      });
+      tPanel.addEventListener('input', e => {
+        const input = e.target.closest('[data-mark-roll]');
+        if (!input) return;
+        const exam = exams.find(x => x.id === tst.examId), r = Number(input.getAttribute('data-mark-roll'));
+        const raw = toAsciiDigits(input.value).trim().replace('।', '.');
+        const err = tPanel.querySelector('[data-mark-error]');
+        if (raw === '') { delete exam.marks[tst.subject][r]; input.setAttribute('aria-invalid', 'false'); err.classList.add('hidden'); updateEntryProgress(); return; }
+        const v = Number(raw);
+        const ok = /^\d+(\.5)?$/.test(raw) && v >= 0 && v <= exam.full;
+        input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        err.textContent = ok ? '' : `রোল ${rollLabel(r)}: ০ থেকে ${bn(exam.full)}-এর মধ্যে নম্বর দিন (আধা নম্বর .৫ চলবে)`;
+        err.classList.toggle('hidden', ok);
+        if (ok) exam.marks[tst.subject][r] = v; else delete exam.marks[tst.subject][r];
+        updateEntryProgress();
+      });
+      tPanel.addEventListener('change', () => renderSchoolResults());
+      tPanel.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' || !e.target.matches('[data-mark-roll]')) return;
+        e.preventDefault();
+        const inputs = Array.from(tPanel.querySelectorAll('[data-mark-roll]:not([disabled])'));
+        const next = inputs[inputs.indexOf(e.target) + 1];
+        if (next) next.focus(); else e.target.blur();
+      });
+
+      // Principal
+      const sPanel = document.getElementById('panel-school-results'), sst = resultsState.school;
+      sPanel.addEventListener('click', e => {
+        const c = e.target.closest('[data-sres-class]');
+        if (c) { sst.cls = c.getAttribute('data-sres-class'); sst.examId = null; renderSchoolResults(); return; }
+        const ex = e.target.closest('[data-sres-exam]');
+        if (ex) { sst.examId = Number(ex.getAttribute('data-sres-exam')); renderSchoolResults(); return; }
+        const v = e.target.closest('[data-sres-view]');
+        if (v) { sst.view = v.getAttribute('data-sres-view'); renderSchoolResults(); return; }
+        if (e.target.closest('[data-sres-new]')) { sst.creating = !sst.creating; renderSchoolResults(); return; }
+        const cr = e.target.closest('[data-sres-create]');
+        if (cr) {
+          const kind = cr.getAttribute('data-sres-create');
+          const exam = makeExam(kind, sst.cls, `${EXAM_KINDS[kind].label} — ${BN_MONTHS[realToday.getMonth()]}`, new Date(realToday));
+          sst.examId = exam.id; sst.creating = false;
+          renderAllResults();
+          showToast(`${sst.cls}: ${exam.name} তৈরি হয়েছে। শ্রেণি শিক্ষক এখন নম্বর দিতে পারবেন।`);
+          return;
+        }
+        if (e.target.closest('[data-sres-publish]')) { publishExam(exams.find(x => x.id === sst.examId)); return; }
+        if (e.target.closest('[data-sres-print]')) printSchoolView();
+      });
+
+      renderAllResults();
     });
 
   </script>

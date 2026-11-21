@@ -47,7 +47,10 @@ It opens on a login page where the person chooses **অভিভাবক** (Sch
 diary) and logout. Notices sit behind the header's **নোটিশ** button (with an unread count): the
 principal sends to everyone, parents, teachers or one class; a class teacher sends to her class's parents.
 The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
-khatas for that day). The login and settings are remembered on that phone until logout (browser storage).
+khatas for that day). Results: the class teacher enters marks on one screen per subject; weekly tests are
+published by the teacher, model and term exams by the principal (Bangladesh primary grading, any F means an
+overall F, positions only for students who passed). Parents see and print the mark sheet; the principal sees
+the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. The login and settings are remembered on that phone until logout (browser storage).
 
 Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.

@@ -84,3 +84,12 @@
   .profile-sheet[open] { animation: none; }
   .switch, .switch::after { transition: none; }
 }
+
+/* Printing: only the sheet filled by printDoc() (mark sheet, merit list, tabulation) goes on paper. */
+#print-sheet { display: none; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { background: #fff; }
+  body > *:not(#print-sheet) { display: none !important; }
+  #print-sheet { display: block; color: #000; }
+}
