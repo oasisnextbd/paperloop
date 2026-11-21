@@ -56,7 +56,12 @@ overall F, positions only for students who passed). Parents see and print the ma
 the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Monthly progress against a common minimum (the parent's
 **উন্নতি রিপোর্ট**): the aim is not to be first in class but that every child reaches at least a minimum in each
 subject, as in outcome-based assessment. A subject's monthly level is the average of that month's published exam
-marks and the class teacher's monthly skill check (out of 100). Parents see one bar per subject with their
+marks and the class teacher's monthly skill check. The skill check is built from small topics (e.g. বাংলা:
+যুক্তবর্ণ, বানান, জোরে পড়া, হাতের লেখা): Paperloop's common list per class and subject plus any the teacher adds
+for the month; the teacher taps one of four steps per student and topic (শুরু হয়েছে / চলছে / অর্জিত / দক্ষ = 25 /
+50 / 75 / 100) and the subject's skill check is their average. Topic details appear in the teacher's personal
+report (with the change since last month and the topics needing most attention), its printed copy and the
+principal's summary (each subject's weakest topic); parents see one bar per subject. Parents see one bar per subject with their
 child's level, the minimum line and the class average (shown only when at least five students have a level; no
 rank and no other child's marks), the change since last month, the teacher's note and Paperloop's practice tips
 (picked automatically from a fixed list for subjects below the minimum). The class teacher's **মাসিক মূল্যায়ন ও
