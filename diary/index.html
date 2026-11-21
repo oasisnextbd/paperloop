@@ -5484,22 +5484,13 @@
             <span class="text-[0.625rem] font-bold leading-none mt-0.5">ফিরে যান</span>
           </button>
           <div data-section-icon class="w-12 h-12 shrink-0 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center"></div>
-          <div class="min-w-0">
-            <h2 data-section-title tabindex="-1" class="text-lg sm:text-xl font-bold text-ink-900 leading-tight outline-none"></h2>
-            <p data-section-context class="text-xs text-ink-500 truncate"></p>
-          </div>`;
+          <h2 data-section-title tabindex="-1" class="min-w-0 text-lg sm:text-xl font-bold text-ink-900 leading-tight outline-none"></h2>`;
         view.prepend(bar);
       }
       return bar;
     }
     const panelsOf = role => document.querySelectorAll(`#view-${role} > .${role}-subpanel`);
     const cardsOf = role => document.querySelectorAll(`[data-${role}-panel].floating-card`);
-
-    function sectionContext(role) {
-      if (role === 'parent') return `${appState.studentName} • ${appState.studentClass}`;
-      if (role === 'teacher') return `${TEACHER_NAME} • ${TEACHER_CLASS}`;
-      return appState.schoolName;
-    }
 
     function showHome(role) {
       const bar = sectionBar(role);
@@ -5518,7 +5509,6 @@
       bar.querySelector('[data-section-icon]').innerHTML = card.querySelector('svg').outerHTML;
       const title = card.querySelector('.font-extrabold');
       bar.querySelector('[data-section-title]').textContent = title ? title.textContent.trim() : '';
-      bar.querySelector('[data-section-context]').textContent = sectionContext(role);
       bar.classList.remove('hidden'); bar.classList.add('flex');
       window.scrollTo(0, 0);
       bar.querySelector('[data-section-title]').focus({ preventScroll: true });
