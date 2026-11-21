@@ -73,7 +73,12 @@ validity, a footer line, and its own wording for the testimonial, transfer certi
 certificate (`{নাম}`, `{শ্রেণি}`, `{রোল}` and the other placeholders shown under each box are filled in at print
 time; unknown ones are flagged). A live preview shows a mark sheet, receipt, testimonial or ID card. Every printout
 uses it: mark sheet, merit list, tabulation, class list, receipts, due list, cash book, ID cards, admit cards,
-seat labels and all certificates; the app's header shows the school's name and logo too. Layouts fit inside both
+seat labels and all certificates; the app's header shows the school's name and logo too. The same page sets the **app's colours**
+for everyone logged in to that school (principal, teachers, parents): a main colour, an accent and a light
+background. Each shade keeps Paperloop's lightness and takes only the chosen colour's hue, so text stays readable
+and backgrounds stay light whatever is picked; the design page shows the draft at once and drops it if left
+unsaved. The palette is CSS variables (`--ink-*`, `--gold-*`, `--paper`, `--page` in `diary.input.css`, used by
+`tailwind.config.js`); printouts, their previews and the Paperloop mark always keep Paperloop's own values. Layouts fit inside both
 A4 and Letter pages (phones often default to Letter), and the app no longer prints an empty extra page. In the
 demo the design is saved in that browser per school code (`pl_diary_brand_<code>`); the real backend keeps it on
 the school's record, with the images in file storage.
@@ -88,7 +93,7 @@ resets on reload, and the page asks search engines not to index it.
 |---|---|
 | `diary/index.html` | the app: one page, markup and JavaScript (edit this) |
 | `diary/diary.input.css` | fonts, base styles and the floating-card / active-tile styles (edit this) |
-| `diary/tailwind.config.js` | the Paperloop palette as Tailwind colours: `ink-*` (navy neutrals), `gold-*` (accent), `white` = paper |
+| `diary/tailwind.config.js` | the Paperloop palette as Tailwind colours (CSS variables, defaults in `diary.input.css`): `ink-*` (navy neutrals), `gold-*` (accent), `white` = paper |
 | `diary/diary.css` | built by Tailwind: never edit by hand |
 
 After changing classes in `diary/index.html` or anything in `diary.input.css`:

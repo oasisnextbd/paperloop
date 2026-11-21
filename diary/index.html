@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=d04e0c9632" />
+  <link rel="stylesheet" href="diary.css?v=c22d34ef09" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -4515,7 +4515,7 @@
           ${options}
           <div>
             <div class="text-xs font-bold text-ink-600 mb-1.5">নমুনা (প্রথম পৃষ্ঠা)</div>
-            <div data-print-preview class="relative rounded-xl border border-ink-200 bg-white overflow-hidden"></div>
+            <div data-print-preview class="pl-default-palette relative rounded-xl border border-ink-200 bg-white overflow-hidden"></div>
           </div>
           <p data-print-error class="hidden text-xs font-bold text-gold-900"></p>
           <button type="submit" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2">${rIcon('print')}<span data-print-label>প্রিন্ট / PDF</span></button>
@@ -4604,13 +4604,14 @@
         name: schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`, nameEn: '', motto: '', address: 'কসবা, ব্রাহ্মণবাড়িয়া',
         phone: '', email: '', eiin: '', est: '', logo: '', head: '', signature: '',
         color: '#14213d', header: 'center', border: 'double', paper: 'A4',
-        idBlood: true, idPhone: true, idValid: '', footer: '', templates: { ...BRAND_TEMPLATES }, colors: {}
+        idBlood: true, idPhone: true, idValid: '', footer: '', templates: { ...BRAND_TEMPLATES }, colors: {},
+        app: {} // the app's own colours: primary, accent, bg (left out = Paperloop's)
       };
     }
     function brandFor(code) {
       const saved = readStore(brandKey(code)) || {};
       const d = brandDefaults(code);
-      return { ...d, ...saved, templates: { ...d.templates, ...(saved.templates || {}) }, colors: { ...(saved.colors || {}) } };
+      return { ...d, ...saved, templates: { ...d.templates, ...(saved.templates || {}) }, colors: { ...(saved.colors || {}) }, app: { ...(saved.app || {}) } };
     }
     let brandOverride = null; // the unsaved draft, while the design page shows its preview
     const brand = () => brandOverride || brandFor(appState.schoolCode);
@@ -4687,6 +4688,59 @@
     // A certificate template with {placeholders}; values are already-formatted HTML
     const fillTemplate = (tpl, values) => esc(tpl).replace(/\{([^{}]+)\}/g, (m, k) => (k in values ? values[k] : m)).replace(/\n/g, '<br>');
 
+    // ---------- The app's colours ----------
+    // The app is drawn with Paperloop's palette as CSS variables (diary.input.css → :root). A school can choose
+    // a main colour (buttons, headings, text), an accent (chosen cards, highlights) and a light background.
+    // Each shade keeps Paperloop's lightness and takes only the hue and strength of the chosen colour, so text
+    // stays dark enough to read and backgrounds stay light whatever is picked.
+    const PALETTE = {
+      ink: { 50: '#fbf8f0', 100: '#f3eddf', 200: '#e0d9c5', 300: '#cfc6ad', 400: '#a3a9bb', 500: '#5f6984', 600: '#525d78', 700: '#3a4766', 800: '#22335c', 900: '#14213d', 950: '#0d1629' },
+      gold: { 50: '#fbf3e2', 100: '#f6e6c4', 200: '#ecd29c', 300: '#e2bf78', 400: '#d9ae5a', 500: '#c99a40', 600: '#b8892f', 700: '#94691c', 800: '#765212', 900: '#5c400c', 950: '#3d2a06' },
+      paper: '#fffdf8', page: '#f7f3e9'
+    };
+    const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    function rgbHsl([r, g, b]) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+      if (!d) return [0, 0, l];
+      const s = d / (1 - Math.abs(2 * l - 1));
+      const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return [(h * 60 + 360) % 360, s, l];
+    }
+    function hslRgb(h, s, l) {
+      const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2;
+      const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+      return [r, g, b].map(v => Math.round((v + m) * 255));
+    }
+    const rgbHex = rgb => '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join('');
+    // A Paperloop shade re-coloured: its lightness, the chosen colour's hue, saturation scaled like the reference shade's
+    function recolour(shade, ref, chosen) {
+      const [, s0, l0] = rgbHsl(hexRgb(shade)), [, sRef] = rgbHsl(hexRgb(ref)), [h, s] = rgbHsl(hexRgb(chosen));
+      return hslRgb(h, Math.min(0.9, sRef ? s0 * s / sRef : s), l0);
+    }
+    function appVars(app = {}) {
+      const v = {};
+      const set = (name, hex) => { v[name] = hexRgb(hex); };
+      Object.entries(PALETTE.ink).forEach(([k, hex]) => set(`--ink-${k}`, hex));
+      Object.entries(PALETTE.gold).forEach(([k, hex]) => set(`--gold-${k}`, hex));
+      set('--paper', PALETTE.paper); set('--page', PALETTE.page);
+      if (app.primary) [400, 500, 600, 700, 800, 900, 950].forEach(k => { v[`--ink-${k}`] = recolour(PALETTE.ink[k], PALETTE.ink[900], app.primary); });
+      if (app.accent) Object.keys(PALETTE.gold).forEach(k => { v[`--gold-${k}`] = recolour(PALETTE.gold[k], PALETTE.gold[400], app.accent); });
+      if (app.bg) {
+        const [h, s0, l0] = rgbHsl(hexRgb(app.bg)), s = Math.min(s0, 0.7), l = Math.max(l0, 0.9); // always light
+        v['--page'] = hslRgb(h, s, l);
+        v['--paper'] = hslRgb(h, s, l + (1 - l) * 0.8);
+        [50, 100, 200, 300].forEach(k => { v[`--ink-${k}`] = recolour(PALETTE.ink[k], PALETTE.page, rgbHex(hslRgb(h, s, l))); });
+      }
+      return v;
+    }
+    function applyAppTheme(app = {}) {
+      const root = document.documentElement.style, custom = app.primary || app.accent || app.bg;
+      Object.entries(appVars(app)).forEach(([name, rgb]) => { if (custom) root.setProperty(name, rgb.join(' ')); else root.removeProperty(name); });
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', custom ? rgbHex(appVars(app)['--ink-900']) : PALETTE.ink[900]);
+    }
+
     // The school's name in the app follows the design too
     let paperloopMark = null;
     function applyBrandToApp() {
@@ -4694,6 +4748,7 @@
       if (mark && paperloopMark === null) paperloopMark = mark.innerHTML;
       const b = session && appState.schoolCode ? brandFor(appState.schoolCode) : null;
       if (mark) mark.innerHTML = b && b.logo ? `<img src="${b.logo}" alt="" class="w-9 h-9 object-contain">` : paperloopMark;
+      applyAppTheme(b ? b.app : {});
       if (!b) return;
       appState.schoolName = b.name;
       const title = document.getElementById('admin-school-title');
@@ -4772,6 +4827,20 @@
           <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">সনদের বর্ডার</div>${chips('border', [['double', 'দুই রেখা'], ['frame', 'ফ্রেম'], ['simple', 'সাধারণ']])}</div>
           <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">কাগজের মাপ</div>${chips('paper', [['A4', 'A4'], ['Letter', 'Letter'], ['Legal', 'Legal']])}
             <p class="text-[0.6875rem] text-ink-500">প্রিন্টের সময় ফোনে কাগজের মাপ এটাই বেছে নিন। A4 ও Letter দুটোতেই লেআউট ঠিক থাকে।</p></div>`)}
+        ${section('অ্যাপের রং', `
+          <p class="text-xs text-ink-500">এই স্কুলের অভিভাবক, শিক্ষক ও আপনি অ্যাপে এই রং দেখবেন। বদলালেই এই পাতায় দেখা যাবে; সংরক্ষণ করলে সবার জন্য হবে। লেখা সবসময় পড়ার মতো গাঢ় আর পটভূমি হালকা রাখা হয়।</p>
+          <button type="button" data-brand-app-school class="icon-tile w-full py-2.5 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-xs font-bold text-ink-800 flex items-center justify-center gap-2"><span class="w-4 h-4 rounded-full" style="background:${b.color}"></span>স্কুলের রং দিয়ে অ্যাপ সাজান</button>
+          <div class="divide-y divide-ink-200">${APP_COLOR_ITEMS.map(([k, label, hint]) => {
+            const own = !!b.app[k];
+            return `<div class="flex items-center gap-3 py-2.5">
+              <input type="color" id="brand-app-${k}" data-brand-app-color="${k}" value="${b.app[k] || APP_DEFAULTS[k]}" class="w-10 h-10 shrink-0 rounded-lg border border-ink-200 bg-white p-0.5" />
+              <label for="brand-app-${k}" class="flex-1 min-w-0"><span class="block text-sm font-bold text-ink-900">${label}</span>
+                <span class="block text-[0.6875rem] text-ink-500">${own ? 'নিজের বাছাই করা রং' : 'এখন: Paperloop-এর রং'} • ${hint}</span></label>
+              ${own ? `<button type="button" data-brand-app-reset="${k}" class="shrink-0 px-2.5 py-1.5 rounded-lg border border-ink-200 bg-white hover:bg-ink-50 text-[0.6875rem] font-bold text-ink-600">Paperloop রং</button>` : ''}
+            </div>`;
+          }).join('')}</div>
+          <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">পটভূমি: হালকা রং</div>
+            <div class="flex flex-wrap gap-2">${APP_BG_SWATCHES.map(c => `<button type="button" data-brand-app-bg="${c}" aria-label="অ্যাপের পটভূমি ${c}" aria-pressed="${(b.app.bg || APP_DEFAULTS.bg) === c}" class="w-9 h-9 rounded-full border-2 ${(b.app.bg || APP_DEFAULTS.bg) === c ? 'border-gold-600 ring-2 ring-gold-400' : 'border-white ring-1 ring-ink-300'}" style="background:${c}"></button>`).join('')}</div></div>`)}
         ${section('আইডি কার্ড', `
           <label class="flex items-center justify-between gap-3 text-sm font-bold text-ink-900">রক্তের গ্রুপ দেখাবে<button type="button" role="switch" aria-checked="${b.idBlood}" data-brand-switch="idBlood" class="switch"></button></label>
           <label class="flex items-center justify-between gap-3 text-sm font-bold text-ink-900">অভিভাবকের মোবাইল দেখাবে<button type="button" role="switch" aria-checked="${b.idPhone}" data-brand-switch="idPhone" class="switch"></button></label>
@@ -4798,7 +4867,7 @@
         <div class="floating-card rounded-2xl p-5 space-y-3">
           <h3 class="text-base font-bold text-ink-900">নমুনা দেখুন</h3>
           <div class="grid grid-cols-4 gap-2">${[['marksheet', 'মার্কশিট'], ['receipt', 'রসিদ'], ['testimonial', 'প্রশংসাপত্র'], ['id', 'আইডি কার্ড']].map(([k, l]) => `<button type="button" data-brand-preview="${k}" aria-pressed="${k === brandPreviewDoc}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${k === brandPreviewDoc ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>
-          <div data-brand-preview-box class="relative rounded-xl border border-ink-200 bg-white overflow-hidden"></div>
+          <div data-brand-preview-box class="pl-default-palette relative rounded-xl border border-ink-200 bg-white overflow-hidden"></div>
           <p data-brand-error class="hidden text-xs font-bold text-gold-900"></p>
           <div class="grid grid-cols-3 gap-2.5">
             <button type="button" data-brand-reset class="icon-tile py-3 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-700 font-bold text-xs">সব আগের মতো</button>
@@ -4806,11 +4875,18 @@
           </div>
         </div>`;
       updateBrandPreview();
+      applyAppTheme(brandDraft.app); // the design page shows the draft's app colours until it is left
     }
 
+    const APP_COLOR_ITEMS = [
+      ['primary', 'মূল রং', 'বোতাম, শিরোনাম, লেখা'], ['accent', 'আভা রং', 'বাছাই করা কার্ড, সতর্কতা'], ['bg', 'পটভূমি', 'পাতা ও কার্ড']
+    ];
+    const APP_DEFAULTS = { primary: PALETTE.ink[900], accent: PALETTE.gold[400], bg: PALETTE.page };
+    const APP_BG_SWATCHES = [PALETTE.page, '#f4f4f2', '#eef6f0', '#edf2f9', '#fbeff2', '#f3eff9', '#fdf3e4'];
     // The colour an item has in the draft (for the design page's own controls)
     function itemColor(k) { brandOverride = brandDraft; try { return pc(k); } finally { brandOverride = null; } }
     function openBrandPanel() { brandDraft = null; renderBrandPanel(); }
+    window.addEventListener('hashchange', () => { if (location.hash !== '#brand' && session) applyAppTheme(brandFor(appState.schoolCode).app); });
     function sampleDoc(kind) {
       const s = recordsByClass[TEACHER_CLASS][6] || recordsByClass[TEACHER_CLASS][0];
       if (kind === 'id') return { w: 190, h: 100, html: `<div class="flex justify-center pt-[4mm]">${idCard(s)}</div>` };
@@ -4855,6 +4931,7 @@
         else if (t.matches('[data-brand-tpl]')) brandDraft.templates[t.getAttribute('data-brand-tpl')] = oneSpelling(t.value);
         else if (t.matches('[data-brand-custom-color]')) { brandDraft.color = t.value; }
         else if (t.matches('[data-brand-item-color]')) { brandDraft.colors[t.getAttribute('data-brand-item-color')] = t.value; }
+        else if (t.matches('[data-brand-app-color]')) { brandDraft.app[t.getAttribute('data-brand-app-color')] = t.value; applyAppTheme(brandDraft.app); return; }
         else return;
         updateBrandPreview();
       });
@@ -4862,6 +4939,7 @@
         const t = e.target;
         if (t.matches('[data-brand-custom-color]')) { brandDraft.color = t.value; renderBrandPanel(); return; }
         if (t.matches('[data-brand-item-color]')) { brandDraft.colors[t.getAttribute('data-brand-item-color')] = t.value; renderBrandPanel(); return; }
+        if (t.matches('[data-brand-app-color]')) { brandDraft.app[t.getAttribute('data-brand-app-color')] = t.value; renderBrandPanel(); return; }
         if (!t.matches('[data-brand-image]')) return;
         const key = t.getAttribute('data-brand-image');
         try {
@@ -4876,6 +4954,11 @@
         const t = e.target;
         const choice = t.closest('[data-brand-choice]');
         if (choice) { brandDraft[choice.getAttribute('data-brand-choice')] = choice.getAttribute('data-value'); renderBrandPanel(); return; }
+        const abg = t.closest('[data-brand-app-bg]');
+        if (abg) { const v = abg.getAttribute('data-brand-app-bg'); if (v === APP_DEFAULTS.bg) delete brandDraft.app.bg; else brandDraft.app.bg = v; renderBrandPanel(); return; }
+        const ar = t.closest('[data-brand-app-reset]');
+        if (ar) { delete brandDraft.app[ar.getAttribute('data-brand-app-reset')]; renderBrandPanel(); return; }
+        if (t.closest('[data-brand-app-school]')) { brandDraft.app.primary = brandDraft.color; renderBrandPanel(); return; }
         const bgc = t.closest('[data-brand-bg]');
         if (bgc) { const v = bgc.getAttribute('data-brand-bg'); if (v === '#ffffff') delete brandDraft.colors.bg; else brandDraft.colors.bg = v; renderBrandPanel(); return; }
         const ir = t.closest('[data-brand-item-reset]');
