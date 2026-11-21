@@ -54,24 +54,31 @@ conversation; separate phones need the backend. **প্রোফাইল ও �
 diary) and logout. Notices sit behind the menu's **নোটিশ** (with an unread count): the
 principal sends to everyone, parents, teachers or one class; a class teacher sends to her class's parents.
 The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
-khatas for that day). Results: the class teacher enters marks on one screen per subject; weekly tests are
-published by the teacher, model and term exams by the principal (Bangladesh primary grading, any F means an
+khatas for that day). Teachers: the principal sets each class's class teacher and each subject's
+teacher (শিক্ষক ও স্টাফ → শ্রেণি ও বিষয় শিক্ষক); a teacher logs in as themself (the demo login lists the
+teachers) and works only on what they teach, in every class they teach. Subject teachers enter exam marks, the
+monthly topic checks and a comment per student for their subjects; the class teacher also takes attendance, sends
+class notices, answers parents' messages, writes the overall note and prints the counselling report. Results: each
+subject teacher enters marks on one screen per subject (the other subjects show who teaches them and how far they
+are); the class teacher publishes weekly tests, and checks the whole sheet of a model or term exam and sends it to
+the principal, who publishes it (a mark changed after sending means sending again) (Bangladesh primary grading, any F means an
 overall F, positions only for students who passed). Weekly tests are practice checks: they show marks only (no
 grade, GPA, position or mark sheet) and count towards the monthly progress. Parents see and print the mark sheet; the principal sees
 the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Monthly progress against a common minimum (the parent's
 **উন্নতি রিপোর্ট**): the aim is not to be first in class but that every child reaches at least a minimum in each
 subject, as in outcome-based assessment. A subject's monthly level is the average of that month's published exam
-marks and the class teacher's monthly skill check. The skill check is built from small topics (e.g. বাংলা:
+marks and the subject teacher's monthly skill check. The skill check is built from small topics (e.g. বাংলা:
 যুক্তবর্ণ, বানান, জোরে পড়া, হাতের লেখা): Paperloop's common list per class and subject plus any the teacher adds
 for the month; the teacher taps one of four steps per student and topic (শুরু হয়েছে / চলছে / অর্জিত / দক্ষ = 25 /
 50 / 75 / 100) and the subject's skill check is their average. Topic details appear in the teacher's personal
 report (with the change since last month and the topics needing most attention), its printed copy and the
 principal's summary (each subject's weakest topic); parents see one bar per subject. Parents see one bar per subject with their
 child's level, the minimum line and the class average (shown only when at least five students have a level; no
-rank and no other child's marks), the change since last month, the teacher's note and Paperloop's practice tips
-(picked automatically from a fixed list for subjects below the minimum). The class teacher's **মাসিক মূল্যায়ন ও
-রিপোর্ট** card enters the skill checks and opens each student's detailed report for counselling, with a note for
-the guardian and a printable copy; the principal's results page shows how many students in each class meet the
+rank and no other child's marks), the change since last month, each subject teacher's name and comment, the class
+teacher's overall note and Paperloop's practice tips (picked automatically from a fixed list for subjects below
+the minimum). The **মাসিক মূল্যায়ন ও রিপোর্ট** card lets each teacher enter the skill checks and comments for
+their own subjects; the class teacher sees every subject with its teacher's comment, writes the note for the
+guardian and prints the counselling report; the principal's results page shows how many students in each class meet the
 minimum. The minimum is the same for every partner school (agreed by the schools, moderated by Paperloop); the
 demo uses a sample 60%. The grade sheet, GPA and position stay as they are. Student records: the principal sees class-wise counts, searches the class list, opens and edits
 a student's profile, admits new students (they join the attendance register at once and every exam created

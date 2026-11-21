@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=29ff786f03" />
+  <link rel="stylesheet" href="diary.css?v=3f99e87afa" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -153,8 +153,8 @@
               <input id="login-t-code" type="text" value="KSB" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
             </div>
             <div>
-              <label for="login-t-phone" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষকের মোবাইল / আইডি</label>
-              <input id="login-t-phone" type="text" value="" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="মোবাইল নম্বর বা শিক্ষক আইডি দিন" />
+              <label for="login-t-phone" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষক</label>
+              <select id="login-t-phone" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 bg-white text-sm font-bold" required></select>
             </div>
             <div>
               <label for="login-t-pin" class="block text-xs font-bold text-ink-700 mb-1">৪-সংখ্যার পিন</label>
@@ -489,12 +489,13 @@
           </div>
           <div>
             <span class="text-xs font-semibold text-ink-300">শিক্ষক ড্যাশবোর্ড</span>
-            <h2 class="text-lg font-bold">রাশেদা বেগম (শ্রেণি শিক্ষিকা — ৩য় শ্রেণি)</h2>
+            <h2 class="text-lg font-bold" id="teacher-banner-name">রাশেদা বেগম</h2>
+            <p class="text-xs text-ink-300" id="teacher-banner-role"></p>
           </div>
         </div>
         <div class="bg-white/10 px-3.5 py-2 rounded-xl border border-white/15 text-center">
           <div class="text-[0.6875rem] text-ink-300">মোট শিক্ষার্থী</div>
-          <div class="text-base font-bold">৩০ জন</div>
+          <div class="text-base font-bold" id="teacher-banner-count">৩০ জন</div>
         </div>
       </div>
 
@@ -943,6 +944,8 @@
             <span id="s-staff-submit-label">শিক্ষক হাজিরা জমা দিন</span>
           </button>
         </div>
+        <!-- Who teaches what (TEACHERS AND SUBJECTS) -->
+        <div id="s-assign" class="floating-card rounded-2xl p-5 space-y-4"></div>
       </div>
 
       <!-- PRINCIPAL PANEL: CLASS-WISE DIARY UPDATES (existing block) -->
@@ -2304,7 +2307,7 @@
       teacher: { label: 'শ্রেণি শিক্ষক', icon: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' },
       school: { label: 'প্রিন্সিপাল / অ্যাডমিন', icon: '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M14 9h1"/><path d="M9 13h1"/><path d="M14 13h1"/><path d="M10 21v-4h4v4"/>' }
     };
-    const TEACHER_NAME = 'রাশেদা বেগম';   // the only teacher account in this demo
+    let TEACHER_NAME = 'রাশেদা বেগম';   // ৩য় শ্রেণির class teacher (set by the principal, see TEACHERS AND SUBJECTS)
     const schoolNameFor = code => schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
 
     function applySettings() {
@@ -2341,8 +2344,9 @@
         document.getElementById('profile-title').textContent = `${possessive(appState.studentName)} অভিভাবক`;
         rows.push(['শিক্ষার্থী', appState.studentName], ['শ্রেণি', appState.studentClass], ['রোল', bn(toAsciiDigits(appState.studentRoll))], ['শ্রেণি শিক্ষক', TEACHER_NAME]);
       } else if (role === 'teacher') {
-        document.getElementById('profile-title').textContent = TEACHER_NAME;
-        rows.push(['শ্রেণি', '৩য় শ্রেণি'], ['মোবাইল / আইডি', session.userId]);
+        document.getElementById('profile-title').textContent = me();
+        if (classesLedBy(me()).length) rows.push(['শ্রেণি শিক্ষক', classesLedBy(me()).join(', ')]);
+        rows.push(['যা পড়ান', teachingLine(me()) || '—']);
       } else {
         document.getElementById('profile-title').textContent = 'প্রিন্সিপাল / অ্যাডমিন';
         rows.push(['অ্যাডমিন আইডি', session.userId]);
@@ -3004,7 +3008,7 @@
       </table>`;
 
     // ---------- Parent: mark sheet ----------
-    const resultsState = { parentExam: null, teacher: { examId: null, subject: null }, school: { cls: TEACHER_CLASS, examId: null, view: 'merit', creating: false } };
+    const resultsState = { parentExam: null, teacher: { cls: TEACHER_CLASS, examId: null, subject: null }, school: { cls: TEACHER_CLASS, examId: null, view: 'merit', creating: false } };
 
     function renderGradesPanel() {
       const box = document.getElementById('p-results'), stat = document.getElementById('stat-grade');
@@ -3078,11 +3082,39 @@
     }
 
     // ---------- Teacher: marks entry ----------
-    function teacherExams() { return exams.filter(e => e.cls === TEACHER_CLASS).sort((a, b) => (!!a.publishedAt - !!b.publishedAt) || b.date - a.date); }
+    function teacherExams(cls = TEACHER_CLASS) { return exams.filter(e => e.cls === cls).sort((a, b) => (!!a.publishedAt - !!b.publishedAt) || b.date - a.date); }
+    // The whole class's marks in one table (the class teacher checks it before sending; the principal's weekly view)
+    function marksTableHtml(exam) {
+      const res = computeResults(exam), th = 'px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap border-l border-ink-200';
+      return `<div class="overflow-x-auto rounded-xl border border-ink-200"><table class="text-xs min-w-full">
+        <thead class="bg-ink-50"><tr><th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600">রোল</th>${exam.subjects.map(s => `<th class="${th}">${shortSubject(s)}</th>`).join('')}<th class="${th}">মোট</th></tr></thead>
+        <tbody>${res.rows.map(x => `<tr class="border-t border-ink-200"><th class="sticky left-0 bg-white px-2 py-1.5 text-left font-bold text-ink-900 whitespace-nowrap">${rollLabel(x.roll)} ${esc(x.name.split(' ')[0])}</th>
+          ${x.subs.map(s => `<td class="px-2 py-1.5 border-l border-ink-200 whitespace-nowrap text-ink-700">${s.absent ? 'অনু.' : num(s.marks)}</td>`).join('')}<td class="px-2 py-1.5 border-l border-ink-200 font-bold text-ink-900">${num(x.total)}</td></tr>`).join('')}</tbody>
+      </table></div>`;
+    }
+    // What happens next, as the teacher sees it. Weekly tests: the class teacher publishes. Model and term exams:
+    // the class teacher checks the whole sheet and sends it; the principal publishes.
+    function teacherMarksFooter(exam) {
+      const complete = examComplete(exam), ct = isClassTeacher() && exam.cls === TEACHER_CLASS, ctName = CLASS_TEACHERS[exam.cls] || 'শ্রেণি শিক্ষক';
+      const note = t => `<p data-tmarks-status class="text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${t}</p>`;
+      if (exam.publishedAt) return `<p class="flex items-center gap-2 text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${rIcon('lock')}<span>ফলাফল প্রকাশিত, তাই নম্বর আর বদলানো যাবে না। ভুল থাকলে প্রিন্সিপালকে জানান।</span></p>`;
+      const btn = (attr, on, label) => `<button type="button" ${attr} ${on ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${label}</span></button>`;
+      if (exam.publisher === 'teacher') return ct ? btn('data-tmarks-publish', complete, complete ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর এলে প্রকাশ করা যাবে')
+        : note(complete ? `সব বিষয়ের নম্বর এসেছে। শ্রেণি শিক্ষক (${esc(ctName)}) প্রকাশ করবেন।` : `সব বিষয়ের নম্বর এলে শ্রেণি শিক্ষক (${esc(ctName)}) প্রকাশ করবেন।`);
+      if (exam.sentAt) return note('যাচাই করে প্রিন্সিপালের কাছে পাঠানো হয়েছে; তিনি প্রকাশ করবেন। এখন কোনো নম্বর বদলালে আবার পাঠাতে হবে।');
+      if (!ct) return note(complete ? `সব বিষয়ের নম্বর এসেছে। শ্রেণি শিক্ষক (${esc(ctName)}) যাচাই করে প্রিন্সিপালের কাছে পাঠাবেন।` : `সব বিষয়ের নম্বর এলে শ্রেণি শিক্ষক (${esc(ctName)}) যাচাই করে প্রিন্সিপালের কাছে পাঠাবেন।`);
+      return complete
+        ? `<div class="space-y-2"><div class="text-xs font-bold text-ink-700">পুরো শ্রেণির নম্বর একবার দেখে নিন</div>${marksTableHtml(exam)}</div>${btn('data-tmarks-send', true, 'যাচাই করে প্রিন্সিপালের কাছে পাঠান')}`
+        : note('সব বিষয়ের নম্বর এলে পুরো শ্রেণির নম্বর যাচাই করে প্রিন্সিপালের কাছে পাঠাবেন।');
+    }
 
     function renderTeacherMarks() {
       const el = document.getElementById('panel-teacher-marks'), st = resultsState.teacher;
-      const list = teacherExams();
+      const classes = myClasses().length ? myClasses() : [TEACHER_CLASS];
+      if (!classes.includes(st.cls)) st.cls = classes[0];
+      const mine = mySubjectsIn(st.cls), ct = isClassTeacher() && st.cls === TEACHER_CLASS;
+      const classChips = classes.length > 1 ? `<div class="flex flex-wrap gap-2">${classes.map(c => `<button type="button" data-tmarks-class="${c}" aria-pressed="${c === st.cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === st.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('')}</div>` : '';
+      const list = teacherExams(st.cls);
       if (!list.some(e => e.id === st.examId)) st.examId = list.length ? list[0].id : null;
       const exam = exams.find(e => e.id === st.examId);
       const examChips = list.map(e => `
@@ -3090,17 +3122,23 @@
           <span class="block text-xs font-bold">${esc(e.name)}</span>
           <span class="block text-[0.6875rem] ${e.publishedAt ? 'text-ink-500' : 'text-gold-900'}">${e.publishedAt ? 'প্রকাশিত' : `নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`}</span>
         </button>`).join('');
-      if (!exam) { el.innerHTML = `<div class="floating-card rounded-2xl p-5">${examChips}</div>`; return; }
-      if (!exam.subjects.includes(st.subject)) st.subject = exam.subjects.find(s => !subjectDone(exam, s)) || exam.subjects[0];
+      if (!exam || !examRoster(exam).length) {
+        el.innerHTML = `<div class="floating-card rounded-2xl p-5 space-y-3">${classChips}${examChips}<p class="text-sm text-ink-500">${rosterFor(st.cls).length ? 'এই শ্রেণির কোনো পরীক্ষা এখনো তৈরি হয়নি।' : 'এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।'}</p></div>`;
+        return;
+      }
+      const myHere = exam.subjects.filter(s => mine.includes(s));
+      if (!myHere.includes(st.subject)) st.subject = myHere.find(s => !subjectDone(exam, s)) || myHere[0] || null;
       const locked = !!exam.publishedAt;
+      // Own subjects can be opened; the others show who teaches them and how far they are
       const subjectTiles = exam.subjects.map(s => {
-        const meta = subjectMeta[s] || { svg: lineIcons.bangla }, done = subjectDone(exam, s);
-        return `<button type="button" data-tmarks-subject="${esc(s)}" aria-pressed="${s === st.subject}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${s === st.subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+        const meta = subjectMeta[s] || { svg: lineIcons.bangla }, done = subjectDone(exam, s), own = mine.includes(s);
+        return `<button type="button" ${own ? `data-tmarks-subject="${esc(s)}"` : 'disabled'} aria-pressed="${s === st.subject}" title="${own ? '' : `${esc(teacherOf(exam.cls, s))} নম্বর দেবেন`}" class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${s === st.subject ? 'tile-active' : own ? 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50' : 'border-dashed border-ink-200 bg-ink-50 text-ink-400'}">
           ${meta.svg}<span class="text-[0.6875rem] font-bold mt-1 leading-tight">${shortSubject(s)}</span>
+          ${own ? '' : `<span class="text-[0.5625rem] leading-tight truncate max-w-full">${esc(teacherOf(exam.cls, s).split(' ')[0])}</span>`}
           <span data-subject-count="${esc(s)}" class="text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}">${done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)}`}</span>
         </button>`;
       }).join('');
-      const rows = examRoster(exam).map((name, i) => {
+      const rows = !st.subject ? '' : examRoster(exam).map((name, i) => {
         const r = i + 1, m = exam.marks[st.subject][r], absent = m === 'ab';
         return `
           <div class="flex items-center gap-2.5 py-2 border-b border-ink-200 last:border-0">
@@ -3113,34 +3151,29 @@
               class="icon-tile w-12 py-2 rounded-xl border text-[0.6875rem] font-bold shrink-0 ${absent ? 'tile-active' : 'border-ink-200 bg-white text-ink-500 hover:bg-ink-50'} disabled:opacity-50">অনু.</button>
           </div>`;
       }).join('');
-      const complete = examComplete(exam);
-      const footer = locked
-        ? `<p class="flex items-center gap-2 text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${rIcon('lock')}<span>ফলাফল প্রকাশিত, তাই নম্বর আর বদলানো যাবে না। ভুল থাকলে প্রিন্সিপালকে জানান।</span></p>`
-        : exam.publisher === 'teacher'
-          ? `<button type="button" data-tmarks-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'}</span></button>`
-          : `<p data-tmarks-status class="text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${principalStatus(complete)}</p>`;
+      const footer = teacherMarksFooter(exam);
       el.innerHTML = `
         <div class="floating-card rounded-2xl p-5 space-y-4">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 class="text-base font-bold text-ink-900">নম্বর দিন — ${esc(TEACHER_CLASS)}</h3>
+              <h3 class="text-base font-bold text-ink-900">নম্বর দিন — ${esc(st.cls)}</h3>
               <p class="text-xs text-ink-500">নম্বর লিখলেই সংরক্ষণ হয়। Enter চাপলে পরের রোলে যাবে।</p>
             </div>
-            <button type="button" data-tmarks-new class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">${rIcon('plus')}নতুন সাপ্তাহিক টেস্ট</button>
+            ${ct ? `<button type="button" data-tmarks-new class="icon-tile inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">${rIcon('plus')}নতুন সাপ্তাহিক টেস্ট</button>` : ''}
           </div>
+          ${classChips}
           <div class="flex flex-wrap gap-2">${examChips}</div>
           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">${subjectTiles}</div>
-          <div class="flex items-center justify-between text-xs font-bold text-ink-600">
+          ${st.subject ? `<div class="flex items-center justify-between text-xs font-bold text-ink-600">
             <span>${esc(st.subject)} • পূর্ণমান ${bn(exam.full)}</span>
             <span data-entry-progress>${bn(enteredCount(exam, st.subject))}/${bn(examRoster(exam).length)} জনের নম্বর দেওয়া</span>
           </div>
-          <div class="bg-white rounded-2xl border border-ink-200 px-3">${rows}</div>
+          <div class="bg-white rounded-2xl border border-ink-200 px-3">${rows}</div>` : '<p class="text-xs text-ink-600 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">এই পরীক্ষায় আপনার পড়ানো কোনো বিষয় নেই।</p>'}
           <p data-mark-error class="hidden text-xs font-bold text-gold-900"></p>
-          ${footer}
+          <div data-tmarks-footer>${footer}</div>
         </div>`;
     }
 
-    const principalStatus = complete => complete ? 'সব বিষয়ের নম্বর দেওয়া হয়েছে। প্রিন্সিপাল ফলাফল প্রকাশ করবেন।' : 'সব বিষয়ের নম্বর দেওয়া হলে প্রিন্সিপাল ফলাফল প্রকাশ করবেন।';
     function updateEntryProgress() {
       const exam = exams.find(e => e.id === resultsState.teacher.examId), s = resultsState.teacher.subject;
       const el = document.getElementById('panel-teacher-marks');
@@ -3151,10 +3184,8 @@
         tile.textContent = done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)}`;
         tile.className = `text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}`;
       }
-      const status = el.querySelector('[data-tmarks-status]');
-      if (status) status.textContent = principalStatus(examComplete(exam));
-      const pub = el.querySelector('[data-tmarks-publish]');
-      if (pub) { const c = examComplete(exam); pub.disabled = !c; pub.querySelector('span').textContent = c ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'; }
+      exam.sentAt = null; // changed after the class teacher sent it: it has to be checked and sent again
+      el.querySelector('[data-tmarks-footer]').innerHTML = teacherMarksFooter(exam);
       renderResultStats();
     }
 
@@ -3165,7 +3196,8 @@
       if (!list.some(e => e.id === st.examId)) st.examId = list.length ? list[0].id : null;
       const exam = list.find(e => e.id === st.examId);
       const classChips = CLASSES.map(c => `<button type="button" data-sres-class="${c}" aria-pressed="${c === st.cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === st.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('');
-      const statusOf = e => e.publishedAt ? ['প্রকাশিত', false] : examComplete(e) ? ['প্রকাশের জন্য প্রস্তুত', true] : [`নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`, true];
+      const statusOf = e => e.publishedAt ? ['প্রকাশিত', false] : !examComplete(e) ? [`নম্বর ${bn(subjectsDone(e))}/${bn(e.subjects.length)} বিষয়`, true]
+        : e.publisher === 'school' && !e.sentAt ? ['শ্রেণি শিক্ষকের যাচাই বাকি', true] : ['প্রকাশের জন্য প্রস্তুত', true];
       const examRows = list.length ? list.map(e => {
         const [label, attention] = statusOf(e);
         return `<button type="button" data-sres-exam="${e.id}" aria-pressed="${e.id === st.examId}" class="icon-tile w-full p-3 rounded-2xl border flex items-center justify-between gap-3 text-left ${e.id === st.examId ? 'tile-active' : 'border-ink-200 bg-ink-50 hover:bg-white'}">
@@ -3185,24 +3217,19 @@
       let detail = '';
       if (exam) {
         const complete = examComplete(exam), roster = examRoster(exam);
+        const ready = complete && !!exam.sentAt;
         const publishBtn = !exam.publishedAt && exam.publisher === 'school' ? `
-          <button type="button" data-sres-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
+          <button type="button" data-sres-publish ${ready ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${ready ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : complete ? `শ্রেণি শিক্ষক (${esc(CLASS_TEACHERS[exam.cls] || '')}) যাচাই করে পাঠালে প্রকাশ করা যাবে` : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
         if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।</p>';
         else if (!complete) {
           // Tell the principal where the marks come from: the class teacher's own login
-          detail = `<p class="text-xs text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">শ্রেণি শিক্ষক${typeof CLASS_TEACHERS !== 'undefined' && CLASS_TEACHERS[exam.cls] ? ` (${esc(CLASS_TEACHERS[exam.cls])})` : ''} নিজের লগইনে <b>“নম্বর দিন”</b> কার্ড থেকে বিষয় ধরে নম্বর দেন। সব বিষয়ের নম্বর এলে এখানে প্রকাশ করার বাটন চালু হবে।</p><div class="space-y-2">${exam.subjects.map(s => `
+          detail = `<p class="text-xs text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">প্রতিটি বিষয়ের শিক্ষক নিজের লগইনে <b>“নম্বর দিন”</b> কার্ড থেকে নম্বর দেন। সব এলে শ্রেণি শিক্ষক যাচাই করে পাঠাবেন, তখন এখানে প্রকাশ করার বাটন চালু হবে।</p><div class="space-y-2">${exam.subjects.map(s => `
             <div class="flex items-center justify-between p-3 rounded-xl bg-ink-50 border border-ink-200 text-sm">
-              <span class="font-bold text-ink-900">${esc(s)}</span>
+              <span><span class="block font-bold text-ink-900">${esc(s)}</span><span class="block text-[0.6875rem] text-ink-500">${esc(teacherOf(exam.cls, s))}</span></span>
               <span class="text-xs font-bold ${subjectDone(exam, s) ? 'text-ink-600' : 'text-gold-900'}">${subjectDone(exam, s) ? 'নম্বর দেওয়া হয়েছে' : `${bn(enteredCount(exam, s))}/${bn(roster.length)} জনের নম্বর`}</span>
             </div>`).join('')}</div>`;
         } else if (!isGraded(exam)) {
-          const res = computeResults(exam), th = 'px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap border-l border-ink-200';
-          detail = `<p class="text-xs text-ink-600">সাপ্তাহিক টেস্টে গ্রেড বা মেধাক্রম নেই; নম্বর মাসিক অগ্রগতিতে যোগ হয়।</p>
-            <div class="overflow-x-auto rounded-xl border border-ink-200"><table class="text-xs min-w-full">
-              <thead class="bg-ink-50"><tr><th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600">রোল</th>${exam.subjects.map(s => `<th class="${th}">${shortSubject(s)}</th>`).join('')}<th class="${th}">মোট</th></tr></thead>
-              <tbody>${res.rows.map(x => `<tr class="border-t border-ink-200"><th class="sticky left-0 bg-white px-2 py-1.5 text-left font-bold text-ink-900 whitespace-nowrap">${rollLabel(x.roll)} ${esc(x.name.split(' ')[0])}</th>
-                ${x.subs.map(s => `<td class="px-2 py-1.5 border-l border-ink-200 whitespace-nowrap text-ink-700">${s.absent ? 'অনু.' : num(s.marks)}</td>`).join('')}<td class="px-2 py-1.5 border-l border-ink-200 font-bold text-ink-900">${num(x.total)}</td></tr>`).join('')}</tbody>
-            </table></div>`;
+          detail = `<p class="text-xs text-ink-600">সাপ্তাহিক টেস্টে গ্রেড বা মেধাক্রম নেই; নম্বর মাসিক অগ্রগতিতে যোগ হয়।</p>${marksTableHtml(exam)}`;
         } else {
           const views = [['merit', 'মেধাতালিকা'], ['tabulation', 'ট্যাবুলেশন'], ['failed', 'ফেল করা বিষয়'], ['summary', 'সারসংক্ষেপ']];
           detail = `
@@ -3303,10 +3330,10 @@
     }
 
     function renderResultStats() {
-      const t = teacherExams().filter(e => !e.publishedAt);
-      const left = t.reduce((a, e) => a + e.subjects.length - subjectsDone(e), 0);
+      const t = myClasses().flatMap(c => teacherExams(c)).filter(e => !e.publishedAt && examRoster(e).length);
+      const left = t.reduce((a, e) => a + e.subjects.filter(s => teachesIn(e.cls, s) && !subjectDone(e, s)).length, 0);
       document.getElementById('t-stat-marks').textContent = left ? `${bn(left)}টি বিষয় বাকি` : 'সব দেওয়া হয়েছে';
-      const ready = exams.filter(e => !e.publishedAt && e.publisher === 'school' && examComplete(e)).length;
+      const ready = exams.filter(e => !e.publishedAt && e.publisher === 'school' && examComplete(e) && e.sentAt).length;
       const pending = exams.filter(e => !e.publishedAt).length;
       document.getElementById('s-stat-results').textContent = ready ? `${bn(ready)}টি প্রকাশের অপেক্ষায়` : `${bn(pending)}টি চলমান`;
     }
@@ -3337,6 +3364,7 @@
         if (ab) {
           const exam = exams.find(x => x.id === tst.examId), r = Number(ab.getAttribute('data-mark-absent'));
           if (exam.marks[tst.subject][r] === 'ab') delete exam.marks[tst.subject][r]; else exam.marks[tst.subject][r] = 'ab';
+          exam.sentAt = null;
           renderTeacherMarks(); renderSchoolResults(); renderResultStats();
           return;
         }
@@ -3347,7 +3375,15 @@
           tst.subject = null; renderAllResults();
           return;
         }
-        if (e.target.closest('[data-tmarks-publish]')) publishExam(exams.find(x => x.id === tst.examId));
+        if (e.target.closest('[data-tmarks-publish]')) { publishExam(exams.find(x => x.id === tst.examId)); return; }
+        const cl = e.target.closest('[data-tmarks-class]');
+        if (cl) { tst.cls = cl.getAttribute('data-tmarks-class'); tst.examId = null; tst.subject = null; renderTeacherMarks(); return; }
+        if (e.target.closest('[data-tmarks-send]')) {
+          const exam = exams.find(x => x.id === tst.examId);
+          exam.sentAt = new Date();
+          renderAllResults();
+          showToast(`${exam.name}: যাচাই করে প্রিন্সিপালের কাছে পাঠানো হয়েছে`);
+        }
       });
       tPanel.addEventListener('input', e => {
         const input = e.target.closest('[data-mark-roll]');
@@ -3389,7 +3425,7 @@
           const exam = makeExam(kind, sst.cls, `${EXAM_KINDS[kind].label} — ${BN_MONTHS[realToday.getMonth()]}`, new Date(realToday));
           sst.examId = exam.id; sst.creating = false;
           renderAllResults();
-          showToast(`${sst.cls}: ${exam.name} তৈরি হয়েছে। শ্রেণি শিক্ষক এখন নম্বর দিতে পারবেন।`);
+          showToast(`${sst.cls}: ${exam.name} তৈরি হয়েছে। বিষয় শিক্ষকেরা এখন নম্বর দিতে পারবেন।`);
           return;
         }
         if (e.target.closest('[data-sres-publish]')) { publishExam(exams.find(x => x.id === sst.examId)); return; }
@@ -4551,6 +4587,17 @@
       noteBox(TEACHER_CLASS, monthKey(STD_MONTHS[0]))[7] = 'বাংলাদেশ ও বিশ্বপরিচয়ে মানচিত্রে দিক চিনতে এখনো একটু সমস্যা হচ্ছে, তবে গত মাসের চেয়ে ভালো করেছে। বাকি সব বিষয়ে সে ভালো করছে; বাসায় অল্প অল্প অনুশীলন করালেই হবে।';
     })();
     const prevMonth = m => new Date(m.getFullYear(), m.getMonth() - 1, 1);
+    // Each subject teacher's comment on a student for the month: subjectComments[cls][month][subject][roll] = text
+    const subjectComments = {}, commentAuthors = {}; // who wrote it (the subject may be reassigned later)
+    const commentBox = (cls, mk, subject) => deep(subjectComments, cls, mk, subject);
+    const authorBox = (cls, mk, subject) => deep(commentAuthors, cls, mk, subject);
+    const commentBy = (cls, mk, subject, roll) => authorBox(cls, mk, subject)[roll] || teacherOf(cls, subject);
+    (function seedComments() {
+      const mk = monthKey(STD_MONTHS[0]);
+      commentBox(TEACHER_CLASS, mk, 'গণিত')[7] = 'নামতা খুব ভালো পারে; ভগ্নাংশ আরেকটু অনুশীলন করলে আরও ভালো হবে।';
+      commentBox(TEACHER_CLASS, mk, 'বাংলাদেশ ও বিশ্বপরিচয়')[7] = 'মানচিত্রে দিক চেনা এখনো কঠিন লাগছে; ক্লাসে আলাদা করে দেখাচ্ছি।';
+      authorBox(TEACHER_CLASS, mk, 'গণিত')[7] = 'কামরুল হাসান'; authorBox(TEACHER_CLASS, mk, 'বাংলাদেশ ও বিশ্বপরিচয়')[7] = 'মাহফুজা খাতুন';
+    })();
     // Each topic for one student: this month's and last month's step (matched by topic name)
     function topicDetail(cls, roll, subject, month) {
       const mk = monthKey(month), pk = monthKey(prevMonth(month)), prevTopics = topicsFor(cls, pk, subject);
@@ -4575,8 +4622,8 @@
       const v = rosterFor(cls).map((_, i) => levelOf(cls, i + 1, subject, month).level).filter(x => x !== null);
       return v.length >= MIN_FOR_AVERAGE ? Math.round(v.reduce((a, x) => a + x, 0) / v.length) : null;
     }
-    function studentSummary(cls, roll, month) {
-      const subs = STD_SUBJECTS.map(s => {
+    function studentSummary(cls, roll, month, subjects = STD_SUBJECTS) {
+      const subs = subjects.map(s => {
         const now = levelOf(cls, roll, s, month), prev = levelOf(cls, roll, s, new Date(month.getFullYear(), month.getMonth() - 1, 1));
         return { subject: s, ...now, prev: prev.level, avg: classAverage(cls, s, month), min: standardFor(cls, s) };
       });
@@ -4630,17 +4677,21 @@
         <li class="flex items-center justify-between gap-2 text-xs"><span class="text-ink-800 min-w-0 truncate">${esc(t.name)}</span>
           <span class="flex items-center gap-1.5 shrink-0">${t.prev ? `<span class="text-[0.625rem] text-ink-500">গত মাস ${stepName(t.prev)}</span>` : ''}${trend(t.now, t.prev)}${stepPill(t.now)}</span></li>`).join('')}</ul>`;
     }
-    function subjectRow(x, { topics = null } = {}) {
+    function subjectRow(x, { topics = null, who = '', comment = '', by = '', editable = false } = {}) {
       const met = x.level !== null && x.level >= x.min, diff = x.level !== null && x.prev !== null ? x.level - x.prev : null;
       if (x.level === null) return `
         <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-between gap-2">
-          <span class="text-sm font-bold text-ink-900">${esc(x.subject)}</span><span class="text-[0.6875rem] text-ink-500">এ মাসের মূল্যায়ন এখনো আসেনি</span>
+          <span><span class="block text-sm font-bold text-ink-900">${esc(x.subject)}</span>${who ? `<span class="block text-[0.6875rem] text-ink-500">${esc(who)}</span>` : ''}</span><span class="text-[0.6875rem] text-ink-500">এ মাসের মূল্যায়ন এখনো আসেনি</span>
         </div>`;
       const tl = topicList(topics);
+      const cm = editable
+        ? `<label class="block mt-1 pt-2 border-t border-ink-200"><span class="block text-[0.6875rem] font-bold text-ink-600 mb-1">আপনার মন্তব্য (অভিভাবক দেখবেন)</span>
+            <textarea data-tstd-comment="${esc(x.subject)}" rows="2" maxlength="300" class="w-full px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm leading-relaxed">${esc(comment)}</textarea></label>`
+        : comment ? `<p class="mt-1 pt-2 border-t border-ink-200 text-xs text-ink-800 leading-relaxed"><b>শিক্ষকের মন্তব্য${by || who ? ` (${esc(by || who)})` : ''}:</b> ${esc(comment)}</p>` : '';
       return `
         <div class="p-3.5 rounded-2xl border space-y-1.5 ${met ? 'bg-ink-50 border-ink-200' : 'bg-gold-50/60 border-gold-200'}">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-sm font-bold text-ink-900">${esc(x.subject)}</span>
+            <span><span class="block text-sm font-bold text-ink-900">${esc(x.subject)}</span>${who ? `<span class="block text-[0.6875rem] text-ink-500">${esc(who)}</span>` : ''}</span>
             <span class="px-2 py-0.5 rounded-lg text-[0.6875rem] font-extrabold flex items-center gap-1 ${met ? 'bg-white border border-ink-200 text-ink-800' : 'bg-white border border-gold-300 text-gold-900'}">${met ? sSvg('check') + 'ন্যূনতম মান অর্জিত' : 'আরও অনুশীলন দরকার'}</span>
           </div>
           ${standardBar(x)}
@@ -4652,6 +4703,7 @@
           </div>
           <div class="text-[0.6875rem] text-ink-500">${[x.exam !== null && `পরীক্ষা ${pctBn(x.exam)}`, x.skill !== null && `মাসিক দক্ষতা যাচাই ${pctBn(x.skill)}`].filter(Boolean).join(' • ')}</div>
           ${tl}
+          ${cm}
         </div>`;
     }
     function tipsCard(sum) {
@@ -4670,7 +4722,7 @@
     }
 
     // ---------- Parent ----------
-    const stdState = { parentMonth: 0, teacher: { month: 0, tab: 'check', subject: STD_SUBJECTS[0], topic: null, adding: false, roll: null, onlyBelow: false } };
+    const stdState = { parentMonth: 0, teacher: { cls: TEACHER_CLASS, month: 0, tab: 'check', subject: STD_SUBJECTS[0], topic: null, adding: false, roll: null, onlyBelow: false } };
     function renderParentStandard() {
       const el = document.getElementById('p-standard'), stat = document.getElementById('stat-improvement');
       if (!el) return;
@@ -4693,7 +4745,7 @@
             <div class="text-xs text-ink-600 mt-0.5">${sum.below.length ? `${sum.below.map(x => esc(x.subject)).join(', ')}: আরও অনুশীলন দরকার। নিচে শিক্ষকের নোট ও পরামর্শ দেখুন।` : sum.rated ? 'সব বিষয়ে প্রত্যাশিত শিখন হচ্ছে। এভাবেই চালিয়ে যান।' : ''}</div>
           </div>
           ${legend}
-          <div class="space-y-3">${sum.subs.map(x => subjectRow(x)).join('')}</div>`}
+          <div class="space-y-3">${sum.subs.map(x => subjectRow(x, { who: teacherOf(cls, x.subject), comment: commentBox(cls, monthKey(month), x.subject)[roll] || '', by: commentBy(cls, monthKey(month), x.subject, roll) })).join('')}</div>`}
           <p class="text-[0.6875rem] text-ink-500">মাসিক মান = সেই মাসের পরীক্ষা ও শিক্ষকের মাসিক যাচাইয়ের গড়।</p>
         </div>
         ${note ? `
@@ -4715,21 +4767,31 @@
       return counted ? { present, counted, pct: Math.round((present / counted) * 100) } : null;
     }
     function renderTeacherStandard() {
-      const el = document.getElementById('panel-teacher-standard'), st = stdState.teacher, cls = TEACHER_CLASS, month = STD_MONTHS[st.month], mk = monthKey(month);
-      const roster = rosterFor(cls);
+      const el = document.getElementById('panel-teacher-standard'), st = stdState.teacher;
+      const classes = myClasses().length ? myClasses() : [TEACHER_CLASS];
+      if (!classes.includes(st.cls)) st.cls = classes[0];
+      const cls = st.cls, month = STD_MONTHS[st.month], mk = monthKey(month), roster = rosterFor(cls);
+      const mine = mySubjectsIn(cls), ct = isClassTeacher() && cls === TEACHER_CLASS;
+      if (!mine.includes(st.subject)) { st.subject = mine[0] || null; st.topic = null; }
       // A student is done in a subject once every topic has a step
       const doneIn = (k, s) => roster.filter((_, i) => topicsFor(cls, k, s).every(t => levelBox(cls, k, s, t.id)[i + 1])).length;
       const doneFor = s => doneIn(mk, s);
-      const thisMk = monthKey(STD_MONTHS[0]), pending = STD_SUBJECTS.filter(s => doneIn(thisMk, s) < roster.length);
+      const thisMk = monthKey(STD_MONTHS[0]);
+      const pending = myClasses().flatMap(c => mySubjectsIn(c).filter(s => rosterFor(c).length && rosterFor(c).filter((_, i) => topicsFor(c, thisMk, s).every(t => levelBox(c, thisMk, s, t.id)[i + 1])).length < rosterFor(c).length));
       document.getElementById('t-stat-standard').textContent = pending.length ? `${bn(pending.length)}টি বিষয়ের যাচাই বাকি` : 'এ মাসের যাচাই সম্পন্ন';
       const chip = (attr, val, label, on) => `<button type="button" ${attr}="${esc(String(val))}" aria-pressed="${on}" class="icon-tile px-3 py-2 rounded-xl border text-xs font-bold ${on ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${label}</button>`;
       const head = `
         <div class="floating-card rounded-2xl p-4 space-y-2">
           <div class="grid grid-cols-2 gap-2">${chip('data-tstd-tab', 'check', 'টপিকভিত্তিক যাচাই', st.tab === 'check')}${chip('data-tstd-tab', 'report', 'শিক্ষার্থীর রিপোর্ট', st.tab === 'report')}</div>
           <div class="grid grid-cols-2 gap-2">${STD_MONTHS.map((m, i) => chip('data-tstd-month', i, `${i ? 'গত মাস' : 'এই মাস'} • ${monthName(m)}`, i === st.month)).join('')}</div>
+          ${classes.length > 1 ? `<div class="flex flex-wrap gap-2">${classes.map(c => chip('data-tstd-class', c, c, c === cls)).join('')}</div>` : ''}
         </div>`;
       let body = '';
-      if (st.tab === 'check') {
+      if (!roster.length) {
+        body = '<div class="floating-card rounded-2xl p-5"><p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।</p></div>';
+      } else if (st.tab === 'check' && !st.subject) {
+        body = '<div class="floating-card rounded-2xl p-5"><p class="text-sm text-ink-500">এই শ্রেণিতে আপনার পড়ানো কোনো বিষয় নেই।</p></div>';
+      } else if (st.tab === 'check') {
         const topics = topicsFor(cls, mk, st.subject);
         if (!topics.some(t => t.id === st.topic)) st.topic = topics.length ? topics[0].id : null;
         const topic = topics.find(t => t.id === st.topic);
@@ -4737,7 +4799,7 @@
         const tDone = t => roster.filter((_, i) => levelBox(cls, mk, st.subject, t.id)[i + 1]).length;
         body = `
           <div class="floating-card rounded-2xl p-5 space-y-4">
-            <div class="grid grid-cols-3 gap-2">${STD_SUBJECTS.map(s => `
+            <div class="grid grid-cols-3 gap-2">${mine.map(s => `
               <button type="button" data-tstd-subject="${esc(s)}" aria-pressed="${s === st.subject}" class="icon-tile flex flex-col items-center justify-center py-2 px-1 rounded-xl border ${s === st.subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-700 hover:bg-ink-50'}">
                 <span class="text-xs font-bold leading-tight text-center">${esc(shortSubject(s))}</span>
                 <span class="text-[0.625rem] font-bold mt-0.5 ${doneFor(s) === roster.length ? 'text-ink-500' : 'text-gold-900'}">${doneFor(s) === roster.length ? 'সম্পন্ন' : `${bn(doneFor(s))}/${bn(roster.length)}`}</span></button>`).join('')}</div>
@@ -4767,7 +4829,7 @@
       } else if (st.roll) {
         body = teacherReport(cls, st.roll, month);
       } else {
-        const rows = roster.map((name, i) => ({ roll: i + 1, name, sum: studentSummary(cls, i + 1, month) }));
+        const rows = roster.map((name, i) => ({ roll: i + 1, name, sum: studentSummary(cls, i + 1, month, ct ? STD_SUBJECTS : mine) }));
         const below = rows.filter(x => x.sum.below.length);
         const shown = st.onlyBelow ? below : rows;
         body = `
@@ -4785,11 +4847,12 @@
       el.innerHTML = head + body;
     }
     // Topics still at the first two steps (শুরু হয়েছে / চলছে)
-    const focusTopics = (cls, roll, month) => STD_SUBJECTS.flatMap(s => topicDetail(cls, roll, s, month).filter(t => t.now && t.now <= 2).map(t => ({ ...t, subject: s })));
+    const focusTopics = (cls, roll, month, subjects = STD_SUBJECTS) => subjects.flatMap(s => topicDetail(cls, roll, s, month).filter(t => t.now && t.now <= 2).map(t => ({ ...t, subject: s })));
     function teacherReport(cls, roll, month) {
-      const sum = studentSummary(cls, roll, month), name = rosterFor(cls)[roll - 1], att = attendanceFor(roll, month);
+      const ct = isClassTeacher() && cls === TEACHER_CLASS, subjects = ct ? STD_SUBJECTS : mySubjectsIn(cls), mk = monthKey(month);
+      const sum = studentSummary(cls, roll, month, subjects), name = rosterFor(cls)[roll - 1], att = attendanceFor(roll, month);
       const strong = sum.subs.filter(x => x.level !== null && x.level >= x.min + 15);
-      const focus = focusTopics(cls, roll, month);
+      const focus = focusTopics(cls, roll, month, subjects);
       const note = noteBox(cls, monthKey(month))[roll] || '';
       return `
         <div class="floating-card rounded-2xl p-5 space-y-4">
@@ -4805,18 +4868,20 @@
           </div>
           ${legend.replace('আপনার সন্তান', 'শিক্ষার্থী')}
           ${focus.length ? `<div class="p-3 rounded-xl bg-gold-50/60 border border-gold-200 text-xs text-ink-800"><b>যে টপিকে বেশি মনোযোগ দরকার:</b> ${focus.map(f => `${esc(f.name)} (${esc(shortSubject(f.subject))})`).join(', ')}</div>` : ''}
-          <div class="space-y-3">${sum.subs.map(x => subjectRow(x, { topics: topicDetail(cls, roll, x.subject, month) })).join('')}</div>
+          <div class="space-y-3">${sum.subs.map(x => subjectRow(x, { topics: topicDetail(cls, roll, x.subject, month), who: teacherOf(cls, x.subject),
+            comment: commentBox(cls, mk, x.subject)[roll] || '', by: commentBy(cls, mk, x.subject, roll), editable: teachesIn(cls, x.subject) })).join('')}</div>
         </div>
         ${tipsCard(sum)}
-        <div class="floating-card rounded-2xl p-5 space-y-3">
+        ${ct ? '' : `<button type="button" data-tstd-save-note="${roll}" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm">মন্তব্য সংরক্ষণ</button>`}
+        ${!ct ? '' : `<div class="floating-card rounded-2xl p-5 space-y-3">
           <label for="tstd-note" class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('note')}</span>
             <span><span class="block text-sm font-bold text-ink-900">অভিভাবকের জন্য নোট</span><span class="block text-[0.6875rem] text-ink-500">অভিভাবক এটি দেখবেন</span></span></label>
           <textarea id="tstd-note" data-tstd-note="${roll}" rows="4" maxlength="500" placeholder="যেমন: কোথায় ভালো করছে, কোথায় সাহায্য দরকার, বাসায় কী করলে ভালো হয়" class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm leading-relaxed">${esc(note)}</textarea>
           <div class="grid grid-cols-2 gap-2.5">
-            <button type="button" data-tstd-save-note="${roll}" class="py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm">নোট সংরক্ষণ</button>
+            <button type="button" data-tstd-save-note="${roll}" class="py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm">সংরক্ষণ</button>
             <button type="button" data-tstd-print="${roll}" class="icon-tile py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>রিপোর্ট প্রিন্ট / PDF</span></button>
           </div>
-        </div>`;
+        </div>`}`;
     }
     // The personal report on paper, for a counselling meeting with the guardian
     function printStudentReport(cls, roll, month) {
@@ -4837,9 +4902,11 @@
         <p class="mt-1 text-xs">ধাপ: শুরু হয়েছে → চলছে → অর্জিত → দক্ষ।${focus.length ? ` <b>বেশি মনোযোগ দরকার:</b> ${focus.map(f => `${esc(f.name)} (${esc(f.subject)})`).join(', ')}।` : ''}</p>`;
       const summary = `<p class="mt-3 text-sm"><b>${bn(sum.rated)}টির মধ্যে ${bn(sum.met)}টি বিষয়ে ন্যূনতম মান অর্জিত।</b> ${sum.below.length ? `অনুশীলন দরকার: ${sum.below.map(x => esc(x.subject)).join(', ')}।` : ''}</p>`;
       const tipsHtml = tips.length ? `<div class="mt-3 text-sm"><b>বাসায় অনুশীলনের পরামর্শ (Paperloop):</b><ul class="list-disc pl-5 mt-1">${tips.flatMap(x => x.tips.map(t => `<li>${esc(x.subject)}: ${esc(t)}</li>`)).join('')}</ul></div>` : '';
+      const comments = STD_SUBJECTS.map(s => [s, commentBox(cls, monthKey(month), s)[roll]]).filter(([, c]) => c);
+      const commentsHtml = comments.length ? `<div class="mt-3 text-sm"><b>বিষয় শিক্ষকদের মন্তব্য:</b><ul class="list-disc pl-5 mt-1">${comments.map(([s, c]) => `<li>${esc(s)} (${esc(commentBy(cls, monthKey(month), s, roll))}): ${esc(c)}</li>`).join('')}</ul></div>` : '';
       const noteHtml = `<div class="mt-3 text-sm"><b>শ্রেণি শিক্ষকের মন্তব্য:</b><div class="mt-1 min-h-[18mm] border border-ink-900 rounded p-2">${esc(note)}</div></div>`;
       const aim = '<p class="mt-3 text-xs">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে।</p>';
-      printDoc(`ব্যক্তিগত অগ্রগতি রিপোর্ট • ${monthName(month)}`, info + table + summary + topicTable + tipsHtml + noteHtml + aim, ['শ্রেণি শিক্ষক', 'অভিভাবক']);
+      printDoc(`ব্যক্তিগত অগ্রগতি রিপোর্ট • ${monthName(month)}`, info + table + summary + topicTable + commentsHtml + tipsHtml + noteHtml + aim, ['শ্রেণি শিক্ষক', 'অভিভাবক']);
     }
 
     // ---------- Principal: how many students meet the minimum (inside the results section) ----------
@@ -4901,22 +4968,22 @@
         const mk = monthKey(STD_MONTHS[st.month]);
         const step = t.closest('[data-tstd-step]');
         if (step) {
-          const box = levelBox(TEACHER_CLASS, mk, st.subject, st.topic), roll = Number(step.getAttribute('data-roll')), n = Number(step.getAttribute('data-tstd-step'));
+          const box = levelBox(st.cls, mk, st.subject, st.topic), roll = Number(step.getAttribute('data-roll')), n = Number(step.getAttribute('data-tstd-step'));
           if (box[roll] === n) delete box[roll]; else box[roll] = n; // tapping the chosen step again clears it
           renderTeacherStandard(); renderParentStandard(); return;
         }
         if (t.closest('[data-tstd-fill]')) {
-          const box = levelBox(TEACHER_CLASS, mk, st.subject, st.topic);
-          rosterFor(TEACHER_CLASS).forEach((_, i) => { if (!box[i + 1]) box[i + 1] = 3; });
+          const box = levelBox(st.cls, mk, st.subject, st.topic);
+          rosterFor(st.cls).forEach((_, i) => { if (!box[i + 1]) box[i + 1] = 3; });
           renderTeacherStandard(); renderParentStandard(); return;
         }
         if (t.closest('[data-tstd-add-topic]')) { st.adding = !st.adding; renderTeacherStandard(); if (st.adding) el.querySelector('[data-tstd-topic-form] input').focus(); return; }
         const rm = t.closest('[data-tstd-remove-topic]');
         if (rm) {
-          const id = rm.getAttribute('data-tstd-remove-topic'), list = deep(extraTopics, TEACHER_CLASS, mk)[st.subject] || [];
-          if (Object.keys(levelBox(TEACHER_CLASS, mk, st.subject, id)).length && !confirm('এই টপিকে দেওয়া ধাপগুলোও মুছে যাবে। সরাবেন?')) return;
-          deep(extraTopics, TEACHER_CLASS, mk)[st.subject] = list.filter(x => x.id !== id);
-          delete deep(topicLevels, TEACHER_CLASS, mk, st.subject)[id];
+          const id = rm.getAttribute('data-tstd-remove-topic'), list = deep(extraTopics, st.cls, mk)[st.subject] || [];
+          if (Object.keys(levelBox(st.cls, mk, st.subject, id)).length && !confirm('এই টপিকে দেওয়া ধাপগুলোও মুছে যাবে। সরাবেন?')) return;
+          deep(extraTopics, st.cls, mk)[st.subject] = list.filter(x => x.id !== id);
+          delete deep(topicLevels, st.cls, mk, st.subject)[id];
           st.topic = null; renderTeacherStandard(); renderParentStandard(); return;
         }
         const f = t.closest('[data-tstd-filter]');
@@ -4926,15 +4993,22 @@
         if (t.closest('[data-tstd-list]')) { st.roll = null; renderTeacherStandard(); return; }
         const sv = t.closest('[data-tstd-save-note]');
         if (sv) {
-          const roll = Number(sv.getAttribute('data-tstd-save-note')), text = oneSpelling(el.querySelector('[data-tstd-note]').value.trim());
-          const box = noteBox(TEACHER_CLASS, monthKey(STD_MONTHS[st.month]));
-          if (text) box[roll] = text; else delete box[roll];
+          const roll = Number(sv.getAttribute('data-tstd-save-note')), mk = monthKey(STD_MONTHS[st.month]);
+          // each subject teacher's comments, and the class teacher's overall note
+          el.querySelectorAll('[data-tstd-comment]').forEach(area => {
+            const s = area.getAttribute('data-tstd-comment'), box = commentBox(st.cls, mk, s), text = oneSpelling(area.value.trim());
+            if (text) { box[roll] = text; authorBox(st.cls, mk, s)[roll] = me(); } else { delete box[roll]; delete authorBox(st.cls, mk, s)[roll]; }
+          });
+          const noteArea = el.querySelector('[data-tstd-note]');
+          if (noteArea) { const box = noteBox(st.cls, mk), text = oneSpelling(noteArea.value.trim()); if (text) box[roll] = text; else delete box[roll]; }
           renderParentStandard();
-          showToast(text ? 'নোট সংরক্ষণ হয়েছে; অভিভাবক উন্নতি রিপোর্টে দেখবেন' : 'নোট মুছে ফেলা হয়েছে');
+          showToast('সংরক্ষণ হয়েছে; অভিভাবক উন্নতি রিপোর্টে দেখবেন');
           return;
         }
+        const cl = t.closest('[data-tstd-class]');
+        if (cl) { st.cls = cl.getAttribute('data-tstd-class'); st.roll = null; st.topic = null; renderTeacherStandard(); return; }
         const pr = t.closest('[data-tstd-print]');
-        if (pr) printStudentReport(TEACHER_CLASS, Number(pr.getAttribute('data-tstd-print')), STD_MONTHS[st.month]);
+        if (pr) printStudentReport(st.cls, Number(pr.getAttribute('data-tstd-print')), STD_MONTHS[st.month]);
       });
       el.addEventListener('submit', e => {
         if (!e.target.matches('[data-tstd-topic-form]')) return;
@@ -4942,8 +5016,8 @@
         const name = oneSpelling(e.target.elements.topic.value.trim());
         if (!name) return;
         const mk = monthKey(STD_MONTHS[st.month]);
-        if (topicsFor(TEACHER_CLASS, mk, st.subject).some(x => x.name === name)) { showToast('এই নামে টপিক আগেই আছে'); return; }
-        const list = deep(extraTopics, TEACHER_CLASS, mk)[st.subject] = deep(extraTopics, TEACHER_CLASS, mk)[st.subject] || [];
+        if (topicsFor(st.cls, mk, st.subject).some(x => x.name === name)) { showToast('এই নামে টপিক আগেই আছে'); return; }
+        const list = deep(extraTopics, st.cls, mk)[st.subject] = deep(extraTopics, st.cls, mk)[st.subject] || [];
         const id = `x${nextTopicId++}`;
         list.push({ id, name });
         st.topic = id; st.adding = false;
@@ -5410,7 +5484,7 @@
       return bar;
     }
     const panelsOf = role => document.querySelectorAll(`#view-${role} > .${role}-subpanel`);
-    const cardsOf = role => document.querySelectorAll(`[data-${role}-panel].floating-card`);
+    const cardsOf = role => document.querySelectorAll(`[data-${role}-panel].floating-card:not(.hidden)`);
 
     function showHome(role) {
       const bar = sectionBar(role);
@@ -5441,7 +5515,7 @@
       const role = appState.activeView;
       if (!SECTION_ROLES.includes(role)) return;
       const name = decodeURIComponent(location.hash.slice(1));
-      const card = name && document.querySelector(`[data-${role}-panel="${CSS.escape(name)}"].floating-card`);
+      const card = name && document.querySelector(`[data-${role}-panel="${CSS.escape(name)}"].floating-card:not(.hidden)`);
       if (card) showSection(role, name, card); else { openedFromHome = false; showHome(role); }
     }
     window.addEventListener('hashchange', routeFromHash);
@@ -5476,6 +5550,117 @@
       routeFromHash();
     });
 
+  </script>
+  <script>
+    // ==========================================
+    // TEACHERS AND SUBJECTS
+    // The principal gives every class a class teacher and every subject of a class a subject teacher (in the
+    // শিক্ষক ও স্টাফ section). A teacher logs in as themself and works only on what they teach: a subject
+    // teacher enters exam marks, the monthly topic checks and a comment for their own subjects in every class
+    // they teach. The class teacher also takes attendance, sends class notices, answers parents' messages,
+    // writes the overall note and checks a whole exam before sending it to the principal (who then publishes).
+    // Only ৩য় শ্রেণি has students in the demo, so class-teacher pages are shown for that class's class teacher.
+    // ==========================================
+    const TEACHERS = staffList.filter(s => s.role !== 'অফিস সহকারী').map(s => s.name);
+    const SUBJECT_TEACHERS = {};
+    (function seedSubjectTeachers() {
+      // Play to ২য়: the class teacher teaches everything; ৩য় to ৫ম: subject teachers (বাংলা with the class teacher)
+      const pattern = { 'ইংরেজি': 'শাহানা পারভীন', 'গণিত': 'কামরুল হাসান', 'বিজ্ঞান': 'আব্দুল কাদের', 'বাংলাদেশ ও বিশ্বপরিচয়': 'মাহফুজা খাতুন', 'ধর্ম শিক্ষা': 'সালমা আক্তার' };
+      CLASSES.forEach(c => {
+        SUBJECT_TEACHERS[c] = {};
+        STD_SUBJECTS.forEach(s => { SUBJECT_TEACHERS[c][s] = ['Play', 'KG', '১ম শ্রেণি', '২য় শ্রেণি'].includes(c) ? CLASS_TEACHERS[c] : (pattern[s] || CLASS_TEACHERS[c]); });
+      });
+    })();
+    const teacherOf = (cls, subject) => (SUBJECT_TEACHERS[cls] || {})[subject] || CLASS_TEACHERS[cls] || '';
+    let currentTeacher = null;
+    const me = () => currentTeacher || TEACHER_NAME;
+    const isTeacher = () => !!session && session.role === 'teacher';
+    const isClassTeacher = () => isTeacher() && CLASS_TEACHERS[TEACHER_CLASS] === me();
+    const teachesIn = (cls, subject) => teacherOf(cls, subject) === me();
+    const mySubjectsIn = cls => STD_SUBJECTS.filter(s => teachesIn(cls, s));
+    // Classes a teacher works in: the ones where they teach a subject (their own class first)
+    const myClasses = () => CLASSES.filter(c => mySubjectsIn(c).length).sort((a, b) => (b === TEACHER_CLASS) - (a === TEACHER_CLASS));
+    const classesLedBy = name => CLASSES.filter(c => CLASS_TEACHERS[c] === name);
+    const classShort = c => c.replace(' শ্রেণি', '');
+    function teachingLine(name) {
+      const bySubject = {};
+      CLASSES.forEach(c => STD_SUBJECTS.forEach(s => { if (teacherOf(c, s) === name) (bySubject[s] = bySubject[s] || []).push(classShort(c)); }));
+      return Object.entries(bySubject).map(([s, cs]) => `${shortSubject(s)} (${cs.join(', ')})`).join(', ');
+    }
+    const roleLine = name => [classesLedBy(name).length ? `শ্রেণি শিক্ষক: ${classesLedBy(name).map(classShort).join(', ')}` : '', teachingLine(name)].filter(Boolean).join(' • ');
+
+    // What the logged-in teacher sees: their name and subjects, and the class-teacher cards only for the class teacher
+    function applyTeacherIdentity() {
+      if (!isTeacher()) { currentTeacher = null; ROLE_META.teacher.label = 'শ্রেণি শিক্ষক'; return; }
+      currentTeacher = TEACHERS.includes(session.userId) ? session.userId : CLASS_TEACHERS[TEACHER_CLASS];
+      const ct = isClassTeacher();
+      ROLE_META.teacher.label = ct ? 'শ্রেণি শিক্ষক' : 'বিষয় শিক্ষক';
+      document.getElementById('teacher-banner-name').textContent = me();
+      document.getElementById('teacher-banner-role').textContent = roleLine(me());
+      const students = [...new Set([...myClasses(), ...(ct ? [TEACHER_CLASS] : [])])].reduce((a, c) => a + rosterFor(c).length, 0);
+      document.getElementById('teacher-banner-count').textContent = `${bn(students)} জন`;
+      ['attendance', 'notice', 'routine', 'records'].forEach(n => document.querySelectorAll(`.floating-card[data-teacher-panel="${n}"]`).forEach(c => c.classList.toggle('hidden', !ct)));
+      // Homework: only the subjects this teacher teaches
+      const mine = new Set(CLASSES.flatMap(c => mySubjectsIn(c)));
+      const tiles = [...document.querySelectorAll('.t-subj-tile')];
+      tiles.forEach(t => t.classList.toggle('hidden', !mine.has(t.getAttribute('data-subj'))));
+      const visible = tiles.filter(t => !t.classList.contains('hidden'));
+      document.querySelectorAll('.floating-card[data-teacher-panel="homework"]').forEach(c => c.classList.toggle('hidden', !visible.length));
+      const sel = document.getElementById('t-subject-select');
+      if (visible.length && !mine.has(sel.value)) visible[0].click();
+      // Pages drawn earlier were for whoever was logged in before
+      resultsState.teacher.examId = null; resultsState.teacher.subject = null;
+      stdState.teacher.roll = null; stdState.teacher.subject = null; stdState.teacher.topic = null;
+      renderTeacherMarks(); renderTeacherStandard(); renderResultStats();
+    }
+    const prevTeachHook = window.onDiarySessionChange;
+    window.onDiarySessionChange = () => { applyTeacherIdentity(); if (prevTeachHook) prevTeachHook(); };
+
+    // ---------- Principal: who teaches what (in the শিক্ষক ও স্টাফ section) ----------
+    const assignState = { cls: TEACHER_CLASS };
+    function renderAssignPanel() {
+      const el = document.getElementById('s-assign'), cls = assignState.cls;
+      if (!el) return;
+      const select = (attr, value) => `<select ${attr} class="w-44 max-w-[55%] px-2.5 py-2 rounded-xl border border-ink-300 bg-white text-sm font-bold">${TEACHERS.map(t => `<option${t === value ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
+      el.innerHTML = `
+        <div><h3 class="text-base font-bold text-ink-900">শ্রেণি ও বিষয় শিক্ষক</h3>
+          <p class="text-xs text-ink-500">যিনি যে বিষয় পড়ান, তিনিই সেই বিষয়ের নম্বর, মাসিক যাচাই ও মন্তব্য দেন।</p></div>
+        <div class="flex flex-wrap gap-2">${CLASSES.map(c => `<button type="button" data-assign-class="${c}" aria-pressed="${c === cls}" class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${c}</button>`).join('')}</div>
+        <div class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200">
+          <label class="flex items-center justify-between gap-3 px-3 py-2.5"><span class="text-sm font-extrabold text-ink-900">শ্রেণি শিক্ষক</span>${select('data-assign-class-teacher', CLASS_TEACHERS[cls])}</label>
+          ${STD_SUBJECTS.map(s => `<label class="flex items-center justify-between gap-3 px-3 py-2.5"><span class="text-sm text-ink-800">${esc(s)}</span>${select(`data-assign-subject="${esc(s)}"`, teacherOf(cls, s))}</label>`).join('')}
+        </div>`;
+    }
+    function assignmentsChanged() {
+      TEACHER_NAME = CLASS_TEACHERS[TEACHER_CLASS];
+      buildTeacherLogin(); renderAssignPanel();
+      if (typeof renderAllResults === 'function') renderAllResults();
+      if (typeof renderSchoolRecords === 'function') renderSchoolRecords();
+      showToast('শিক্ষক বদল সংরক্ষণ হয়েছে');
+    }
+    // Teacher login: choose the teacher (the demo has no real accounts)
+    function buildTeacherLogin() {
+      const login = document.getElementById('login-t-phone'), keep = login.value;
+      login.innerHTML = TEACHERS.map(t => `<option value="${esc(t)}">${esc(t)}${classesLedBy(t).length ? ` (শ্রেণি শিক্ষক ${classesLedBy(t).map(classShort).join(', ')})` : ' (বিষয় শিক্ষক)'}</option>`).join('');
+      login.value = TEACHERS.includes(keep) ? keep : CLASS_TEACHERS[TEACHER_CLASS];
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      buildTeacherLogin();
+      const el = document.getElementById('s-assign');
+      el.addEventListener('click', e => {
+        const c = e.target.closest('[data-assign-class]');
+        if (c) { assignState.cls = c.getAttribute('data-assign-class'); renderAssignPanel(); }
+      });
+      el.addEventListener('change', e => {
+        const t = e.target;
+        if (t.matches('[data-assign-class-teacher]')) CLASS_TEACHERS[assignState.cls] = t.value;
+        else if (t.matches('[data-assign-subject]')) SUBJECT_TEACHERS[assignState.cls][t.getAttribute('data-assign-subject')] = t.value;
+        else return;
+        assignmentsChanged();
+      });
+      renderAssignPanel();
+      applyTeacherIdentity();
+    });
   </script>
   <script>
     // ==========================================
@@ -5674,7 +5859,7 @@
     }
     function syncMenuButton() {
       // Parents and class teachers have the floating মেসেজ button (see MESSAGES)
-      const btn = document.getElementById('btn-menu'), fab = document.getElementById('btn-chat-fab'), chat = !!session && (session.role === 'parent' || session.role === 'teacher');
+      const btn = document.getElementById('btn-menu'), fab = document.getElementById('btn-chat-fab'), chat = !!session && (session.role === 'parent' || isClassTeacher());
       fab.classList.toggle('hidden', !chat); fab.classList.toggle('flex', chat);
       document.body.classList.toggle('has-chat-fab', chat); // room under the last card for the button
       if (!chat && document.getElementById('chat-dialog').open) document.getElementById('chat-dialog').close();
