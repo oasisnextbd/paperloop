@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=3f99e87afa" />
+  <link rel="stylesheet" href="diary.css?v=eba5724f74" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -216,7 +216,7 @@
                 <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-ink-100 text-ink-800 border border-ink-300" id="student-class-display">৩য় শ্রেণি</span>
               </div>
               <p class="text-xs text-ink-500 mt-0.5">
-                স্কুল কোড: <strong id="student-code-display" class="text-ink-700">KSB</strong> • শ্রেণি শিক্ষিকা: রাশেদা বেগম
+                স্কুল কোড: <strong id="student-code-display" class="text-ink-700"></strong><span id="student-teacher-display"></span>
               </p>
               <p id="parent-today-att" class="text-xs font-bold text-ink-700 mt-1 flex items-center gap-1.5"></p>
             </div>
@@ -253,7 +253,7 @@
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">অ্যাসাইনমেন্ট</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Assignments</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-hw-progress">
-              ১ / ৩ সম্পন্ন
+              —
             </div>
           </button>
 
@@ -267,7 +267,7 @@
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">গ্রেড ও নম্বর</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Grades & Marks</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-grade">
-              গড়: A+ (৯২%)
+              —
             </div>
           </button>
 
@@ -298,9 +298,7 @@
             </div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">পঠিত বিষয়সমূহ</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Weekly & Monthly</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800">
-              ১২টি অধ্যায়
-            </div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-topics">—</div>
           </button>
 
           <!-- Floating Card 5: Attendance -->
@@ -489,13 +487,13 @@
           </div>
           <div>
             <span class="text-xs font-semibold text-ink-300">শিক্ষক ড্যাশবোর্ড</span>
-            <h2 class="text-lg font-bold" id="teacher-banner-name">রাশেদা বেগম</h2>
+            <h2 class="text-lg font-bold" id="teacher-banner-name"></h2>
             <p class="text-xs text-ink-300" id="teacher-banner-role"></p>
           </div>
         </div>
         <div class="bg-white/10 px-3.5 py-2 rounded-xl border border-white/15 text-center">
           <div class="text-[0.6875rem] text-ink-300">মোট শিক্ষার্থী</div>
-          <div class="text-base font-bold" id="teacher-banner-count">৩০ জন</div>
+          <div class="text-base font-bold" id="teacher-banner-count">—</div>
         </div>
       </div>
 
@@ -871,7 +869,7 @@
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Diary</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-diary">৩টি গ্রুপ</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-diary">—</div>
           </button>
         <button type="button" data-school-panel="cctv" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
@@ -937,6 +935,11 @@
             <p class="text-xs text-ink-500" id="s-staff-date"></p>
           </div>
           <div id="s-staff-summary" class="grid grid-cols-4 gap-2.5"></div>
+          <form id="s-staff-add" class="grid grid-cols-[1fr_auto_auto] gap-2 items-end">
+            <label class="text-xs font-bold text-ink-600">নতুন শিক্ষক বা স্টাফ<input name="name" required maxlength="60" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm font-normal" placeholder="পুরো নাম" /></label>
+            <select name="role" aria-label="ভূমিকা" class="px-2.5 py-2.5 rounded-xl border border-ink-300 bg-white text-sm"><option>শিক্ষিকা</option><option>শিক্ষক</option><option>অফিস সহকারী</option></select>
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-ink-900 text-white text-sm font-bold">যোগ</button>
+          </form>
           <div id="s-staff-rows" class="space-y-2.5"></div>
           <div id="s-staff-status"></div>
           <button id="s-staff-submit" type="button" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">
@@ -952,7 +955,8 @@
       <div id="panel-school-diary" class="school-subpanel hidden">
       <div class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-3">
         <h3 class="text-base font-bold text-ink-900">শ্রেণিভিত্তিক ডায়েরি ও শিক্ষকের আপডেট</h3>
-        <div class="divide-y divide-ink-200 text-xs sm:text-sm">
+        <p class="text-sm text-ink-500" data-diary-empty>শিক্ষকেরা বাড়ির কাজ পাঠালে এখানে শ্রেণি ধরে দেখা যাবে।</p>
+        <div class="divide-y divide-ink-200 text-xs sm:text-sm" data-diary-sample hidden>
           <div class="py-3 flex items-center justify-between">
             <div>
               <div class="font-bold text-ink-900">Play ও KG (প্রাক-প্রাথমিক)</div>
@@ -1250,6 +1254,24 @@
 
   <script>
     // ==========================================
+    // REAL OR DEMO
+    // The diary opens clean: a school sees only what it enters itself. ?demo=<who> (Paperloop Admin → Simulator)
+    // opens it with the sample school KSB for presentations, already logged in as principal, classteacher,
+    // subjectteacher or parent (?demo=login: demo data, normal login page). Demo data never mixes with a real school's: in demo every saved value (login,
+    // settings, design, messages) goes to separate browser storage under "demo:".
+    // ==========================================
+    const DEMO_AS = new URLSearchParams(location.search).get('demo');
+    const DEMO = !!DEMO_AS;
+    if (DEMO) {
+      const P = Storage.prototype, get = P.getItem, set = P.setItem, del = P.removeItem;
+      P.getItem = function (k) { return get.call(this, 'demo:' + k); };
+      P.setItem = function (k, v) { return set.call(this, 'demo:' + k, v); };
+      P.removeItem = function (k) { return del.call(this, 'demo:' + k); };
+      try { localStorage.removeItem('pl_diary_session'); } catch (e) { /* the demo logs in afresh as <who> */ }
+    }
+  </script>
+  <script>
+    // ==========================================
     // MONOCHROME LINE-ICON SVG HELPERS
     // ==========================================
     const lineIcons = {
@@ -1269,22 +1291,22 @@
       loginSection: 'parent',
       activeParentPanel: 'assignments', // 'assignments', 'grades', 'improvement', 'topics'
       topicScope: 'weekly', // 'weekly', 'monthly'
-      schoolCode: 'KSB',
-      schoolName: 'কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি',
-      studentClass: '৩য় শ্রেণি',
-      studentRoll: '০৭',
-      studentName: 'তাসনিম জারিন',
+      schoolCode: '',
+      schoolName: '',
+      studentClass: '',
+      studentRoll: '',
+      studentName: '',
       hwFilter: 'all',
       chatOpen: false // (unused since messages open from the floating button)
     };
 
-    const schoolNamesByCode = {
+    const schoolNamesByCode = !DEMO ? {} : {
       KSB: 'কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি',
       BLS: 'ব্রাহ্মণবাড়িয়া লিটল স্টার কিন্ডারগার্টেন',
       TMS: 'তিতাস মডেল প্রি-ক্যাডেট স্কুল'
     };
 
-    const rollNames = {
+    const rollNames = !DEMO ? {} : {
       '01': 'আরিয়ান ইসলাম',
       '02': 'মাহির তাজওয়ার',
       '05': 'নুসরাত জাহান',
@@ -1305,7 +1327,7 @@
       'বাংলা দাগ খাতা': { svg: lineIcons.linedKhata, shortLabel: 'বাংলা খাতা' }
     };
 
-    const homeworks = [
+    const homeworks = !DEMO ? [] : [
       {
         id: 1,
         subject: 'গণিত',
@@ -1340,7 +1362,7 @@
 
 
     // Weekly & Monthly Topics Covered Dataset
-    const topicsCoveredData = {
+    const topicsCoveredData = !DEMO ? { weekly: [], monthly: [] } : {
       weekly: [
         { subject: 'গণিত', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'অধ্যায় ৭: সমহর ভগ্নাংশের যোগ ও বিয়োগ (পৃষ্ঠা ২২–২৫)', khata: 'গণিত বক্স খাতা (পৃষ্ঠা ১৪–১৮)', status: 'ক্লাসে সম্পন্ন' },
         { subject: 'ইংরেজি', week: 'এই সপ্তাহ (১৬–২০ নভেম্বর)', topic: 'Unit 3, Lesson 1–3: Action Verbs & Daily Routine Sentences', khata: 'ইংরেজি ৪-দাগ খাতা (পৃষ্ঠা ১০–১২)', status: 'চলমান' },
@@ -1402,9 +1424,10 @@
       document.getElementById('student-name-display').textContent = appState.studentName;
       document.getElementById('student-class-display').textContent = appState.studentClass;
       document.getElementById('student-code-display').textContent = appState.schoolCode;
+      document.getElementById('student-teacher-display').textContent = TEACHER_NAME ? ` • শ্রেণি শিক্ষিকা: ${TEACHER_NAME}` : '';
 
       const doneCount = homeworks.filter(h => h.doneByParent).length;
-      document.getElementById('stat-hw-progress').textContent = `${doneCount} / ${homeworks.length} সম্পন্ন`;
+      document.getElementById('stat-hw-progress').textContent = `${bn(doneCount)} / ${bn(homeworks.length)} সম্পন্ন`;
 
       document.querySelectorAll('.hw-filter-btn').forEach(btn => {
         const f = btn.getAttribute('data-filter');
@@ -1615,10 +1638,10 @@
         const rawRoll = (document.getElementById('login-p-roll').value || '07').trim().padStart(2, '0');
 
         appState.schoolCode = code;
-        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.schoolName = (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`));
         appState.studentClass = cls;
         appState.studentRoll = rawRoll;
-        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
+        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${bn(rawRoll)})`;
 
         renderParentDashboard();
         switchMainView('parent');
@@ -1629,7 +1652,7 @@
         e.preventDefault();
         const code = (document.getElementById('login-t-code').value || 'KSB').trim().toUpperCase();
         appState.schoolCode = code;
-        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.schoolName = (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`));
         renderParentDashboard();
         renderTeacherDashboard();
         switchMainView('teacher');
@@ -1640,7 +1663,7 @@
         e.preventDefault();
         const code = (document.getElementById('login-s-code').value || 'KSB').trim().toUpperCase();
         appState.schoolCode = code;
-        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.schoolName = (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`));
         renderParentDashboard();
         switchMainView('school');
         showToast(`${appState.schoolName} অ্যাডমিন প্যানেলে স্বাগতম!`);
@@ -1656,10 +1679,10 @@
         const rawRoll = (document.getElementById('input-student-roll').value || '07').trim().padStart(2, '0');
 
         appState.schoolCode = code;
-        appState.schoolName = schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+        appState.schoolName = (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`));
         appState.studentClass = cls;
         appState.studentRoll = rawRoll;
-        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${rawRoll})`;
+        appState.studentName = rollNames[rawRoll] || `শিক্ষার্থী (রোল ${bn(rawRoll)})`;
 
         renderParentDashboard();
         showToast(`${appState.studentName} (${cls}, রোল ${bn(rawRoll)})-এর ড্যাশবোর্ড খোলা হয়েছে!`);
@@ -1834,7 +1857,7 @@
       </div>`;
 
     // ---------- Class 3 roll list (roll 01–30) ----------
-    const classRoster = [
+    const classRoster = !DEMO ? [] : [
       'আরিয়ান ইসলাম', 'মাহির তাজওয়ার', 'সাদিয়া আক্তার', 'রাইয়ান হোসেন', 'নুসরাত জাহান',
       'তাহমিদ হাসান', 'তাসনিম জারিন', 'ফারহান আহমেদ', 'লামিয়া ইসলাম', 'রাফসান কবির',
       'আয়েশা সিদ্দিকা', 'সিয়াম মিয়া', 'মারিয়া খাতুন', 'নাফিস ইকবাল', 'জান্নাতুল ফেরদৌস',
@@ -1854,6 +1877,7 @@
     const studentAtt = { records: {}, draft: {}, leaveRequests: {}, view: 'today', tapMode: 'absent' };
 
     (function seedStudentHistory() {
+      if (!DEMO) return; // sample data only in demo
       const d = new Date(attDate.getFullYear(), attDate.getMonth(), 1);
       while (d < attDate) {
         if (isSchoolDay(d)) {
@@ -2097,7 +2121,7 @@
 
     // ---------- Principal: class-wise student attendance ----------
     // Only ৩য় শ্রেণি is live in this prototype; the other classes are sample rows.
-    const schoolClassAttendance = [
+    const schoolClassAttendance = !DEMO ? [{ cls: '৩য় শ্রেণি', live: true }] : [
       { cls: 'Play', total: 22, present: 20, at: 'সকাল ৮:২০' },
       { cls: 'KG', total: 23, present: 21, at: 'সকাল ৮:২৬' },
       { cls: '১ম শ্রেণি', total: 30, present: 28, at: 'সকাল ৮:৩১' },
@@ -2128,7 +2152,7 @@
         countTile('classes', 'জমা হয়নি', `${bn(pending)}টি শ্রেণি`, pending > 0);
       document.getElementById('s-att-rows').innerHTML = rows.map(r => {
         const submitted = r.present !== null;
-        const pct = submitted ? Math.round((r.present / r.total) * 100) : 0;
+        const pct = submitted && r.total ? Math.round((r.present / r.total) * 100) : 0;
         return `
           <div class="p-3.5 rounded-2xl ${submitted ? 'bg-ink-50 border border-ink-200' : 'bg-gold-50/60 border border-gold-200'} flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -2146,7 +2170,7 @@
     }
 
     // ---------- Principal: teacher & staff attendance ----------
-    const staffList = [
+    const staffList = !DEMO ? [] : [
       { name: 'সালমা আক্তার', role: 'শিক্ষিকা' },
       { name: 'কামরুল হাসান', role: 'শিক্ষক' },
       { name: 'রাশেদা বেগম', role: 'শিক্ষিকা' },
@@ -2159,6 +2183,7 @@
     const staffAtt = { records: {}, draft: {} };
 
     (function seedStaffHistory() {
+      if (!DEMO) return; // sample data only in demo
       const d = new Date(attDate.getFullYear(), attDate.getMonth(), 1);
       while (d < attDate) {
         if (isSchoolDay(d)) {
@@ -2187,7 +2212,7 @@
         countTile('userX', 'অনুপস্থিত', bn(c.absent), c.absent > 0);
 
       const monthKeys = Object.keys(staffAtt.records).filter(k => k.startsWith(attKey.slice(0, 8)));
-      document.getElementById('s-staff-rows').innerHTML = staffList.map((st, i) => {
+      document.getElementById('s-staff-rows').innerHTML = !staffList.length ? '<p class="text-sm text-ink-500">এখনো কোনো শিক্ষক বা স্টাফ যোগ হয়নি। উপরে নাম লিখে যোগ করুন।</p>' : staffList.map((st, i) => {
         const came = monthKeys.filter(k => ['present', 'late'].includes(staffAtt.records[k].statuses[i])).length;
         const pills = STAFF_ORDER.map(s => {
           const active = draft[i] === s;
@@ -2307,8 +2332,8 @@
       teacher: { label: 'শ্রেণি শিক্ষক', icon: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' },
       school: { label: 'প্রিন্সিপাল / অ্যাডমিন', icon: '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M14 9h1"/><path d="M9 13h1"/><path d="M14 13h1"/><path d="M10 21v-4h4v4"/>' }
     };
-    let TEACHER_NAME = 'রাশেদা বেগম';   // ৩য় শ্রেণির class teacher (set by the principal, see TEACHERS AND SUBJECTS)
-    const schoolNameFor = code => schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`;
+    let TEACHER_NAME = DEMO ? 'রাশেদা বেগম' : '';   // ৩য় শ্রেণির class teacher (set by the principal, see TEACHERS AND SUBJECTS)
+    const schoolNameFor = code => (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`));
 
     function applySettings() {
       document.documentElement.style.fontSize = diarySettings.textSize === 'large' ? '112.5%' : '';
@@ -2489,7 +2514,7 @@
 
     // ---------- Notices ----------
     const minutesAgo = m => new Date(Date.now() - m * 60000);
-    const notices = [
+    const notices = !DEMO ? [] : [
       { id: 1, from: 'school', fromName: 'প্রিন্সিপাল', audience: 'all', important: true, at: minutesAgo(60 * 26),
         title: 'বার্ষিক পরীক্ষা আগামী মাসের প্রথম সপ্তাহে',
         body: 'প্রতিটি শ্রেণির পরীক্ষার রুটিন শ্রেণি শিক্ষক আগামী সপ্তাহে দেবেন। পরীক্ষার আগে বেতন ও পরীক্ষার ফি জমা দিন।' },
@@ -2746,7 +2771,7 @@
     const ORDINAL = ['১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম'];
     const TIFFIN_AFTER = 3, TIFFIN = ['১০:৩০', '১০:৫০'];
     // routines[class][weekday] = [subject | null, ...] (one entry per period). Only ৩য় শ্রেণি is filled in this demo.
-    const routines = {
+    const routines = !DEMO ? {} : {
       '৩য় শ্রেণি': {
         6: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'ধর্ম শিক্ষা'],
         0: ['ইংরেজি', 'গণিত', 'বাংলা', 'বাংলাদেশ ও বিশ্বপরিচয়', 'সাধারণ জ্ঞান'],
@@ -2947,6 +2972,7 @@
       });
     }
     (function seedExams() {
+      if (!DEMO) return; // sample data only in demo
       const lastThursday = new Date(attDate); while (lastThursday.getDay() !== 4) lastThursday.setDate(lastThursday.getDate() - 1);
       const lastMonth = new Date(attDate.getFullYear(), attDate.getMonth() - 1, 28);
       const thisMonth = new Date(attDate.getFullYear(), attDate.getMonth(), Math.min(18, attDate.getDate()));
@@ -3486,9 +3512,9 @@
       };
     });
     // Other classes have only counts in this demo (same totals as the attendance panel), plus anyone admitted here.
-    const SAMPLE_COUNTS = { 'Play': [12, 10], 'KG': [11, 12], '১ম শ্রেণি': [16, 14], '২য় শ্রেণি': [15, 15], '৪র্থ শ্রেণি': [13, 12], '৫ম শ্রেণি': [9, 11] };
+    const SAMPLE_COUNTS = !DEMO ? {} : { 'Play': [12, 10], 'KG': [11, 12], '১ম শ্রেণি': [16, 14], '২য় শ্রেণি': [15, 15], '৪র্থ শ্রেণি': [13, 12], '৫ম শ্রেণি': [9, 11] };
     CLASSES.forEach(c => { recordsByClass[c] = recordsByClass[c] || []; });
-    const CLASS_TEACHERS = { 'Play': 'সালমা আক্তার', 'KG': 'সালমা আক্তার', '১ম শ্রেণি': 'কামরুল হাসান', '২য় শ্রেণি': 'কামরুল হাসান', '৩য় শ্রেণি': 'রাশেদা বেগম', '৪র্থ শ্রেণি': 'শাহানা পারভীন', '৫ম শ্রেণি': 'আব্দুল কাদের' };
+    const CLASS_TEACHERS = !DEMO ? Object.fromEntries(CLASSES.map(c => [c, ''])) : { 'Play': 'সালমা আক্তার', 'KG': 'সালমা আক্তার', '১ম শ্রেণি': 'কামরুল হাসান', '২য় শ্রেণি': 'কামরুল হাসান', '৩য় শ্রেণি': 'রাশেদা বেগম', '৪র্থ শ্রেণি': 'শাহানা পারভীন', '৫ম শ্রেণি': 'আব্দুল কাদের' };
 
     function classCounts(cls) {
       const list = recordsByClass[cls], sample = SAMPLE_COUNTS[cls] || [0, 0];
@@ -3806,7 +3832,8 @@
     const WAIVERS = [[0, 'পূর্ণ বেতন'], [50, 'অর্ধেক ছাড়'], [100, 'সম্পূর্ণ ছাড়']];
 
     // Fee settings per class (sample amounts; the principal changes them under ফি নির্ধারণ)
-    const feeStructure = {
+    // Fees: the school sets its own (fee settings); the demo has sample amounts
+    const feeStructure = !DEMO ? Object.fromEntries(CLASSES.map(c => [c, { monthly: 0, session: 0, exam: 0 }])) : {
       'Play': { monthly: 500, session: 1500, exam: 300 }, 'KG': { monthly: 500, session: 1500, exam: 300 },
       '১ম শ্রেণি': { monthly: 600, session: 1500, exam: 300 }, '২য় শ্রেণি': { monthly: 600, session: 1500, exam: 300 },
       '৩য় শ্রেণি': { monthly: 700, session: 1500, exam: 300 }, '৪র্থ শ্রেণি': { monthly: 800, session: 2000, exam: 400 },
@@ -3814,18 +3841,18 @@
     };
     const waivers = {}; // "cls|roll" → percent off the monthly tuition
     const wKey = s => `${s.cls}|${s.roll}`;
-    waivers[`${TEACHER_CLASS}|12`] = 50; waivers[`${TEACHER_CLASS}|29`] = 100; // sample: half and full free
+    if (DEMO) { waivers[`${TEACHER_CLASS}|12`] = 50; waivers[`${TEACHER_CLASS}|29`] = 100; } // sample: half and full free
 
     function chargesFor(s) {
       const fs = feeStructure[s.cls], waiver = waivers[wKey(s)] || 0;
       const start = s.isNew && s.admitted === FEE_YEAR ? (s.joinedMonth ?? THIS_MONTH) : 0;
-      const list = [{ key: `session-${FEE_YEAR}`, label: `সেশন ফি ${bn(FEE_YEAR)}`, amount: fs.session }];
+      const list = fs.session > 0 ? [{ key: `session-${FEE_YEAR}`, label: `সেশন ফি ${bn(FEE_YEAR)}`, amount: fs.session }] : [];
       for (let m = start; m <= THIS_MONTH; m++) {
         const amount = Math.round(fs.monthly * (100 - waiver) / 100);
         if (amount > 0) list.push({ key: `month-${FEE_YEAR}-${m}`, label: `${BN_MONTHS[m]} মাসের বেতন`, amount, month: m });
       }
-      if (THIS_MONTH >= 5 && start <= 5) list.push({ key: `exam-half-${FEE_YEAR}`, label: 'অর্ধবার্ষিক পরীক্ষার ফি', amount: fs.exam });
-      if (THIS_MONTH >= 10) list.push({ key: `exam-annual-${FEE_YEAR}`, label: 'বার্ষিক পরীক্ষার ফি', amount: fs.exam });
+      if (fs.exam > 0 && THIS_MONTH >= 5 && start <= 5) list.push({ key: `exam-half-${FEE_YEAR}`, label: 'অর্ধবার্ষিক পরীক্ষার ফি', amount: fs.exam });
+      if (fs.exam > 0 && THIS_MONTH >= 10) list.push({ key: `exam-annual-${FEE_YEAR}`, label: 'বার্ষিক পরীক্ষার ফি', amount: fs.exam });
       return list;
     }
 
@@ -3837,6 +3864,7 @@
     const dueTotal = s => duesFor(s).reduce((a, c) => a + c.amount, 0);
 
     (function seedReceipts() {
+      if (!DEMO) return; // sample data only in demo
       const seeded = [];
       recordsByClass[TEACHER_CLASS].forEach(s => {
         const r = s.roll, x = seededRandom(r * 389 + 7);
@@ -4567,6 +4595,7 @@
       return v.length ? Math.round((v.reduce((a, x) => a + x, 0) / v.length) * 25) : null;
     }
     (function seedStandard() {
+      if (!DEMO) return; // sample data only in demo
       const ability = r => r === 7 ? 0.86 : 0.45 + 0.5 * seededRandom(r * 7919 + 11);
       STD_MONTHS.forEach((m, mi) => STD_SUBJECTS.forEach((s, si) => {
         if (mi === 0 && s === 'ধর্ম শিক্ষা') return; // this month: the teacher has not entered this subject yet
@@ -4593,6 +4622,7 @@
     const authorBox = (cls, mk, subject) => deep(commentAuthors, cls, mk, subject);
     const commentBy = (cls, mk, subject, roll) => authorBox(cls, mk, subject)[roll] || teacherOf(cls, subject);
     (function seedComments() {
+      if (!DEMO) return; // sample data only in demo
       const mk = monthKey(STD_MONTHS[0]);
       commentBox(TEACHER_CLASS, mk, 'গণিত')[7] = 'নামতা খুব ভালো পারে; ভগ্নাংশ আরেকটু অনুশীলন করলে আরও ভালো হবে।';
       commentBox(TEACHER_CLASS, mk, 'বাংলাদেশ ও বিশ্বপরিচয়')[7] = 'মানচিত্রে দিক চেনা এখনো কঠিন লাগছে; ক্লাসে আলাদা করে দেখাচ্ছি।';
@@ -5053,7 +5083,7 @@
     const brandKey = code => `pl_diary_brand_${code}`;
     function brandDefaults(code) {
       return {
-        name: schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`, nameEn: '', motto: '', address: 'কসবা, ব্রাহ্মণবাড়িয়া',
+        name: (schoolNamesByCode[code] || (DEMO ? `কসবা পার্টনার স্কুল (${code})` : `স্কুল কোড ${code}`)), nameEn: '', motto: '', address: DEMO ? 'কসবা, ব্রাহ্মণবাড়িয়া' : '',
         phone: '', email: '', eiin: '', est: '', logo: '', head: '', signature: '',
         color: '#14213d', header: 'center', border: 'double', paper: 'A4',
         idBlood: true, idPhone: true, idValid: '', footer: '', templates: { ...BRAND_TEMPLATES }, colors: {},
@@ -5561,9 +5591,12 @@
     // writes the overall note and checks a whole exam before sending it to the principal (who then publishes).
     // Only ৩য় শ্রেণি has students in the demo, so class-teacher pages are shown for that class's class teacher.
     // ==========================================
-    const TEACHERS = staffList.filter(s => s.role !== 'অফিস সহকারী').map(s => s.name);
+    const TEACHERS = [];
+    const syncTeachers = () => { TEACHERS.length = 0; staffList.filter(s => s.role !== 'অফিস সহকারী').forEach(s => TEACHERS.push(s.name)); };
+    syncTeachers();
     const SUBJECT_TEACHERS = {};
     (function seedSubjectTeachers() {
+      if (!DEMO) { CLASSES.forEach(c => { SUBJECT_TEACHERS[c] = {}; }); return; } // the principal assigns them
       // Play to ২য়: the class teacher teaches everything; ৩য় to ৫ম: subject teachers (বাংলা with the class teacher)
       const pattern = { 'ইংরেজি': 'শাহানা পারভীন', 'গণিত': 'কামরুল হাসান', 'বিজ্ঞান': 'আব্দুল কাদের', 'বাংলাদেশ ও বিশ্বপরিচয়': 'মাহফুজা খাতুন', 'ধর্ম শিক্ষা': 'সালমা আক্তার' };
       CLASSES.forEach(c => {
@@ -5676,6 +5709,7 @@
     function loadMsgs(code) {
       const saved = readStore(msgKey(code));
       if (saved && saved.threads) return saved;
+      if (!DEMO) return { threads: {}, read: { teacher: {}, parent: {} } };
       // First visit: one note from the teacher and two parents' messages waiting for her
       const day = new Date(realToday), at = (h, m, back = 0) => { const d = new Date(day); d.setDate(d.getDate() - back); d.setHours(h, m, 0, 0); return d.getTime(); };
       return {
@@ -5917,6 +5951,48 @@
     });
     const prevMenuHook = window.onDiarySessionChange;
     window.onDiarySessionChange = () => { if (prevMenuHook) prevMenuHook(); syncMenuButton(); };
+  </script>
+  <script>
+    // ==========================================
+    // DEMO START (see REAL OR DEMO at the top)
+    // Sample-only parts of the page, adding staff in a real school, and the demo's automatic login as <who>.
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      if (DEMO) {
+        document.querySelector('[data-diary-sample]').hidden = false;
+        document.querySelector('[data-diary-empty]').hidden = true;
+        document.getElementById('s-stat-diary').textContent = '৩টি গ্রুপ';
+        document.getElementById('stat-topics').textContent = '১২টি অধ্যায়';
+      }
+      // The principal adds teachers and staff (a real school starts with none)
+      document.getElementById('s-staff-add').addEventListener('submit', e => {
+        e.preventDefault();
+        const f = e.target, name = oneSpelling(f.elements.name.value.trim());
+        if (!name) return;
+        if (staffList.some(s => s.name === name)) { showToast('এই নামে আগেই আছে'); return; }
+        staffList.push({ name, role: f.elements.role.value });
+        staffAtt.draft[staffList.length - 1] = 'present';
+        syncTeachers(); buildTeacherLogin(); renderAssignPanel(); renderAllAttendance();
+        f.reset();
+        showToast(`${name} যোগ হয়েছে। এখন শ্রেণি ও বিষয় বেছে দিন।`);
+      });
+      if (!DEMO || DEMO_AS === 'login') return; // ?demo=login: demo data, normal login page
+      const who = { principal: ['school'], classteacher: ['teacher', 'রাশেদা বেগম'], subjectteacher: ['teacher', 'কামরুল হাসান'], parent: ['parent'] }[DEMO_AS] || ['school'];
+      setTimeout(() => {
+        if (session) return;
+        document.querySelector(`[data-login-role="${who[0]}"]`).click();
+        if (who[0] === 'parent') {
+          document.getElementById('login-p-code').value = 'KSB'; document.getElementById('login-p-class').value = '৩য় শ্রেণি'; document.getElementById('login-p-roll').value = '7';
+          document.getElementById('form-login-parent').requestSubmit();
+        } else if (who[0] === 'teacher') {
+          document.getElementById('login-t-code').value = 'KSB'; document.getElementById('login-t-phone').value = who[1]; document.getElementById('login-t-pin').value = '1234';
+          document.getElementById('form-login-teacher').requestSubmit();
+        } else {
+          document.getElementById('login-s-code').value = 'KSB'; document.getElementById('login-s-admin').value = 'admin'; document.getElementById('login-s-pin').value = '2026';
+          document.getElementById('form-login-school').requestSubmit();
+        }
+      }, 0);
+    });
   </script>
 </body>
 </html>

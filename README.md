@@ -117,8 +117,17 @@ the school's record, with the images in file storage.
 Each role's dashboard opens on its cards; a card opens its section as its own page with a back button (the
 address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh work).
 
-Every name and number is sample data (the presenter says so; the app itself shows no demo notice), any ID and PIN are accepted, the school's data
-resets on reload, and the page asks search engines not to index it.
+**Real or demo.** The diary opens clean: a school sees only what it enters itself (the principal adds teachers
+and staff, assigns classes and subjects, admits students, sets fees and the school's design). The sample school
+KSB with its students, marks, notices, receipts and messages appears only in demo mode, opened from Paperloop Admin
+→ Simulator: `diary/?demo=principal`, `classteacher`, `subjectteacher` or `parent` logs straight in as that person;
+`diary/?demo=login` keeps the login page (the test scripts use it). In demo every saved value goes to separate
+browser storage (keys prefixed `demo:`), so demo use never touches a real school's. Every sample record is behind
+`DEMO` in `diary/index.html` (see REAL OR DEMO at the top of its scripts).
+
+Until the Paperloop database is connected, any ID and PIN are accepted and a school's own entries (students,
+marks, attendance…) last until the page is reloaded; the design, settings and messages are kept in that browser.
+The page asks search engines not to index it.
 
 | File | What it is |
 |---|---|
