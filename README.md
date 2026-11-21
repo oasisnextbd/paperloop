@@ -121,7 +121,8 @@ address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh 
 and staff, assigns classes and subjects, admits students, sets fees and the school's design). The sample school
 KSB with its students, marks, notices, receipts and messages appears only in demo mode, opened from Paperloop Admin
 → Simulator: `diary/?demo=principal`, `classteacher`, `subjectteacher` or `parent` logs straight in as that person;
-`diary/?demo=login` keeps the login page (the test scripts use it). In demo every saved value goes to separate
+`diary/?demo=login` keeps the login page (the test scripts use it). **ডেমো শেষ করুন** in the menu ends a demo: it
+deletes everything the demo saved in that browser and opens the clean diary. In demo every saved value goes to separate
 browser storage (keys prefixed `demo:`), so demo use never touches a real school's. Every sample record is behind
 `DEMO` in `diary/index.html` (see REAL OR DEMO at the top of its scripts).
 
@@ -168,7 +169,10 @@ step): `admin/index.html`, `admin/admin.css`, `admin/js/app.js` (sign-in, menu),
 | Team | owner only: people and roles (Owner: everything; Operations: everything but the team and simulator; Sales: enquiries, institutions, landing pages) and a log of every change |
 
 **Real records and demo data are kept apart.** The admin starts empty (the first visitor sets up the owner);
-the made-up records in `admin/js/sample.js` appear only while the founders switch demo data on in Simulator.
+the made-up records in `admin/js/sample.js` appear only while the founders switch demo data on in Simulator, and
+**Turn demo data off** (Simulator, or the note at the bottom of the menu) goes back to the live records. The owner
+and operations can delete enquiries, institutions, landing pages and support items; a new landing page is saved
+only on Save or Publish.
 
 **Not connected to a database yet.** Until the Paperloop database (Firebase, like the VenGuard dashboard) is
 connected, records, published landing pages and their enquiries are kept in the browser where they were made

@@ -1,7 +1,7 @@
 /* Institutions: every school, kindergarten, madrasa, college or coaching centre, from first enquiry to using
    the app. Adding one gives it the 3-letter code printed on its khata back covers and the principal's first PIN. */
 import { $, esc, num, fmtDate, ago, DAY, ICON, toast, openDrawer, closeDrawer } from '../ui.js';
-import { store, can } from '../store.js';
+import { store, can, canDelete } from '../store.js';
 
 export const STAGES = [['lead', 'Enquiry'], ['demo', 'Demo shown'], ['pilot', 'Pilot'], ['live', 'Using the app'], ['paused', 'Paused']];
 export const TYPES = [['kindergarten', 'Kindergarten'], ['school', 'School'], ['madrasa', 'Madrasa'], ['college', 'College'], ['coaching', 'Coaching centre']];
@@ -77,8 +77,15 @@ export function showInstitution(id) {
     <div><h3 style="font-size:17px;margin-bottom:8px">Notes</h3>${(i.notes || []).map((n) => `<div class="note" style="margin-bottom:8px">${esc(n.text)}<small>${esc(n.by)} · ${ago(n.at)}</small></div>`).join('') || '<p class="muted small">No notes yet.</p>'}
       <form class="form" data-note style="margin-top:8px"><textarea name="text" placeholder="Visit, call or training notes" maxlength="500" required></textarea><button class="btn small" type="submit">Add note</button></form></div>
     ${tickets.length ? `<div><h3 style="font-size:17px;margin-bottom:8px">Support</h3><ul class="list">${tickets.map((t) => `<li><span>${esc(t.subject)}</span><span class="st">${esc(t.status)}</span></li>`).join('')}</ul></div>` : ''}
-    <div style="display:flex;gap:8px;flex-wrap:wrap">${can('institutions') ? '<button class="btn ghost" type="button" data-edit>Edit details</button>' : ''}</div>`,
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${can('institutions') ? '<button class="btn ghost" type="button" data-edit>Edit details</button>' : ''}
+      ${canDelete() ? '<button class="btn ghost" type="button" data-del>Delete</button>' : ''}</div>`,
   (el) => {
+    const del = el.querySelector('[data-del]');
+    if (del) del.addEventListener('click', () => {
+      if (!confirm(`Delete ${i.name} (${i.code})? Its notes go too; its code becomes free again. Use "Paused" instead if it may come back.`)) return;
+      store.all('tickets').filter((t) => t.inst === i.id).forEach((t) => store.remove('tickets', t.id));
+      store.remove('institutions', i.id, `Deleted institution ${i.name} (${i.code})`); closeDrawer(); toast('Institution deleted');
+    });
     const st = el.querySelector('[data-stage]');
     if (st) st.addEventListener('change', () => {
       const patch = { stage: st.value }; if (['pilot', 'live'].includes(st.value) && !i.started) patch.started = Date.now();

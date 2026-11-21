@@ -1,6 +1,6 @@
 /* Support: problems and requests from institutions, each with an owner and a history. */
 import { esc, num, ago, ICON, toast, openDrawer } from '../ui.js';
-import { store } from '../store.js';
+import { store, canDelete } from '../store.js';
 
 const KIND = [['problem', 'Problem'], ['request', 'Request'], ['training', 'Training'], ['question', 'Question']];
 const STATUS = [['open', 'Open'], ['waiting', 'Waiting for the school'], ['done', 'Done']];
@@ -45,7 +45,10 @@ function showTicket(id) {
   openDrawer(t.subject, instName(t.inst), `
     <div class="form"><label>Status<select data-status>${STATUS.map(([k, l]) => `<option value="${k}"${k === t.status ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>
     <div>${(t.notes || []).map((n) => `<div class="note" style="margin-bottom:8px">${esc(n.text)}<small>${esc(n.by)} · ${ago(n.at)}</small></div>`).join('') || '<p class="muted small">No notes yet.</p>'}
-      <form class="form" data-note style="margin-top:8px"><textarea name="text" required maxlength="500" placeholder="What was done or said"></textarea><button class="btn small" type="submit">Add note</button></form></div>`, (el) => {
+      <form class="form" data-note style="margin-top:8px"><textarea name="text" required maxlength="500" placeholder="What was done or said"></textarea><button class="btn small" type="submit">Add note</button></form></div>
+    ${canDelete() ? '<button class="btn ghost" type="button" data-del>Delete</button>' : ''}`, (el) => {
+    const del = el.querySelector('[data-del]');
+    if (del) del.addEventListener('click', () => { if (confirm('Delete this support item?')) { store.remove('tickets', t.id, `Deleted support item: ${t.subject}`); import('../ui.js').then(({ closeDrawer }) => closeDrawer()); toast('Deleted'); } });
     el.querySelector('[data-status]').addEventListener('change', (e) => { store.update('tickets', t.id, { status: e.target.value }, `Support "${t.subject}": ${label(STATUS, e.target.value)}`); toast('Saved'); });
     el.querySelector('[data-note]').addEventListener('submit', (e) => { e.preventDefault(); store.update('tickets', t.id, { notes: [...(t.notes || []), { at: Date.now(), by: store.me.name, text: e.target.elements.text.value.trim() }] }, `Support "${t.subject}": note`); showTicket(t.id); });
   });

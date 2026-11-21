@@ -1,7 +1,7 @@
 /* Enquiries & orders: schools asking for the smart diary, and khata, A4 and ring-binder orders. They come from
    the website, landing pages, calls, field visits and referrals. */
 import { esc, num, ago, fmtDate, ICON, toast, openDrawer } from '../ui.js';
-import { store, can } from '../store.js';
+import { store, can, canDelete } from '../store.js';
 import { editInstitution } from './institutions.js';
 
 export const KINDS = [['diary', 'Smart diary'], ['khata', 'School khata'], ['a4', 'A4 paper'], ['ring', 'Ring binder']];
@@ -54,7 +54,10 @@ function showLead(id) {
     <div><h3 style="font-size:17px;margin-bottom:8px">Notes</h3>${(l.notes || []).map((n) => `<div class="note" style="margin-bottom:8px">${esc(n.text)}<small>${esc(n.by)} · ${ago(n.at)}</small></div>`).join('') || '<p class="muted small">No notes yet.</p>'}
       <form class="form" data-note style="margin-top:8px"><textarea name="text" placeholder="What was said, what comes next" maxlength="500" required></textarea><button class="btn small" type="submit">Add note</button></form></div>
     ${l.kind === 'diary' && !l.inst && can('institutions') ? '<button class="btn" type="button" data-inst>Add as an institution</button>' : ''}
-    ${l.inst ? '<p class="note">Already an institution.</p>' : ''}`, (el) => {
+    ${l.inst ? '<p class="note">Already an institution.</p>' : ''}
+    ${canDelete() ? '<button class="btn ghost" type="button" data-del>Delete this enquiry</button>' : ''}`, (el) => {
+    const del = el.querySelector('[data-del]');
+    if (del) del.addEventListener('click', () => { if (confirm('Delete this enquiry? It cannot be brought back.')) { store.remove('leads', l.id, `Deleted enquiry: ${l.org || l.name}`); import('../ui.js').then(({ closeDrawer }) => closeDrawer()); toast('Enquiry deleted'); } });
     el.querySelector('[data-status]').addEventListener('change', (e) => { store.update('leads', l.id, { status: e.target.value }, `${l.org || l.name}: ${statusLabel(e.target.value)}`); toast('Status changed'); });
     el.querySelector('[data-owner]').addEventListener('change', (e) => { store.update('leads', l.id, { owner: e.target.value }, `${l.org || l.name}: given to ${staffName(e.target.value)}`); toast('Saved'); });
     el.querySelector('[data-note]').addEventListener('submit', (e) => {

@@ -35,7 +35,9 @@ function renderNav() {
   $('#me').innerHTML = `<span class="avatar">${esc(initials(me.name))}</span><span class="who-t" style="min-width:0"><b>${esc(me.name)}</b><span class="pill">${esc(ROLES[me.role].label)}</span></span>`;
   // Which records are showing, and where they are kept until the Paperloop database is connected
   $('#demoChip').hidden = false;
-  $('#demoChip').textContent = store.mode === 'demo' ? 'Demo data (Simulator)' : 'Live records · kept in this browser until the database is connected';
+  $('#demoChip').innerHTML = store.mode === 'demo'
+    ? 'Demo data is on <button class="btn small" type="button" data-demo-off style="margin-top:6px;width:100%">Turn demo data off</button>'
+    : 'Live records · kept in this browser until the database is connected';
 }
 
 function draw() {
@@ -79,6 +81,7 @@ export function signOut() { sessionStorage.removeItem(ME_KEY()); store.setMe(nul
 export function switchMode(m) { store.setMode(m); closeDrawer(); const id = sessionStorage.getItem(ME_KEY()); if (id && store.get('staff', id)) store.setMe(store.get('staff', id)); location.hash = ''; draw(); toast(m === 'demo' ? 'Demo data on' : 'Demo data off: live records'); }
 
 document.addEventListener('click', (e) => {
+  if (e.target.closest('[data-demo-off]')) { switchMode('live'); return; }
   const nav = e.target.closest('#nav [data-view]');
   if (nav) { location.hash = nav.dataset.view; return; }
   if (e.target.closest('#me')) {

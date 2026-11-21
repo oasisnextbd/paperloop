@@ -67,6 +67,8 @@ export const ROLES = {
   ops: { label: 'Operations', can: ['leads', 'institutions', 'usage', 'pages', 'standards', 'support', 'website'] },
   sales: { label: 'Sales', can: ['leads', 'institutions', 'pages', 'website'] }
 };
+// Deleting records: the owner and operations
+export const canDelete = () => !!me && ['owner', 'ops'].includes(me.role);
 export const can = (what) => !!me && (ROLES[me.role].can.includes('all') || ROLES[me.role].can.includes(what));
 
 // Another tab (e.g. a landing page saving an enquiry) changed the data
