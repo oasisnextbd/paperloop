@@ -39,9 +39,22 @@ export function firebase({ auth = false, cache = false } = {}) {
       if (usingEmulators) U.connectAuthEmulator(authApi, 'http://127.0.0.1:9099', { disableWarnings: true });
     }
     if (usingEmulators) F.connectFirestoreEmulator(db, '127.0.0.1', 8080);
-    return { app, db, F, auth: authApi, U };
+    return { app, db, F, auth: authApi, U, A };
   })();
   return ready;
+}
+
+/* A second, separate sign-in used only to create a parent's account (school code + class + roll + PIN):
+   creating it here does not sign out the principal who is doing it. */
+let accounts = null;
+export async function accountsAuth() {
+  if (accounts) return accounts;
+  const { A, U } = await firebase({ auth: true });
+  const app2 = A.getApps().find((a) => a.name === 'accounts') || A.initializeApp(firebaseConfig, 'accounts');
+  const auth2 = U.initializeAuth(app2, { persistence: U.inMemoryPersistence });
+  if (usingEmulators) U.connectAuthEmulator(auth2, 'http://127.0.0.1:9099', { disableWarnings: true });
+  accounts = { auth: auth2, U };
+  return accounts;
 }
 
 // The signed-in Google account, once Firebase knows it (null when signed out)

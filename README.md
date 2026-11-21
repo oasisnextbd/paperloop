@@ -196,6 +196,10 @@ by `firestore.rules`:
 | `activity` | the team reads and adds under their own email; nobody edits |
 | `schools/{CODE}` | set up by the admin from an institution (name, principal's Gmail, `active` from the stage Demo shown, Pilot or Using the app); the school's principal and teachers read it |
 | `members/{google email}` | who opens which school's diary: `{code, role: principal \| teacher, name}`; the admin adds the principal, the principal adds and removes their own teachers |
+| `parents/{account}`, `parentLogins/{CODE_classcode_roll}` | a family's sign-in (one account per child, school code + class + roll + 6-digit PIN): the school's principal makes and replaces them; the login page reads only the lookup (no PIN in it) |
+| `schools/{CODE}/pv/{school \| c_<class> \| s_<student ID>}` | what families may read, written by the principal's and teachers' phones: a family reads `school`, its child's class and its own child only |
+| `schools/{CODE}/fromParents/{student ID}` | a family's leave requests and homework done (the family writes its own; the school reads) |
+| `schools/{CODE}/messages/{id}` | messages between a family and the class teacher (each side adds; nobody edits) |
 | `schools/{CODE}/photos/{student ID}` | one student photo (small JPEG, checked by the rules); the school's principal and teachers read and give them |
 | `schools/{CODE}/state/{part}` | the school's diary; its principal and teachers read it; the principal changes every part, teachers `notices`, `attendance`, `exams`, `standard`, `homework`, `messages` |
 
@@ -221,8 +225,15 @@ Student photos are kept one per student under `schools/{CODE}/photos/` (see STUD
 In a real school every class with students has its own register and roster; a class teacher's pages show their
 own class, with a switch when they lead more than one, and the principal sees every class's attendance. Each part is split into keys (one class, one notice, one receipt) and the diary writes only
 the keys that changed, a moment after each change, so two people working at the same time do not overwrite each
-other; it reads everything when someone signs in or reloads. Next: parents with a 6-digit PIN (and with them,
-messages between parents and the class teacher).
+other; it reads everything when someone signs in or reloads.
+
+**Parents** log in with school code + class + roll + a 6-digit PIN (see PARENTS in `diary/index.html`). Admitting a
+student makes the family's PIN at once and shows it once in the student's record, with a slip to print; **নতুন পিন
+দিন** there replaces a lost one (the old PIN stops working). Each PIN is a Firebase email/password account made with a
+second, separate sign-in so the principal stays signed in; Firebase console → Authentication → Sign-in method →
+**Email/Password** must be on. Families never read the school's whole diary: the staff phones keep a copy of what each
+family may see under `pv/` (only what changed is written; `pl_pv_<CODE>` in the browser remembers what was sent).
+Messages, leave requests and homework done reach the class teacher live.
 
 ## Common edits
 

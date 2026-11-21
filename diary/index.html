@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=c898310e64" />
+  <link rel="stylesheet" href="diary.css?v=3bda8acb9e" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -1959,7 +1959,7 @@
         countTile('leave', 'ছুটি', `${bn(c.leave)} জন`);
 
       document.getElementById('t-att-grid').innerHTML = classRoster.map((name, i) => {
-        const r = i + 1, s = draft[r], m = ATT_META[s];
+        const r = i + 1, s = draft[r], m = ATT_META[s] || ATT_META.present;
         return `
           <button type="button" data-att-roll="${r}" aria-label="রোল ${rollLabel(r)} ${esc(name)}: ${m.label}। বদলাতে ট্যাপ করুন"
             class="icon-tile rounded-xl py-2 px-1 flex flex-col items-center justify-center text-center min-w-0 ${m.tile}">
@@ -2502,6 +2502,7 @@
       if (saved && ROLE_META[saved.role] && saved.code) {
         // A real school's principal or teacher: their school's diary comes from the database (see DATABASE)
         if (!DEMO && saved.role !== 'parent' && window.restoreFromDatabase) window.restoreFromDatabase(saved);
+        else if (!DEMO && saved.role === 'parent' && window.restoreParent) window.restoreParent(saved);
         else startSession(saved, { restoring: true });
       }
       else { switchMainView('login'); updateHeader(); }
@@ -6197,6 +6198,7 @@
       }
       async function signOut() {
         ready = false; code = null; last = {};
+        if (typeof parentDb === 'object' && parentDb.stop) parentDb.stop();
         const { firebase } = await fbModule();
         const f = await firebase({ auth: true, cache: true });
         await f.U.signOut(f.auth);
@@ -6217,7 +6219,8 @@
         (await F.getDocs(F.query(F.collection(db, 'schools', code, 'photos'), F.where('cls', '==', cls)))).forEach(d => { out[d.id] = d.data().img; });
         return out;
       }
-      return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, savePhoto, loadPhotos, get ready() { return ready; } };
+      return { active: true, load, check, signIn, signOut, currentAccount, setTeacherEmail, savePhoto, loadPhotos, encode, decode,
+        get ready() { return ready; }, get fb() { return fb; }, get code() { return code; } };
     })();
 
     // A real school: the class teacher's pages (register, weekly tests, monthly progress…) show this class
@@ -6241,6 +6244,7 @@
         if (!b) return;
         setTeacherClass(b.getAttribute('data-teacher-class'));
         if (typeof applyTeacherIdentity === 'function') applyTeacherIdentity();
+        if (typeof parentDb === 'object' && parentDb.active) parentDb.watchFamilies(); // that class's families' leave requests and messages
       });
       const LOGIN_ERRORS = {
         notMember: email => `${email} কোনো স্কুলে যোগ করা নেই। প্রিন্সিপাল হলে Paperloop-কে, শিক্ষক হলে প্রিন্সিপালকে আপনার Gmail যোগ করতে বলুন।`,
@@ -6449,6 +6453,384 @@
         catch (x) { showToast('ছবি মুছে ফেলা যায়নি। ইন্টারনেট সংযোগ দেখুন।'); }
       });
     });
+  </script>
+  <script>
+    // ==========================================
+    // PARENTS (real schools; see README.md → Firebase)
+    // A parent logs in with school code + class + roll + a 6-digit PIN. The principal makes the PIN when the
+    // student is admitted (or later, from the student's record) and gives it once, on a printed slip; a new PIN
+    // stops the old one. Behind it is a sign-in account only for that child (parents/<account> says which child).
+    // A family never reads the school's whole diary: the principal's and teachers' phones keep a copy of what each
+    // family may see (schools/<CODE>/pv/: school = name and design, c_<class> = the class's published results,
+    // monthly checks, homework, notices, routine and fees, s_<student ID> = the child's own record, attendance,
+    // notes, comments and receipts), writing only what changed. Families send back leave requests and homework
+    // done (fromParents/<student ID>) and messages to the class teacher (messages/).
+    // ==========================================
+    const parentDb = (() => {
+      if (!schoolDb.active) return { active: false };
+      const fbModule = () => import('../assets/js/firebase.js');
+      const fbReady = async () => (await fbModule()).firebase({ auth: true, cache: true });
+      const PARENT_DOMAIN = 'parent.paperloop-50c10.firebaseapp.com';
+      const loginId = (code, cls, roll) => `${code}_${CLASS_CODE[cls] || '99'}_${Number(roll)}`;
+      const newPin = () => String(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000));
+      const rand = () => Array.from(crypto.getRandomValues(new Uint8Array(5)), b => (b % 36).toString(36)).join('');
+      const fill = (target, src) => { Object.keys(target).forEach(k => delete target[k]); Object.assign(target, src); };
+      const pad = r => String(r).padStart(2, '0');
+      let kid = null;                    // the signed-in parent's child: { code, cls, roll, sid }
+      const stops = [];                  // live listeners to end at logout
+      const stop = () => { stops.splice(0).forEach(f => f()); kid = null; fromParentsFor = null; };
+
+      // ---------- The principal: a family's PIN ----------
+      async function issuePin(s) {
+        const { F, db } = await fbReady();
+        const { accountsAuth } = await fbModule();
+        const code = schoolDb.code, pin = newPin(), email = `${s.id.toLowerCase()}.${rand()}@${PARENT_DOMAIN}`;
+        const acc = await accountsAuth();
+        const cred = await acc.U.createUserWithEmailAndPassword(acc.auth, email, pin);
+        const uid = cred.user.uid;
+        await acc.U.signOut(acc.auth);
+        const lref = F.doc(db, 'parentLogins', loginId(code, s.cls, s.roll));
+        const old = await F.getDoc(lref).catch(() => null);
+        if (old && old.exists() && old.data().uid && old.data().uid !== uid) await F.deleteDoc(F.doc(db, 'parents', old.data().uid)).catch(() => {});
+        await F.setDoc(F.doc(db, 'parents', uid), { code, cls: s.cls, roll: s.roll, sid: s.id });
+        await F.setDoc(lref, { code, email, sid: s.id, uid });
+        s.pinIssued = new Date();
+        schoolDb.check();
+        return pin;
+      }
+
+      // ---------- Principal's and teachers' phones: what each family may read ----------
+      const hash = t => { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + t.length.toString(36); };
+      let sent = null, sentFor = null, writing = false;
+      function views() {
+        const out = {}, code = schoolDb.code;
+        const put = (doc, field, v) => { (out[doc] = out[doc] || {})[field] = schoolDb.encode(v === undefined ? null : v); };
+        put('school', 'name', schoolNamesByCode[code] || '');
+        put('school', 'brand', readStore(brandKey(code)) || null);
+        CLASSES.forEach(cls => {
+          const list = recordsByClass[cls] || [];
+          if (!list.length) return;
+          const d = 'c_' + cls;
+          const box = cls === TEACHER_CLASS ? { records: studentAtt.records } : (attByClass[cls] || { records: {} });
+          put(d, 'size', rosterFor(cls).length);
+          put(d, 'exams', exams.filter(e => e.cls === cls && e.publishedAt));
+          put(d, 'std', { levels: topicLevels[cls] || {}, extra: extraTopics[cls] || {} });
+          put(d, 'teachers', { ct: CLASS_TEACHERS[cls] || '', subjects: SUBJECT_TEACHERS[cls] || {} });
+          put(d, 'fees', feeStructure[cls] || null);
+          put(d, 'routine', routines[cls] || null);
+          put(d, 'homework', homeworks.filter(h => h.cls === cls).map(({ doneByParent, ...h }) => h));
+          put(d, 'notices', notices.filter(n => n.audience === 'all' || n.audience === 'parents' || (n.audience === 'class' && n.cls === cls)));
+          list.forEach(s => {
+            const sd = 's_' + s.id, r = s.roll, att = {}, notes = {}, comments = {}, authors = {};
+            put(sd, 'record', s);
+            Object.entries(box.records).forEach(([day, rec]) => { if (rec && rec.statuses && rec.statuses[r]) att[day] = [rec.statuses[r], rec.submittedAt || '']; });
+            put(sd, 'att', att);
+            Object.entries(teacherNotes[cls] || {}).forEach(([mk, m]) => { if (m && m[r]) notes[mk] = m[r]; });
+            [[subjectComments, comments], [commentAuthors, authors]].forEach(([src, dst]) => Object.entries(src[cls] || {}).forEach(([mk, subs]) => Object.entries(subs || {}).forEach(([sub, m]) => { if (m && m[r]) (dst[mk] = dst[mk] || {})[sub] = m[r]; })));
+            put(sd, 'std', { notes, comments, authors });
+            put(sd, 'fees', { waiver: waivers[`${cls}|${r}`] || 0, receipts: receipts.filter(x => x.id === s.id) });
+          });
+        });
+        return out;
+      }
+      async function publish() {
+        if (writing || !schoolDb.ready || !session || session.role === 'parent') return;
+        const code = schoolDb.code, cacheKey = `pl_pv_${code}`;
+        if (sentFor !== code) { sent = readStore(cacheKey) || {}; sentFor = code; }
+        const changes = [];
+        Object.entries(views()).forEach(([doc, fields]) => {
+          const ch = {};
+          Object.entries(fields).forEach(([f, val]) => { const h = hash(val); if ((sent[doc] || {})[f] !== h) ch[f] = [val, h]; });
+          if (Object.keys(ch).length) changes.push([doc, ch]);
+        });
+        if (!changes.length) return;
+        writing = true;
+        try {
+          const { F, db } = schoolDb.fb;
+          for (let i = 0; i < changes.length; i += 300) {
+            const part = changes.slice(i, i + 300), batch = F.writeBatch(db);
+            part.forEach(([doc, ch]) => batch.set(F.doc(db, 'schools', code, 'pv', doc), Object.fromEntries(Object.entries(ch).map(([f, [val]]) => [f, val])), { merge: true }));
+            await batch.commit();
+            part.forEach(([doc, ch]) => { sent[doc] = sent[doc] || {}; Object.entries(ch).forEach(([f, [, h]]) => { sent[doc][f] = h; }); });
+            writeStore(cacheKey, sent);
+          }
+        } catch (e) { /* tried again a little later */ }
+        finally { writing = false; }
+      }
+      let pubTimer = null;
+      const publishSoon = () => { clearTimeout(pubTimer); pubTimer = setTimeout(publish, 1500); };
+      ['click', 'change', 'submit'].forEach(t => document.addEventListener(t, publishSoon, true));
+      setInterval(publish, 8000);
+
+      // ---------- The class teacher's phone: what families sent (leave, homework done), live ----------
+      let fromParentsFor = null;
+      async function watchFamilies() {
+        if (!session || session.role !== 'teacher' || !isClassTeacher() || fromParentsFor === TEACHER_CLASS) return;
+        fromParentsFor = TEACHER_CLASS;
+        stops.splice(0).forEach(f => f());
+        const { F, db } = await fbReady(), code = schoolDb.code, cls = TEACHER_CLASS;
+        stops.push(F.onSnapshot(F.query(F.collection(db, 'schools', code, 'fromParents'), F.where('cls', '==', cls)), snap => {
+          if (TEACHER_CLASS !== cls) return;
+          const done = {};
+          snap.forEach(d => {
+            const x = d.data();
+            Object.entries(x.leave || {}).forEach(([day, on]) => { if (on) { (studentAtt.leaveRequests[day] = studentAtt.leaveRequests[day] || {})[x.roll] = true; if (day === attKey && !studentAtt.records[attKey]) studentAtt.draft[x.roll] = 'leave'; } });
+            Object.entries(x.hw || {}).forEach(([id, on]) => { if (on) done[id] = (done[id] || 0) + 1; });
+          });
+          homeworks.filter(h => h.cls === cls).forEach(h => { h.totalCompleted = done[h.id] || 0; });
+          renderAllAttendance(); renderTeacherDashboard();
+        }, () => {}));
+        watchMessages({ cls });
+      }
+
+      // ---------- Messages between a family and the class teacher, live ----------
+      function watchMessages(by) {
+        fbReady().then(({ F, db }) => {
+          const q = F.query(F.collection(db, 'schools', schoolDb.code || kid.code, 'messages'), by.sid ? F.where('sid', '==', by.sid) : F.where('cls', '==', by.cls));
+          stops.push(F.onSnapshot(q, snap => {
+            const threads = {};
+            snap.forEach(d => { const m = d.data(); (threads[threadKey(m.cls, m.roll)] = threads[threadKey(m.cls, m.roll)] || []).push({ from: m.from, text: m.text, at: m.at }); });
+            Object.entries(threads).forEach(([k, list]) => { store().threads[k] = list.sort((a, b) => a.at - b.at); });
+            saveMsgs();
+            if (typeof updateChatBadge === 'function') updateChatBadge();
+            if (document.getElementById('chat-dialog') && document.getElementById('chat-dialog').open && typeof renderChat === 'function') renderChat();
+          }, () => {}));
+        });
+      }
+      async function sendToDb(key, text) {
+        const [cls, rollText] = key.split('|'), roll = Number(rollText);
+        const { F, db } = await fbReady();
+        const code = kid ? kid.code : schoolDb.code;
+        const sid = kid ? kid.sid : (findRecord(cls, roll) || {}).id;
+        if (!sid) return;
+        await F.addDoc(F.collection(db, 'schools', code, 'messages'), { sid, cls, roll, from: kid ? 'parent' : 'teacher', text, at: Date.now() });
+      }
+
+      // ---------- A parent: sign in and open the child's diary ----------
+      const LOGIN_TEXT = {
+        nologin: 'এই স্কুল কোড, শ্রেণি ও রোলে অভিভাবকের লগইন এখনো খোলা হয়নি। স্কুল অফিস থেকে পিন নিন।',
+        pin: 'পিন মেলেনি। স্কুল থেকে পাওয়া ৬ সংখ্যার পিনটি দেখে আবার দিন।',
+        many: 'অনেকবার ভুল পিন দেওয়া হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।',
+        closed: 'স্কুলের ডায়েরি এখন খোলা যাচ্ছে না। স্কুল অফিসে যোগাযোগ করুন।',
+        offline: 'প্রবেশ করা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।'
+      };
+      const fail = key => Object.assign(new Error(key), { shown: LOGIN_TEXT[key] });
+      async function parentSignIn(code, cls, roll, pin) {
+        const { F, db, auth, U } = await fbReady();
+        const l = await F.getDoc(F.doc(db, 'parentLogins', loginId(code, cls, roll))).catch(() => { throw fail('offline'); });
+        if (!l.exists()) throw fail('nologin');
+        try { await U.signInWithEmailAndPassword(auth, l.data().email, pin); }
+        catch (e) { throw fail(e && e.code === 'auth/too-many-requests' ? 'many' : e && e.code === 'auth/network-request-failed' ? 'offline' : 'pin'); }
+        const child = await openChild();
+        if (!child) throw fail('pin');
+        return child;
+      }
+      // Read what this family may see and put it into the diary's pages
+      async function openChild() {
+        const { F, db } = await fbReady();
+        const u = await (await fbModule()).currentUser(); // after a reload, once Firebase knows who is signed in
+        if (!u) return null;
+        const k = await F.getDoc(F.doc(db, 'parents', u.uid));
+        if (!k.exists()) return null; // a newer PIN replaced this one
+        const child = k.data();
+        const pv = id => F.getDoc(F.doc(db, 'schools', child.code, 'pv', id)).then(d => {
+          const out = {}; if (d.exists()) Object.entries(d.data()).forEach(([f, v]) => { try { out[f] = schoolDb.decode(v); } catch (e) { /* skip */ } }); return out;
+        });
+        let school, cls, me;
+        try { [school, cls, me] = await Promise.all([pv('school'), pv('c_' + child.cls), pv('s_' + child.sid)]); }
+        catch (e) { throw fail(e && e.code === 'permission-denied' ? 'closed' : 'offline'); }
+        const mine = await F.getDoc(F.doc(db, 'schools', child.code, 'fromParents', child.sid)).then(d => d.exists() ? d.data() : {}).catch(() => ({}));
+        const photo = await F.getDoc(F.doc(db, 'schools', child.code, 'photos', child.sid)).then(d => d.exists() ? d.data().img : '').catch(() => '');
+        stop();
+        kid = child;
+        applyChild(child, school, cls, me, mine, photo);
+        watchMessages({ sid: child.sid });
+        return child;
+      }
+      function applyChild(child, school, c, me, mine, photo) {
+        const { code, cls, roll } = child, rec = me.record || { name: `শিক্ষার্থী (রোল ${bn(pad(roll))})`, cls, roll, id: child.sid };
+        schoolNamesByCode[code] = school.name || '';
+        if (school.brand) writeStore(brandKey(code), school.brand);
+        appState.schoolCode = code;
+        TEACHER_CLASS = cls;
+        classRoster.splice(0, classRoster.length, ...Array.from({ length: Math.max(c.size || 0, roll) }, (_, i) => (i + 1 === roll ? rec.name : '—')));
+        rollNames[pad(roll)] = rec.name;
+        Object.keys(recordsByClass).forEach(k => { recordsByClass[k] = []; });
+        recordsByClass[cls] = [rec];
+        const recs = {};
+        Object.entries(me.att || {}).forEach(([day, [st, at]]) => { recs[day] = { statuses: { [roll]: st }, submittedAt: at }; });
+        studentAtt.records = recs;
+        studentAtt.leaveRequests = {};
+        Object.entries(mine.leave || {}).forEach(([day, on]) => { if (on) studentAtt.leaveRequests[day] = { [roll]: true }; });
+        resetStudentDraft();
+        exams.splice(0, exams.length, ...(c.exams || []));
+        const std = c.std || {}, mstd = me.std || {};
+        fill(topicLevels, { [cls]: std.levels || {} }); fill(extraTopics, { [cls]: std.extra || {} });
+        fill(teacherNotes, { [cls]: Object.fromEntries(Object.entries(mstd.notes || {}).map(([mk, t]) => [mk, { [roll]: t }])) });
+        const perRoll = m => Object.fromEntries(Object.entries(m || {}).map(([mk, subs]) => [mk, Object.fromEntries(Object.entries(subs).map(([sub, t]) => [sub, { [roll]: t }]))]));
+        fill(subjectComments, { [cls]: perRoll(mstd.comments) }); fill(commentAuthors, { [cls]: perRoll(mstd.authors) });
+        homeworks.splice(0, homeworks.length, ...(c.homework || []).map(h => ({ ...h, doneByParent: !!(mine.hw || {})[h.id] })));
+        notices.splice(0, notices.length, ...(c.notices || []));
+        fill(routines, c.routine ? { [cls]: c.routine } : {});
+        if (c.fees) feeStructure[cls] = c.fees;
+        const fees = me.fees || {};
+        fill(waivers, fees.waiver ? { [`${cls}|${roll}`]: fees.waiver } : {});
+        receipts.splice(0, receipts.length, ...(fees.receipts || []));
+        const t = c.teachers || {};
+        CLASS_TEACHERS[cls] = t.ct || '';
+        SUBJECT_TEACHERS[cls] = { ...(t.subjects || {}) };
+        if (photo) studentPhotos[child.sid] = photo; else delete studentPhotos[child.sid];
+        applyBrandToApp();
+      }
+
+      // ---------- A parent's own answers: leave asked for, homework done ----------
+      let lastMine = '';
+      async function saveMine() {
+        if (!kid) return;
+        const roll = kid.roll, leave = {};
+        Object.entries(studentAtt.leaveRequests).forEach(([day, m]) => { if (m && m[roll]) leave[day] = true; });
+        const hw = Object.fromEntries(homeworks.map(h => [h.id, !!h.doneByParent]));
+        const body = { cls: kid.cls, roll, leave, hw }, text = JSON.stringify(body);
+        if (text === lastMine) return;
+        lastMine = text;
+        const { F, db } = await fbReady();
+        await F.setDoc(F.doc(db, 'schools', kid.code, 'fromParents', kid.sid), body).catch(() => { lastMine = ''; showToast(LOGIN_TEXT.offline); });
+      }
+      document.addEventListener('click', () => { if (kid) setTimeout(saveMine, 0); });
+
+      return { active: true, issuePin, parentSignIn, openChild, publish, watchFamilies, sendToDb, stop, LOGIN_TEXT, get kid() { return kid; } };
+    })();
+
+    if (parentDb.active) {
+      // A teacher's own sent message, and a parent's, also go to the database (both phones see it live)
+      const plainSend = sendMessage;
+      sendMessage = function (text) {
+        const key = session && (session.role === 'parent' ? parentKey() : chatState.open);
+        plainSend(text);
+        const clean = oneSpelling(String(text || '').trim());
+        if (key && clean) parentDb.sendToDb(key, clean).catch(() => showToast('মেসেজ পাঠানো যায়নি। ইন্টারনেট সংযোগ দেখুন।'));
+      };
+      // The class teacher's phone listens for families of the class on screen
+      const prevParentHook = window.onDiarySessionChange;
+      window.onDiarySessionChange = () => { if (prevParentHook) prevParentHook(); parentDb.watchFamilies(); };
+
+      // Open the diary for a signed-in parent
+      async function enterAsParent(child) {
+        startSession({ role: 'parent', code: child.code, cls: child.cls, roll: String(child.roll).padStart(2, '0'), sid: child.sid }, { restoring: true });
+      }
+      window.restoreParent = async saved => {
+        switchMainView('login'); updateHeader();
+        try {
+          const child = await parentDb.openChild();
+          if (!child || child.sid !== saved.sid) { await schoolDb.signOut().catch(() => {}); writeStore(SESSION_KEY, null); return; }
+          enterAsParent(child);
+        } catch (e) { showToast(e.shown || parentDb.LOGIN_TEXT.offline); }
+      };
+
+      // The principal: the family's login card in the student's record, and a PIN at admission
+      const pinShown = {}; // student ID → the PIN just made (shown once, until the record is closed)
+      async function makePin(s, sheet) {
+        try {
+          pinShown[s.id] = await parentDb.issuePin(s);
+          if (sheet) renderStudentSheet();
+        } catch (e) { showToast('পিন তৈরি করা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।'); }
+      }
+      function printPinSlip(s, pin) {
+        const row = (k, v) => `<tr><td class="py-[1.5mm] pr-[4mm] opacity-70">${k}</td><td class="py-[1.5mm] font-bold">${v}</td></tr>`;
+        printDoc('অভিভাবকের লগইন', `
+          <div class="mt-[4mm] text-[11pt]">
+            <table>${row('শিক্ষার্থী', esc(s.name))}${row('শ্রেণি ও রোল', `${esc(s.cls)} • রোল ${bn(pad2(s.roll))}`)}${row('স্কুল কোড', esc(appState.schoolCode))}
+              ${row('পিন', `<span class="text-[18pt] tracking-[2mm]">${pin}</span>`)}</table>
+            <ol class="mt-[5mm] list-decimal pl-[6mm] space-y-[1mm]">
+              <li>ফোনে খুলুন: <b>oasisnextbd.github.io/paperloop/diary</b></li>
+              <li>"অভিভাবক লগইন" বেছে স্কুল কোড, শ্রেণি, রোল ও এই পিন দিন।</li>
+              <li>পিনটি কাউকে দেবেন না। হারালে স্কুল অফিস থেকে নতুন পিন নিন; তখন এই পিন আর চলবে না।</li>
+            </ol>
+          </div>`, ['প্রধান শিক্ষক']);
+      }
+      const pad2 = r => String(r).padStart(2, '0');
+      const sheetWithPin = renderStudentSheet;
+      renderStudentSheet = function () {
+        sheetWithPin();
+        const s = findRecord(studentSheet.cls, studentSheet.roll);
+        if (!s || studentSheet.mode !== 'school' || studentSheet.editing || !session || session.role !== 'school') return;
+        const pin = pinShown[s.id];
+        const issued = s.pinIssued ? new Date(s.pinIssued) : null;
+        document.getElementById('student-dialog-body').insertAdjacentHTML('beforeend', `
+          <div class="bg-white rounded-2xl border border-ink-200 p-4 space-y-3">
+            <div><h3 class="text-sm font-bold text-ink-900">অভিভাবকের লগইন</h3>
+              <p class="text-xs text-ink-500">স্কুল কোড ${esc(appState.schoolCode)}, ${esc(s.cls)}, রোল ${bn(pad2(s.roll))} ও ৬ সংখ্যার পিন দিয়ে অভিভাবক শুধু এই শিক্ষার্থীর ডায়েরি দেখবেন।</p></div>
+            ${pin ? `
+              <div class="rounded-2xl bg-gold-50 border border-gold-200 p-4 text-center">
+                <div class="text-xs font-bold text-gold-900">নতুন পিন (শুধু এখন দেখা যাবে)</div>
+                <div class="text-3xl font-extrabold tracking-[0.35em] text-ink-900 mt-1" data-pin-value>${pin}</div>
+              </div>
+              <button type="button" data-pin-print class="w-full py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold">পিনের স্লিপ প্রিন্ট করুন</button>`
+            : `<p class="text-xs ${issued ? 'text-ink-600' : 'font-bold text-gold-900'}">${issued ? `পিন দেওয়া হয়েছে: ${bnFullDate(issued)}` : 'এখনো পিন দেওয়া হয়নি।'}</p>
+              <button type="button" data-pin-make class="w-full py-2.5 rounded-xl ${issued ? 'border border-ink-300 bg-white hover:bg-ink-50 text-ink-900' : 'bg-ink-900 hover:bg-ink-800 text-white'} text-sm font-bold">${issued ? 'নতুন পিন দিন (পুরোনোটি বন্ধ হবে)' : 'পিন তৈরি করুন'}</button>`}
+          </div>`);
+      };
+      // Admitting a student makes the family's PIN at once and opens the record to show it
+      const plainAdmit = admitStudent;
+      admitStudent = function (data) {
+        const rec = plainAdmit(data);
+        if (session && session.role === 'school') setTimeout(() => { openStudent(rec.cls, rec.roll, 'school'); makePin(rec, true); }, 0);
+        return rec;
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const dlg = document.getElementById('student-dialog');
+        dlg.addEventListener('click', e => {
+          const s = findRecord(studentSheet.cls, studentSheet.roll);
+          if (!s) return;
+          if (e.target.closest('[data-pin-make]')) {
+            if (s.pinIssued && !confirm('নতুন পিন দিলে পুরোনো পিন আর চলবে না। নতুন পিন দেবেন?')) return;
+            e.target.closest('[data-pin-make]').disabled = true;
+            makePin(s, true);
+          }
+          if (e.target.closest('[data-pin-print]') && pinShown[s.id]) printPinSlip(s, pinShown[s.id]);
+        });
+        dlg.addEventListener('close', () => { Object.keys(pinShown).forEach(k => delete pinShown[k]); });
+
+        // The parent's login: school code, class, roll and PIN (also "another child" in the profile panel)
+        const pinField = (id, cls) => {
+          const wrap = document.createElement('div');
+          wrap.className = cls;
+          wrap.innerHTML = `<label for="${id}" class="block text-xs font-bold text-ink-700 mb-1">৬ সংখ্যার পিন</label>
+            <input id="${id}" type="password" required pattern="[0-9০-৯]{6}" maxlength="6" inputmode="numeric" autocomplete="current-password" data-invalid="স্কুল থেকে পাওয়া ৬ সংখ্যার পিন দিন" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" />`;
+          const input = wrap.querySelector('input');
+          input.addEventListener('invalid', () => input.setCustomValidity(input.getAttribute('data-invalid')));
+          input.addEventListener('input', () => input.setCustomValidity(''));
+          return wrap;
+        };
+        const forms = [
+          ['form-login-parent', 'login-p-pin', 'login-p-code', 'login-p-class', 'login-p-roll', ''],
+          ['login-form-box', 'input-student-pin', 'input-school-code', 'input-student-class', 'input-student-roll', 'col-span-2']
+        ];
+        forms.forEach(([formId, pinId, codeId, classId, rollId, cls]) => {
+          const form = document.getElementById(formId), submit = form.querySelector('button[type=submit]');
+          submit.before(pinField(pinId, cls));
+          const err = document.createElement('p');
+          err.className = `hidden text-sm font-bold text-ink-900 ${cls}`;
+          submit.after(err);
+          document.querySelector('[data-login-role="parent"] span.text-ink-500').textContent = 'কোড, রোল ও পিন';
+          form.addEventListener('submit', async e => {
+            e.preventDefault(); e.stopImmediatePropagation();
+            const code = document.getElementById(codeId).value.trim().toUpperCase(), klass = document.getElementById(classId).value;
+            const roll = Number(toAsciiDigits(document.getElementById(rollId).value.trim())), pin = toAsciiDigits(document.getElementById(pinId).value.trim());
+            err.classList.add('hidden'); submit.disabled = true;
+            try {
+              const child = await parentDb.parentSignIn(code, klass, roll, pin);
+              document.getElementById(pinId).value = '';
+              if (formId === 'login-form-box') document.getElementById('profile-dialog').close();
+              enterAsParent(child);
+              showToast(`${findRecord(child.cls, child.roll) ? findRecord(child.cls, child.roll).name : 'শিক্ষার্থী'}-এর ডায়েরিতে স্বাগতম`);
+            } catch (x) { err.textContent = x.shown || parentDb.LOGIN_TEXT.offline; err.classList.remove('hidden'); }
+            finally { submit.disabled = false; }
+          }, true);
+        });
+      });
+    }
   </script>
   <script>
     // ==========================================

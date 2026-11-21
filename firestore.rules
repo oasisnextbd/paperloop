@@ -84,6 +84,27 @@ service cloud.firestore {
     function staffOf(code) { return isMember() && me().code == code && schoolOpen(code); }
     function principalOf(code) { return staffOf(code) && me().role == 'principal'; }
 
+    // Parents: one sign-in account per child (school code + class + roll + PIN). parents/{account} says which
+    // child; parentLogins/{CODE_classcode_roll} lets the login page find the account (it holds no PIN).
+    // The school's principal makes and replaces them.
+    function parentDoc() { return /databases/$(database)/documents/parents/$(request.auth.uid); }
+    function isParent() { return request.auth != null && exists(parentDoc()); }
+    function kid() { return get(parentDoc()).data; }
+    function parentIn(code) { return isParent() && kid().code == code && schoolOpen(code); }
+
+    match /parents/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if principalOf(request.resource.data.code) && request.resource.data.keys().hasOnly(['code', 'cls', 'roll', 'sid'])
+        && request.resource.data.roll is int && str(request.resource.data.sid, 3, 30);
+      allow delete: if principalOf(resource.data.code);
+    }
+    match /parentLogins/{id} {
+      allow get: if true;
+      allow create, update: if principalOf(request.resource.data.code) && id.matches(request.resource.data.code + '_[0-9]+_[0-9]+')
+        && request.resource.data.keys().hasOnly(['code', 'email', 'sid', 'uid']);
+      allow delete: if principalOf(resource.data.code);
+    }
+
     match /members/{email} {
       allow get: if signedIn() && email == myEmail();
       allow read: if anyRole() || (isMember() && me().role == 'principal' && resource.data.code == me().code);
@@ -101,9 +122,32 @@ service cloud.firestore {
     match /schools/{code} {
       allow read: if anyRole() || staffOf(code);
       allow write: if anyRole();
+      // What each family may read, kept up to date by the principal's and teachers' phones: school (name,
+      // design), c_<class> (the class's published results, monthly checks, homework, notices, routine, fees),
+      // s_<student ID> (the child's own record, attendance, notes, comments and receipts)
+      match /pv/{doc} {
+        allow read: if staffOf(code) || (parentIn(code) && (doc == 'school' || doc == 'c_' + kid().cls || doc == 's_' + kid().sid));
+        allow write: if staffOf(code);
+      }
+      // A family's own answers: leave asked for and homework done (their class teacher reads them)
+      match /fromParents/{sid} {
+        allow read: if staffOf(code) || (parentIn(code) && kid().sid == sid);
+        allow create, update: if parentIn(code) && kid().sid == sid && request.resource.data.keys().hasOnly(['cls', 'roll', 'leave', 'hw'])
+          && request.resource.data.cls == kid().cls && request.resource.data.roll == kid().roll
+          && request.resource.data.leave is map && request.resource.data.hw is map;
+      }
+      // Messages between a family and the class teacher; nobody edits or deletes one
+      match /messages/{id} {
+        allow read: if staffOf(code) || (parentIn(code) && resource.data.sid == kid().sid);
+        allow create: if request.resource.data.keys().hasOnly(['sid', 'cls', 'roll', 'from', 'text', 'at'])
+          && str(request.resource.data.text, 1, 1000) && request.resource.data.at is int
+          && ((staffOf(code) && request.resource.data.from == 'teacher')
+            || (parentIn(code) && request.resource.data.from == 'parent' && request.resource.data.sid == kid().sid
+              && request.resource.data.cls == kid().cls && request.resource.data.roll == kid().roll));
+      }
       // Student photos: one small JPEG per student, given by the principal or a teacher of the school
       match /photos/{studentId} {
-        allow read: if staffOf(code);
+        allow read: if staffOf(code) || (parentIn(code) && kid().sid == studentId);
         allow delete: if staffOf(code);
         allow create, update: if staffOf(code) && request.resource.data.keys().hasOnly(['cls', 'roll', 'img', 'at'])
           && request.resource.data.img is string && request.resource.data.img.size() < 120000
