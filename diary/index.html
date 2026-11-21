@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paperloop স্মার্ট ডায়েরি (ডেমো)</title>
+  <title>Paperloop স্মার্ট ডায়েরি</title>
   <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন। এটি নমুনা তথ্যসহ ডেমো।" />
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#14213d" />
@@ -154,7 +154,6 @@
         <form id="form-login-teacher" class="hidden space-y-4 pt-2 border-t border-ink-100">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-ink-500">শ্রেণি শিক্ষক প্রবেশ</span>
-            <span class="text-xs text-ink-500">ডেমো পিন: 1234</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
@@ -163,7 +162,7 @@
             </div>
             <div>
               <label for="login-t-phone" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষকের মোবাইল / আইডি</label>
-              <input id="login-t-phone" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="মোবাইল নম্বর বা শিক্ষক আইডি দিন" />
+              <input id="login-t-phone" type="text" value="" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="মোবাইল নম্বর বা শিক্ষক আইডি দিন" />
             </div>
             <div>
               <label for="login-t-pin" class="block text-xs font-bold text-ink-700 mb-1">৪-সংখ্যার পিন</label>
@@ -180,7 +179,6 @@
         <form id="form-login-school" class="hidden space-y-4 pt-2 border-t border-ink-100">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-ink-500">স্কুল প্রিন্সিপাল ও অ্যাডমিন প্রবেশ</span>
-            <span class="text-xs text-ink-500">ডেমো পাসকোড: 2026</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
@@ -189,7 +187,7 @@
             </div>
             <div>
               <label for="login-s-admin" class="block text-xs font-bold text-ink-700 mb-1">প্রিন্সিপাল / অ্যাডমিন আইডি</label>
-              <input id="login-s-admin" type="text" value="" placeholder="ডেমোতে যেকোনো আইডি চলবে" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="প্রিন্সিপাল বা অ্যাডমিন আইডি দিন" />
+              <input id="login-s-admin" type="text" value="" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" required autocomplete="username" data-invalid="প্রিন্সিপাল বা অ্যাডমিন আইডি দিন" />
             </div>
             <div>
               <label for="login-s-pin" class="block text-xs font-bold text-ink-700 mb-1">অ্যাডমিন পিন</label>
@@ -3276,7 +3274,7 @@
         const complete = examComplete(exam), roster = examRoster(exam);
         const publishBtn = !exam.publishedAt && exam.publisher === 'school' ? `
           <button type="button" data-sres-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
-        if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই।</p>';
+        if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।</p>';
         else if (!complete) {
           // Tell the principal where the marks come from: the class teacher's own login
           detail = `<p class="text-xs text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">শ্রেণি শিক্ষক${typeof CLASS_TEACHERS !== 'undefined' && CLASS_TEACHERS[exam.cls] ? ` (${esc(CLASS_TEACHERS[exam.cls])})` : ''} নিজের লগইনে <b>“নম্বর দিন”</b> কার্ড থেকে বিষয় ধরে নম্বর দেন। সব বিষয়ের নম্বর এলে এখানে প্রকাশ করার বাটন চালু হবে।</p><div class="space-y-2">${exam.subjects.map(s => `
@@ -3702,7 +3700,7 @@
       if (!box) return;
       const st = recordsState, list = recordsByClass[st.cls].filter(s => matches(s, st.query.trim()));
       const k = classCounts(st.cls);
-      const note = k.listed < k.total ? `<p class="text-xs text-ink-500">ডেমোতে এই শ্রেণির ${bn(k.total - k.listed)} জনের বিস্তারিত তথ্য নেই; শুধু সংখ্যা দেখানো হচ্ছে।</p>` : '';
+      const note = k.listed < k.total ? `<p class="text-xs text-ink-500">${bn(k.total - k.listed)} জনের বিস্তারিত তথ্য এখনো যোগ হয়নি।</p>` : '';
       box.innerHTML = note + (list.length ? list.map(s => studentRow(s, 'school')).join('') : `<p class="text-sm text-ink-500 text-center py-4">${st.query ? 'কাউকে পাওয়া যায়নি।' : 'তালিকায় কেউ নেই।'}</p>`);
     }
     function printClassList() {
@@ -3745,7 +3743,7 @@
         <dl class="bg-white rounded-2xl border border-ink-200 divide-y divide-ink-200">${dlRows(recordRows(s))}</dl>
         <div class="grid ${canEdit ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5">
           ${s.phone ? `<a href="tel:+88${s.phone}" class="icon-tile py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm flex items-center justify-center gap-2">${recSvg('phone')}<span>অভিভাবককে কল</span></a>`
-            : '<p class="py-3 px-3 rounded-2xl bg-ink-50 border border-ink-200 text-xs text-ink-600 text-center">মোবাইল নম্বর দেওয়া হয়নি (নমুনা তথ্য)</p>'}
+            : '<p class="py-3 px-3 rounded-2xl bg-ink-50 border border-ink-200 text-xs text-ink-600 text-center">মোবাইল নম্বর দেওয়া হয়নি</p>'}
           ${canEdit ? `<button type="button" data-student-edit class="icon-tile py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${recSvg('edit')}<span>তথ্য সম্পাদনা</span></button>` : ''}
         </div>`;
     }
@@ -4090,7 +4088,7 @@
     }
     function feeStudentList() {
       const st = feeState, list = recordsByClass[st.cls].filter(s => matches(s, st.query.trim()));
-      if (!list.length) return `<p class="text-sm text-ink-500 text-center py-4">${recordsByClass[st.cls].length ? 'কাউকে পাওয়া যায়নি।' : 'ডেমোতে এই শ্রেণির শিক্ষার্থী তালিকা নেই।'}</p>`;
+      if (!list.length) return `<p class="text-sm text-ink-500 text-center py-4">${recordsByClass[st.cls].length ? 'কাউকে পাওয়া যায়নি।' : 'এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।'}</p>`;
       return list.map(s => {
         const due = dueTotal(s);
         return `<button type="button" data-fee-collect="${esc(s.cls)}|${s.roll}" class="icon-tile w-full p-3 rounded-2xl bg-ink-50 border border-ink-200 hover:bg-white flex items-center gap-3 text-left">
@@ -4398,7 +4396,7 @@
       const exam = exams.find(e => e.id === st.examId);
       const one = students[0];
       if (st.doc === 'id') {
-        if (!students.length) return { error: 'এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই' };
+        if (!students.length) return { error: 'এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি' };
         return { margin: 6, pages: chunk(students, 9).map(g => page(`<div class="grid grid-cols-3 gap-x-[6mm] gap-y-[4mm] justify-items-center">${g.map(idCard).join('')}</div>`)), count: students.length, label: 'আইডি কার্ড' };
       }
       if (st.doc === 'admit' || st.doc === 'seat') {
@@ -4490,7 +4488,7 @@
         <form data-print-form class="floating-card rounded-2xl p-5 space-y-4" novalidate>
           <div class="flex flex-wrap gap-2">${CLASSES.map(c => chip('data-print-class', c, c, c === st.cls)).join('')}</div>
           ${!perStudent && ['id', 'admit', 'seat'].includes(st.doc) ? `<div class="grid grid-cols-2 gap-2">${chip('data-print-scope', 'class', 'পুরো শ্রেণি', st.scope === 'class')}${chip('data-print-scope', 'one', 'একজন শিক্ষার্থী', st.scope === 'one')}</div>` : ''}
-          ${list.length ? ((perStudent || st.scope === 'one') ? studentSelect : '') : '<p class="text-xs text-ink-500">ডেমোতে এই শ্রেণির শিক্ষার্থী তালিকা নেই।</p>'}
+          ${list.length ? ((perStudent || st.scope === 'one') ? studentSelect : '') : '<p class="text-xs text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা এখনো যোগ হয়নি।</p>'}
           ${needsExam ? (classExams.length ? examSelect : '<p class="text-xs text-ink-500">এই শ্রেণির কোনো পরীক্ষা নেই। “ফলাফল” কার্ড থেকে পরীক্ষা তৈরি করুন।</p>') : ''}
           ${options}
           <div>
@@ -4576,7 +4574,7 @@
     // moderates, so no school changes it on its own. The demo uses a sample value.
     // ==========================================
     const STD_SUBJECTS = EXAM_KINDS.model.subjects;
-    const STANDARD = { pct: 60, sample: true };
+    const STANDARD = { pct: 60 }; // sample value until the schools agree on theirs
     const standardFor = () => STANDARD.pct; // (cls, subject) once the agreed table differs by class or subject
     const STD_MONTHS = [new Date(attDate.getFullYear(), attDate.getMonth(), 1), new Date(attDate.getFullYear(), attDate.getMonth() - 1, 1)];
     const monthKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -4742,7 +4740,7 @@
       return `
         <div class="floating-card rounded-2xl p-5 space-y-3">
           <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-gold-50 border border-gold-200 text-ink-900 flex items-center justify-center">${sSvg('bulb')}</span>
-            <div><h4 class="text-sm font-bold text-ink-900">Paperloop-এর পরামর্শ</h4><p class="text-[0.6875rem] text-ink-500">মাসিক মান দেখে স্বয়ংক্রিয়ভাবে বাছাই করা; বকাঝকা নয়, প্রতিদিন অল্প অনুশীলন</p></div></div>
+            <div><h4 class="text-sm font-bold text-ink-900">Paperloop-এর পরামর্শ</h4><p class="text-[0.6875rem] text-ink-500">বকাঝকা নয়, প্রতিদিন অল্প অনুশীলন</p></div></div>
           ${t.map(x => `
             <div class="p-3 rounded-xl bg-ink-50 border border-ink-200 space-y-1">
               <div class="text-xs font-bold text-ink-900">${esc(x.subject)}${x.below ? '' : ' (সবচেয়ে কম যে বিষয়ে, তবু মান অর্জিত)'}</div>
@@ -4769,14 +4767,14 @@
             <p class="text-xs text-ink-500">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে।</p>
           </div>
           <div class="grid grid-cols-2 gap-2">${STD_MONTHS.map((m, i) => `<button type="button" data-pstd-month="${i}" aria-pressed="${i === stdState.parentMonth}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${i === stdState.parentMonth ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${i ? 'গত মাস' : 'এই মাস'} • ${monthName(m)}</button>`).join('')}</div>
-          ${!hasData ? '<p class="text-sm text-ink-500 text-center py-6">এই শ্রেণির মাসিক মূল্যায়ন ডেমোতে নেই।</p>' : `
+          ${!hasData ? '<p class="text-sm text-ink-500 text-center py-6">এই শ্রেণির মাসিক মূল্যায়ন এখনো হয়নি।</p>' : `
           <div class="p-3.5 rounded-2xl ${sum.below.length ? 'bg-gold-50 border border-gold-200' : 'bg-ink-50 border border-ink-200'}">
             <div class="text-sm font-extrabold text-ink-900">${sum.rated ? `${bn(sum.rated)}টির মধ্যে ${bn(sum.met)}টি বিষয়ে ন্যূনতম মান অর্জিত` : 'এ মাসের মূল্যায়ন এখনো আসেনি'}</div>
             <div class="text-xs text-ink-600 mt-0.5">${sum.below.length ? `${sum.below.map(x => esc(x.subject)).join(', ')}: আরও অনুশীলন দরকার। নিচে শিক্ষকের নোট ও পরামর্শ দেখুন।` : sum.rated ? 'সব বিষয়ে প্রত্যাশিত শিখন হচ্ছে। এভাবেই চালিয়ে যান।' : ''}</div>
           </div>
           ${legend}
           <div class="space-y-3">${sum.subs.map(x => subjectRow(x)).join('')}</div>`}
-          <p class="text-[0.6875rem] text-ink-500">ন্যূনতম মান সব পার্টনার স্কুল মিলে ঠিক করে, Paperloop সমন্বয় করে${STANDARD.sample ? ' (ডেমোতে নমুনা মান ' + pctBn(STANDARD.pct) + ')' : ''}। মাসিক মান = সেই মাসের প্রকাশিত পরীক্ষা ও শিক্ষকের মাসিক দক্ষতা যাচাইয়ের গড়। পরীক্ষার গ্রেড, GPA ও মেধাক্রম আগের মতো “গ্রেড ও নম্বর”-এ।</p>
+          <p class="text-[0.6875rem] text-ink-500">মাসিক মান = সেই মাসের পরীক্ষা ও শিক্ষকের মাসিক যাচাইয়ের গড়।</p>
         </div>
         ${note ? `
         <div class="floating-card rounded-2xl p-5 space-y-2">
@@ -4806,9 +4804,7 @@
       document.getElementById('t-stat-standard').textContent = pending.length ? `${bn(pending.length)}টি বিষয়ের যাচাই বাকি` : 'এ মাসের যাচাই সম্পন্ন';
       const chip = (attr, val, label, on) => `<button type="button" ${attr}="${esc(String(val))}" aria-pressed="${on}" class="icon-tile px-3 py-2 rounded-xl border text-xs font-bold ${on ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${label}</button>`;
       const head = `
-        <div class="floating-card rounded-2xl p-5 space-y-3">
-          <div><h3 class="text-base font-bold text-ink-900">মাসিক মূল্যায়ন ও ব্যক্তিগত রিপোর্ট</h3>
-            <p class="text-xs text-ink-500">${esc(cls)} • ন্যূনতম মান ${pctBn(STANDARD.pct)}${STANDARD.sample ? ' (নমুনা)' : ''}, সব পার্টনার স্কুলের জন্য একই</p></div>
+        <div class="floating-card rounded-2xl p-4 space-y-2">
           <div class="grid grid-cols-2 gap-2">${chip('data-tstd-tab', 'check', 'টপিকভিত্তিক যাচাই', st.tab === 'check')}${chip('data-tstd-tab', 'report', 'শিক্ষার্থীর রিপোর্ট', st.tab === 'report')}</div>
           <div class="grid grid-cols-2 gap-2">${STD_MONTHS.map((m, i) => chip('data-tstd-month', i, `${i ? 'গত মাস' : 'এই মাস'} • ${monthName(m)}`, i === st.month)).join('')}</div>
         </div>`;
@@ -4833,11 +4829,10 @@
                 <button type="button" data-tstd-add-topic class="icon-tile px-3 py-1.5 rounded-xl border border-dashed border-ink-300 bg-white text-xs font-bold text-ink-700 hover:bg-ink-50">+ টপিক যোগ করুন</button></div>
               <form data-tstd-topic-form class="${st.adding ? 'flex' : 'hidden'} gap-2"><input name="topic" type="text" maxlength="40" placeholder="যেমন: ঘড়ি দেখা" class="flex-1 min-w-0 px-3 py-2 rounded-xl border border-ink-300 bg-white text-sm" aria-label="নতুন টপিকের নাম" />
                 <button type="submit" class="px-4 py-2 rounded-xl bg-ink-900 text-white text-xs font-bold">যোগ</button></form>
-              <p class="text-[0.6875rem] text-ink-500">সাধারণ টপিক সব পার্টনার স্কুলের জন্য একই (Paperloop-এর তালিকা, ডেমোতে নমুনা); আপনার যোগ করা টপিক শুধু এ মাসে এই শ্রেণির জন্য।${topic && !topic.common ? ` <button type="button" data-tstd-remove-topic="${topic.id}" class="underline font-bold">“${esc(topic.name)}” সরান</button>` : ''}</p>
+              ${topic && !topic.common ? `<button type="button" data-tstd-remove-topic="${topic.id}" class="text-xs font-bold text-ink-600 underline">“${esc(topic.name)}” টপিক সরান</button>` : ''}
             </div>
             ${topic ? `
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <p class="text-xs text-ink-500">প্রতিটি শিশুর জন্য একটি ধাপ চাপুন; চাপলেই সংরক্ষণ হয়।</p>
+            <div class="flex justify-end">
               <button type="button" data-tstd-fill class="icon-tile px-3 py-1.5 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-[0.6875rem] font-bold text-ink-800">বাকি সবাইকে “অর্জিত”</button>
             </div>
             <div class="bg-white rounded-2xl border border-ink-200 px-3 divide-y divide-ink-200">${roster.map((name, i) => {
@@ -4848,7 +4843,6 @@
                   <button type="button" role="radio" aria-checked="${v === n}" data-tstd-step="${n}" data-roll="${r}" class="py-1.5 rounded-lg border text-[0.6875rem] font-bold ${v === n ? (n < 3 ? 'bg-gold-50 border-gold-600 text-ink-900' : 'bg-ink-900 border-ink-900 text-white') : 'bg-white border-ink-200 text-ink-600 hover:bg-ink-50'}">${short}</button>`).join('')}</div>
               </div>`;
             }).join('')}</div>` : ''}
-            <p class="text-[0.6875rem] text-ink-500">ধাপ: শুরু হয়েছে = ২৫, চলছে = ৫০, অর্জিত = ৭৫, দক্ষ = ১০০। বিষয়ের মাসিক দক্ষতা যাচাই = টপিকগুলোর গড়।</p>
           </div>`;
       } else if (st.roll) {
         body = teacherReport(cls, st.roll, month);
@@ -4859,7 +4853,6 @@
         body = `
           <div class="floating-card rounded-2xl p-5 space-y-3">
             <div class="grid grid-cols-2 gap-2">${chip('data-tstd-filter', 'all', `সবাই (${bn(rows.length)})`, !st.onlyBelow)}${chip('data-tstd-filter', 'below', `সাহায্য দরকার (${bn(below.length)})`, st.onlyBelow)}</div>
-            <p class="text-xs text-ink-500">এই তালিকা শুধু আপনি দেখেন; অভিভাবক শুধু নিজের সন্তানেরটা দেখেন। নাম চাপলে বিস্তারিত রিপোর্ট খুলবে।</p>
             <div class="space-y-2">${shown.length ? shown.map(x => `
               <button type="button" data-tstd-roll="${x.roll}" class="icon-tile w-full p-3 rounded-2xl border flex items-center gap-3 text-left ${x.sum.below.length ? 'bg-gold-50/60 border-gold-200' : 'bg-ink-50 border-ink-200 hover:bg-white'}">
                 <span class="w-9 text-sm font-extrabold text-ink-900">${rollLabel(x.roll)}</span>
@@ -4897,7 +4890,7 @@
         ${tipsCard(sum)}
         <div class="floating-card rounded-2xl p-5 space-y-3">
           <label for="tstd-note" class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('note')}</span>
-            <span><span class="block text-sm font-bold text-ink-900">অভিভাবকের জন্য নোট</span><span class="block text-[0.6875rem] text-ink-500">অভিভাবক “উন্নতি রিপোর্ট”-এ এটি দেখবেন</span></span></label>
+            <span><span class="block text-sm font-bold text-ink-900">অভিভাবকের জন্য নোট</span><span class="block text-[0.6875rem] text-ink-500">অভিভাবক এটি দেখবেন</span></span></label>
           <textarea id="tstd-note" data-tstd-note="${roll}" rows="4" maxlength="500" placeholder="যেমন: কোথায় ভালো করছে, কোথায় সাহায্য দরকার, বাসায় কী করলে ভালো হয়" class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm leading-relaxed">${esc(note)}</textarea>
           <div class="grid grid-cols-2 gap-2.5">
             <button type="button" data-tstd-save-note="${roll}" class="py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm">নোট সংরক্ষণ</button>
@@ -4925,7 +4918,7 @@
       const summary = `<p class="mt-3 text-sm"><b>${bn(sum.rated)}টির মধ্যে ${bn(sum.met)}টি বিষয়ে ন্যূনতম মান অর্জিত।</b> ${sum.below.length ? `অনুশীলন দরকার: ${sum.below.map(x => esc(x.subject)).join(', ')}।` : ''}</p>`;
       const tipsHtml = tips.length ? `<div class="mt-3 text-sm"><b>বাসায় অনুশীলনের পরামর্শ (Paperloop):</b><ul class="list-disc pl-5 mt-1">${tips.flatMap(x => x.tips.map(t => `<li>${esc(x.subject)}: ${esc(t)}</li>`)).join('')}</ul></div>` : '';
       const noteHtml = `<div class="mt-3 text-sm"><b>শ্রেণি শিক্ষকের মন্তব্য:</b><div class="mt-1 min-h-[18mm] border border-ink-900 rounded p-2">${esc(note)}</div></div>`;
-      const aim = '<p class="mt-3 text-xs">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে। ন্যূনতম মান সব পার্টনার স্কুল মিলে ঠিক করে, Paperloop সমন্বয় করে।</p>';
+      const aim = '<p class="mt-3 text-xs">লক্ষ্য ক্লাসে প্রথম হওয়া নয়: প্রতিটি শিশু যেন প্রতিটি বিষয়ে অন্তত ন্যূনতম মান অর্জন করে।</p>';
       printDoc(`ব্যক্তিগত অগ্রগতি রিপোর্ট • ${monthName(month)}`, info + table + summary + topicTable + tipsHtml + noteHtml + aim, ['শ্রেণি শিক্ষক', 'অভিভাবক']);
     }
 
@@ -4946,8 +4939,8 @@
       return `
         <div data-school-standard class="floating-card rounded-2xl p-5 space-y-3">
           <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center">${sSvg('flag')}</span>
-            <div><h3 class="text-base font-bold text-ink-900">ন্যূনতম মান • ${esc(cls)}</h3><p class="text-[0.6875rem] text-ink-500">${monthName(month)} • মান ${pctBn(STANDARD.pct)}${STANDARD.sample ? ' (নমুনা)' : ''}, সব পার্টনার স্কুলের জন্য একই</p></div></div>
-          ${!roster.length ? '<p class="text-sm text-ink-500">এই শ্রেণির মাসিক মূল্যায়ন ডেমোতে নেই।</p>' : `
+            <div><h3 class="text-base font-bold text-ink-900">ন্যূনতম মান • ${esc(cls)}</h3><p class="text-[0.6875rem] text-ink-500">${monthName(month)} • ন্যূনতম মান ${pctBn(STANDARD.pct)}</p></div></div>
+          ${!roster.length ? '<p class="text-sm text-ink-500">এই শ্রেণির মাসিক মূল্যায়ন এখনো হয়নি।</p>' : `
           <div class="p-3 rounded-xl bg-ink-50 border border-ink-200 text-sm font-bold text-ink-900">${bn(all.length)} জনের মধ্যে ${bn(allMet)} জন সব বিষয়ে ন্যূনতম মান অর্জন করেছে</div>
           <div class="space-y-2">${rows.map(x => {
             const pct = x.n ? Math.round((x.met / x.n) * 100) : null;
