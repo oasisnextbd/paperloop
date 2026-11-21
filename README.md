@@ -63,6 +63,9 @@ certificates (an event, or the top three of an exam). Every printed page carries
 so nothing printed from the public demo can pass as a real school document; remove it (`demoMark`) only for
 a real school's own installation. The login and settings are remembered on that phone until logout (browser storage).
 
+Each role's dashboard opens on its cards; a card opens its section as its own page with a back button (the
+address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh work).
+
 Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.
 

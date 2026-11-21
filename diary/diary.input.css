@@ -95,3 +95,9 @@
 }
 /* Printed cards and certificates keep their navy bands and gold lines */
 #print-sheet { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* Section pages: when a card is open, only the section bar and that card's panel stay visible.
+   Everything else in the view (header strip, alerts, cards, chat) belongs to the home page. */
+#view-parent[data-mode="section"] > :not(.section-bar):not(.parent-subpanel),
+#view-teacher[data-mode="section"] > :not(.section-bar):not(.teacher-subpanel),
+#view-school[data-mode="section"] > :not(.section-bar):not(.school-subpanel) { display: none; }

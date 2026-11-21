@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=a807043785" />
+  <link rel="stylesheet" href="diary.css?v=e81258a5e6" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -2445,7 +2445,7 @@
       document.getElementById('profile-avatar').innerHTML = `<svg class="line-icon-lg" viewBox="0 0 24 24">${meta.icon}</svg>`;
       const rows = [];
       if (role === 'parent') {
-        document.getElementById('profile-title').textContent = `${appState.studentName}-এর অভিভাবক`;
+        document.getElementById('profile-title').textContent = `${possessive(appState.studentName)} অভিভাবক`;
         rows.push(['শিক্ষার্থী', appState.studentName], ['শ্রেণি', appState.studentClass], ['রোল', bn(toAsciiDigits(appState.studentRoll))], ['শ্রেণি শিক্ষক', TEACHER_NAME]);
       } else if (role === 'teacher') {
         document.getElementById('profile-title').textContent = TEACHER_NAME;
@@ -4557,6 +4557,113 @@
       document.querySelectorAll('[data-school-panel="print"]').forEach(b => b.addEventListener('click', () => requestAnimationFrame(updatePreview)));
       window.addEventListener('afterprint', () => { const s = document.getElementById('print-page-size'); if (s) s.textContent = ''; });
       renderPrintPanel();
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // SECTION PAGES
+    // Each role's dashboard opens on its cards only (the "home" page). Tapping a card opens that section
+    // as its own page with a back button; the address ends in #name (e.g. #fees), so the phone's back
+    // button returns to the cards and a refresh stays on the section. The sections themselves are the
+    // same panels as before.
+    // ==========================================
+    const SECTION_ROLES = ['parent', 'teacher', 'school'];
+    const homeScroll = {};          // where each home page was scrolled, restored on the way back
+    let openedFromHome = false;     // true when the open section was reached by tapping a card
+
+    function sectionBar(role) {
+      const view = document.getElementById(`view-${role}`);
+      let bar = view.querySelector(':scope > .section-bar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.className = 'section-bar hidden items-center gap-3';
+        bar.innerHTML = `
+          <button type="button" data-section-back aria-label="কার্ডে ফিরে যান"
+            class="icon-tile w-12 h-12 shrink-0 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-800 flex flex-col items-center justify-center">
+            <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            <span class="text-[0.625rem] font-bold leading-none mt-0.5">ফিরে যান</span>
+          </button>
+          <div data-section-icon class="w-12 h-12 shrink-0 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center"></div>
+          <div class="min-w-0">
+            <h2 data-section-title tabindex="-1" class="text-lg sm:text-xl font-bold text-ink-900 leading-tight outline-none"></h2>
+            <p data-section-context class="text-xs text-ink-500 truncate"></p>
+          </div>`;
+        view.prepend(bar);
+      }
+      return bar;
+    }
+    const panelsOf = role => document.querySelectorAll(`#view-${role} > .${role}-subpanel`);
+    const cardsOf = role => document.querySelectorAll(`[data-${role}-panel].floating-card`);
+
+    function sectionContext(role) {
+      if (role === 'parent') return `${appState.studentName} • ${appState.studentClass}`;
+      if (role === 'teacher') return `${TEACHER_NAME} • ${TEACHER_CLASS}`;
+      return appState.schoolName;
+    }
+
+    function showHome(role) {
+      const bar = sectionBar(role);
+      bar.classList.add('hidden'); bar.classList.remove('flex');
+      document.getElementById(`view-${role}`).dataset.mode = 'home';
+      panelsOf(role).forEach(p => p.classList.add('hidden'));
+      cardsOf(role).forEach(c => c.classList.remove('tile-active'));
+      window.scrollTo(0, homeScroll[role] || 0);
+    }
+
+    function showSection(role, name, card) {
+      const bar = sectionBar(role);
+      if (role === 'parent') switchParentFloatingPanel(name); else switchSubPanel(role, name);
+      cardsOf(role).forEach(c => c.classList.remove('tile-active'));
+      document.getElementById(`view-${role}`).dataset.mode = 'section'; // CSS hides the home blocks (diary.input.css)
+      bar.querySelector('[data-section-icon]').innerHTML = card.querySelector('svg').outerHTML;
+      const title = card.querySelector('.font-extrabold');
+      bar.querySelector('[data-section-title]').textContent = title ? title.textContent.trim() : '';
+      bar.querySelector('[data-section-context]').textContent = sectionContext(role);
+      bar.classList.remove('hidden'); bar.classList.add('flex');
+      window.scrollTo(0, 0);
+      bar.querySelector('[data-section-title]').focus({ preventScroll: true });
+      // Sections that size themselves to the panel's width need a second look once it is visible
+      if (name === 'print' && typeof updatePreview === 'function') requestAnimationFrame(updatePreview);
+    }
+
+    function routeFromHash() {
+      const role = appState.activeView;
+      if (!SECTION_ROLES.includes(role)) return;
+      const name = decodeURIComponent(location.hash.slice(1));
+      const card = name && document.querySelector(`[data-${role}-panel="${CSS.escape(name)}"].floating-card`);
+      if (card) showSection(role, name, card); else { openedFromHome = false; showHome(role); }
+    }
+    window.addEventListener('hashchange', routeFromHash);
+
+    // Opening the dashboard after login (or restoring a saved session) goes through the same router;
+    // logging out drops the section from the address.
+    const baseSwitchMainView = switchMainView;
+    switchMainView = function (viewName) {
+      baseSwitchMainView(viewName);
+      if (!SECTION_ROLES.includes(viewName) && location.hash) history.replaceState(null, '', location.pathname + location.search);
+      routeFromHash();
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      SECTION_ROLES.forEach(sectionBar);
+      // Cards open their section as a page (this runs before the cards' own handlers)
+      document.addEventListener('click', e => {
+        const card = e.target.closest('.floating-card[data-parent-panel], .floating-card[data-teacher-panel], .floating-card[data-school-panel]');
+        if (!card) return;
+        e.stopPropagation(); e.preventDefault();
+        const role = SECTION_ROLES.find(r => card.hasAttribute(`data-${r}-panel`));
+        const name = card.getAttribute(`data-${role}-panel`);
+        homeScroll[role] = window.scrollY;
+        openedFromHome = true;
+        if (location.hash.slice(1) === name) routeFromHash(); else location.hash = name;
+      }, true);
+      document.addEventListener('click', e => {
+        if (!e.target.closest('[data-section-back]')) return;
+        if (openedFromHome) history.back();   // same as the phone's back button
+        else { history.replaceState(null, '', location.pathname + location.search); routeFromHash(); }
+      });
+      routeFromHash();
     });
 
   </script>
