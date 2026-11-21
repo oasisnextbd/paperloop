@@ -1267,7 +1267,8 @@
       P.getItem = function (k) { return get.call(this, 'demo:' + k); };
       P.setItem = function (k, v) { return set.call(this, 'demo:' + k, v); };
       P.removeItem = function (k) { return del.call(this, 'demo:' + k); };
-      try { localStorage.removeItem('pl_diary_session'); } catch (e) { /* the demo logs in afresh as <who> */ }
+      // demo as <who> logs in afresh each time; ?demo=login keeps a demo login across reloads
+      if (DEMO_AS !== 'login') { try { localStorage.removeItem('pl_diary_session'); } catch (e) { /* ignore */ } }
     }
   </script>
   <script>
