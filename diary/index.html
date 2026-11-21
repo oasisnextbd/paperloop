@@ -3220,7 +3220,7 @@
         ? `<p class="flex items-center gap-2 text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${rIcon('lock')}<span>ফলাফল প্রকাশিত, তাই নম্বর আর বদলানো যাবে না। ভুল থাকলে প্রিন্সিপালকে জানান।</span></p>`
         : exam.publisher === 'teacher'
           ? `<button type="button" data-tmarks-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'}</span></button>`
-          : `<p class="text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${complete ? 'সব বিষয়ের নম্বর দেওয়া হয়েছে। প্রিন্সিপাল ফলাফল প্রকাশ করবেন।' : 'সব বিষয়ের নম্বর দেওয়া হলে প্রিন্সিপাল ফলাফল প্রকাশ করবেন।'}</p>`;
+          : `<p data-tmarks-status class="text-xs font-bold text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">${principalStatus(complete)}</p>`;
       el.innerHTML = `
         <div class="floating-card rounded-2xl p-5 space-y-4">
           <div class="flex flex-wrap items-start justify-between gap-3">
@@ -3242,6 +3242,7 @@
         </div>`;
     }
 
+    const principalStatus = complete => complete ? 'সব বিষয়ের নম্বর দেওয়া হয়েছে। প্রিন্সিপাল ফলাফল প্রকাশ করবেন।' : 'সব বিষয়ের নম্বর দেওয়া হলে প্রিন্সিপাল ফলাফল প্রকাশ করবেন।';
     function updateEntryProgress() {
       const exam = exams.find(e => e.id === resultsState.teacher.examId), s = resultsState.teacher.subject;
       const el = document.getElementById('panel-teacher-marks');
@@ -3252,6 +3253,8 @@
         tile.textContent = done ? 'সম্পন্ন' : `${bn(enteredCount(exam, s))}/${bn(examRoster(exam).length)}`;
         tile.className = `text-[0.625rem] font-bold mt-0.5 ${done ? 'text-ink-500' : 'text-gold-900'}`;
       }
+      const status = el.querySelector('[data-tmarks-status]');
+      if (status) status.textContent = principalStatus(examComplete(exam));
       const pub = el.querySelector('[data-tmarks-publish]');
       if (pub) { const c = examComplete(exam); pub.disabled = !c; pub.querySelector('span').textContent = c ? 'ফলাফল প্রকাশ করুন' : 'সব বিষয়ের নম্বর দিলে প্রকাশ করা যাবে'; }
       renderResultStats();
@@ -3288,7 +3291,8 @@
           <button type="button" data-sres-publish ${complete ? '' : 'disabled'} class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none">${rIcon('check')}<span>${complete ? 'ফলাফল প্রকাশ করুন (অভিভাবকেরা নোটিশ পাবেন)' : 'সব বিষয়ের নম্বর আসার পর প্রকাশ করা যাবে'}</span></button>` : '';
         if (!roster.length) detail = '<p class="text-sm text-ink-500">এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই।</p>';
         else if (!complete) {
-          detail = `<div class="space-y-2">${exam.subjects.map(s => `
+          // Tell the principal where the marks come from: the class teacher's own login
+          detail = `<p class="text-xs text-ink-700 bg-ink-50 border border-ink-200 rounded-xl px-3 py-2">শ্রেণি শিক্ষক${typeof CLASS_TEACHERS !== 'undefined' && CLASS_TEACHERS[exam.cls] ? ` (${esc(CLASS_TEACHERS[exam.cls])})` : ''} নিজের লগইনে <b>“নম্বর দিন”</b> কার্ড থেকে বিষয় ধরে নম্বর দেন। সব বিষয়ের নম্বর এলে এখানে প্রকাশ করার বাটন চালু হবে।</p><div class="space-y-2">${exam.subjects.map(s => `
             <div class="flex items-center justify-between p-3 rounded-xl bg-ink-50 border border-ink-200 text-sm">
               <span class="font-bold text-ink-900">${esc(s)}</span>
               <span class="text-xs font-bold ${subjectDone(exam, s) ? 'text-ink-600' : 'text-gold-900'}">${subjectDone(exam, s) ? 'নম্বর দেওয়া হয়েছে' : `${bn(enteredCount(exam, s))}/${bn(roster.length)} জনের নম্বর`}</span>
