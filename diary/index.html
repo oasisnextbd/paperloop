@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paperloop স্মার্ট ডায়েরি (ডেমো)</title>
-  <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন। এটি নমুনা তথ্যসহ ডেমো।" />
+  <title>Paperloop স্মার্ট ডায়েরি (ডেমো)</title>
+  <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন। এটি নমুনা তথ্যসহ ডেমো।" />
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#14213d" />
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=04c38ff1b4" />
+  <link rel="stylesheet" href="diary.css?v=af4dead497" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -26,7 +26,7 @@
   <!-- Demo notice: every name and number in this app is sample data -->
   <div class="bg-ink-900 text-ink-100 text-[0.6875rem] sm:text-xs">
     <div class="max-w-3xl mx-auto px-4 py-1.5 flex items-center justify-between gap-3">
-      <span><strong class="text-gold-300">ডেমো</strong> • সব নাম ও নম্বর নমুনা তথ্য, আসল শিক্ষার্থীর নয়</span>
+      <span><strong class="text-gold-300">ডেমো</strong> • সব নাম ও নম্বর নমুনা তথ্য, আসল শিক্ষার্থীর নয়</span>
       <a href="../" class="font-bold text-gold-300 hover:text-gold-200 whitespace-nowrap">Paperloop →</a>
     </div>
   </div>
@@ -36,7 +36,7 @@
     <div class="max-w-3xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
       <!-- Brand & School Name -->
       <div class="flex items-center gap-3">
-        <a href="../" class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex items-center justify-center" aria-label="Paperloop ওয়েবসাইট">
+        <a href="../" class="w-11 h-11 rounded-xl bg-white border border-ink-200 flex items-center justify-center" aria-label="Paperloop ওয়েবসাইট">
           <!-- Paperloop symbol: two loops, radii in the golden ratio (same artwork as the main site's logo) -->
           <svg class="paperloop-mark" viewBox="-51.3 -35.4 132.4 70.7" aria-hidden="true" focusable="false"><path class="pl-a" d="M0 0L-14.14 -14.14A20.00 20.00 0 1 0 -14.14 14.14Z"/><path class="pl-b" d="M0 0L22.88 -22.88A32.36 32.36 0 1 1 22.88 22.88Z"/></svg>
         </a>
@@ -48,12 +48,21 @@
         </div>
       </div>
 
+      <div class="flex items-center gap-1.5">
+      <!-- Notices button (only after login): notices meant for this person, with an unread count -->
+      <button id="btn-notices" type="button" aria-haspopup="dialog" aria-controls="notice-dialog"
+        class="hidden relative icon-tile flex-col items-center justify-center min-w-[60px] px-2 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50">
+        <svg class="line-icon mb-1" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="text-[0.6875rem] font-bold leading-none">নোটিশ</span>
+        <span id="notice-badge" class="hidden absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-gold-600 text-white text-[0.6875rem] font-extrabold flex items-center justify-center"></span>
+      </button>
       <!-- Profile button (only after login): account details, settings and logout -->
       <button id="btn-profile" type="button" aria-haspopup="dialog" aria-controls="profile-dialog"
         class="hidden icon-tile flex-col items-center justify-center min-w-[68px] px-2.5 py-1.5 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50">
         <svg class="line-icon mb-1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
         <span class="text-[0.6875rem] font-bold leading-none">প্রোফাইল</span>
       </button>
+      </div>
     </div>
   </header>
 
@@ -249,13 +258,16 @@
       <!-- Absent alert (in-app): shown only when today's register marks the child absent -->
       <div id="parent-absent-alert" class="hidden"></div>
 
+      <!-- Newest unread notice for this parent (opens the notice list) -->
+      <div id="parent-notice-banner" class="hidden"></div>
+
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <span class="text-xs font-bold uppercase tracking-wider text-ink-500">শিক্ষার্থীর মূল ড্যাশবোর্ড কার্ডসমূহ (কার্ডে ট্যাপ করুন)</span>
           <span class="text-xs font-semibold text-ink-500" id="today-date-label">বুধবার, ১৮ নভেম্বর</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
           <!-- Floating Card 1: Assignments -->
           <button type="button" data-parent-panel="assignments" class="parent-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800">
@@ -320,11 +332,19 @@
           </button>
 
           <!-- Floating Card 5: Attendance -->
-          <button type="button" data-parent-panel="attendance" class="parent-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+          <button type="button" data-parent-panel="attendance" class="parent-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">হাজিরা</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Attendance</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-att-month">—</div>
+          </button>
+
+          <!-- Floating Card 6: Class routine -->
+          <button type="button" data-parent-panel="routine" class="parent-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস রুটিন</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="stat-routine">—</div>
           </button>
         </div>
       </div>
@@ -523,6 +543,19 @@
         </div>
       </div>
 
+      <!-- ==========================================
+           FLOATING PANEL 6: CLASS ROUTINE (ক্লাস রুটিন + ব্যাগে যা দেবেন)
+           ========================================== -->
+      <div id="panel-parent-routine" class="parent-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">ক্লাস রুটিন (Routine)</h3>
+            <p class="text-xs text-ink-500" id="p-routine-class"></p>
+          </div>
+          <div id="p-routine" data-routine-view="parent"></div>
+        </div>
+      </div>
+
       <!-- Optional Class Teacher Chat Section (Collapsed by Default, Monochrome Line Icons) -->
       <div id="optional-chat-card" class="bg-white rounded-2xl border border-ink-200 shadow-sm overflow-hidden">
         <button id="btn-toggle-optional-chat" type="button" class="w-full p-4 flex items-center justify-between text-left hover:bg-ink-50 transition">
@@ -603,8 +636,8 @@
         </div>
       </div>
 
-      <!-- Teacher floating cards: Morning attendance / Homework -->
-      <div class="grid grid-cols-2 gap-3.5">
+      <!-- Teacher floating cards: Morning attendance / Homework / Notices / Routine -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <button type="button" data-teacher-panel="attendance" class="teacher-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">সকালের হাজিরা</div>
@@ -613,9 +646,21 @@
           </button>
         <button type="button" data-teacher-panel="homework" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বাড়ির কাজ</div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">বাড়ির কাজ</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Homework</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-hw">—</div>
+          </button>
+        <button type="button" data-teacher-panel="notice" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস নোটিশ</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Notices</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-notice">—</div>
+          </button>
+        <button type="button" data-teacher-panel="routine" class="teacher-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস রুটিন</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="t-stat-routine">—</div>
           </button>
       </div>
 
@@ -626,7 +671,7 @@
         <div class="floating-card rounded-2xl p-5 space-y-4">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 class="text-base font-bold text-ink-900">সকালের হাজিরা — ৩য় শ্রেণি</h3>
+              <h3 class="text-base font-bold text-ink-900">সকালের হাজিরা — ৩য় শ্রেণি</h3>
               <p class="text-xs text-ink-500" id="t-att-date"></p>
             </div>
             <div class="flex gap-1.5 bg-ink-100 p-1 rounded-xl border border-ink-200">
@@ -667,8 +712,22 @@
       </div>
 
       <!-- ==========================================
-           TEACHER PANEL 2: HOMEWORK (বাড়ির কাজ)
+           TEACHER PANEL 2: HOMEWORK (বাড়ির কাজ)
            ========================================== -->
+      <!-- TEACHER PANEL 3: CLASS NOTICE (to this class's parents) -->
+      <div id="panel-teacher-notice" class="teacher-subpanel hidden space-y-4" data-notice-composer="teacher"></div>
+
+      <!-- TEACHER PANEL 4: CLASS ROUTINE (read-only; the principal sets it) -->
+      <div id="panel-teacher-routine" class="teacher-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">ক্লাস রুটিন — ৩য় শ্রেণি</h3>
+            <p class="text-xs text-ink-500">রুটিন প্রিন্সিপাল ঠিক করেন। বদলাতে চাইলে প্রিন্সিপালকে জানান।</p>
+          </div>
+          <div id="t-routine" data-routine-view="teacher"></div>
+        </div>
+      </div>
+
       <div id="panel-teacher-homework" class="teacher-subpanel hidden space-y-5">
       <form id="teacher-hw-form" class="bg-white rounded-2xl border border-ink-200 p-5 shadow-sm space-y-5">
         <div class="flex items-center justify-between">
@@ -855,7 +914,7 @@
       </div>
 
       <!-- Principal floating cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <button type="button" data-school-panel="students" class="school-floating-card floating-card icon-tile tile-active rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">শিক্ষার্থী হাজিরা</div>
@@ -868,9 +927,21 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Teachers</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-staff">—</div>
           </button>
+        <button type="button" data-school-panel="notice" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">নোটিশ</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Notices</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-notice">—</div>
+          </button>
+        <button type="button" data-school-panel="routine" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ক্লাস রুটিন</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Routine</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-routine">—</div>
+          </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
-            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Diary</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-diary">৩টি গ্রুপ</div>
           </button>
@@ -878,14 +949,29 @@
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">CCTV</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
         <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
-            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-live">চাহিদা অনুযায়ী</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-live">চাহিদা অনুযায়ী</div>
           </button>
+      </div>
+
+      <!-- PRINCIPAL PANEL: NOTICES (to everyone, parents, teachers or one class) -->
+      <div id="panel-school-notice" class="school-subpanel hidden space-y-4" data-notice-composer="school"></div>
+
+      <!-- PRINCIPAL PANEL: CLASS ROUTINE (the principal sets each class's routine) -->
+      <div id="panel-school-routine" class="school-subpanel hidden space-y-4">
+        <div class="floating-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink-900">ক্লাস রুটিন ঠিক করুন</h3>
+            <p class="text-xs text-ink-500">শ্রেণি ও দিন বেছে নিন, তারপর যে পিরিয়ড বদলাবেন তাতে ট্যাপ করুন।</p>
+          </div>
+          <div id="s-routine-classes" class="flex flex-wrap gap-2"></div>
+          <div id="s-routine" data-routine-view="school"></div>
+        </div>
       </div>
 
       <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
@@ -952,7 +1038,7 @@
           <div class="w-14 h-14 mx-auto rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/></svg></div>
           <div>
             <h3 class="text-base font-bold text-ink-900">CCTV মনিটরিং <span class="text-ink-500 font-semibold">(CCTV)</span></h3>
-            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
+            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
           </div>
           <div class="max-w-sm mx-auto text-left">
             <div class="text-xs font-bold text-ink-500 mb-2">চালু করতে যা লাগবে</div>
@@ -966,11 +1052,11 @@
           <div class="w-14 h-14 mx-auto rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
           <div>
             <h3 class="text-base font-bold text-ink-900">লাইভ ক্লাস <span class="text-ink-500 font-semibold">(Live class)</span></h3>
-            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
+            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-gold-50 border border-gold-200 text-gold-900 text-xs font-extrabold">স্কুলের চাহিদা অনুযায়ী চালু হবে</span>
           </div>
           <div class="max-w-sm mx-auto text-left">
             <div class="text-xs font-bold text-ink-500 mb-2">চালু করতে যা লাগবে</div>
-            <ul class="text-xs sm:text-sm text-ink-700 space-y-2"><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>শিক্ষকের জন্য ফোন বা ল্যাপটপ ও ইন্টারনেট</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Google Meet বা Zoom-এর ক্লাস লিংক</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>লাইভ ক্লাসের দিন ও সময়ের রুটিন</span></li></ul>
+            <ul class="text-xs sm:text-sm text-ink-700 space-y-2"><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>শিক্ষকের জন্য ফোন বা ল্যাপটপ ও ইন্টারনেট</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Google Meet বা Zoom-এর ক্লাস লিংক</span></li><li class="flex items-start gap-2"><svg class="line-icon-sm shrink-0 mt-0.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>লাইভ ক্লাসের দিন ও সময়ের রুটিন</span></li></ul>
           </div>
           <button type="button" data-feature-interest="লাইভ ক্লাস" class="icon-tile px-5 py-2.5 rounded-2xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-800 text-xs font-bold">আমাদের স্কুলে দরকার</button>
         </div>
@@ -979,6 +1065,27 @@
 
   </main>
 
+
+  <!-- ==========================================
+       NOTICE PANEL: notices meant for the signed-in person (opened from the header's নোটিশ button)
+       ========================================== -->
+  <dialog id="notice-dialog" class="profile-sheet" aria-labelledby="notice-title">
+    <div class="flex flex-col h-full">
+      <div class="p-5 border-b border-ink-200 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-200 text-ink-800 flex items-center justify-center shrink-0"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+          <div>
+            <h2 id="notice-title" class="text-lg font-bold text-ink-900 leading-tight">নোটিশ</h2>
+            <p id="notice-subtitle" class="text-xs text-ink-500 mt-0.5"></p>
+          </div>
+        </div>
+        <button type="button" data-notice-close aria-label="বন্ধ করুন" class="icon-tile w-10 h-10 rounded-xl border border-ink-200 bg-white text-ink-700 hover:bg-ink-50 flex items-center justify-center shrink-0">
+          <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="notice-list" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+    </div>
+  </dialog>
 
   <!-- ==========================================
        PROFILE PANEL: account details, settings, logout (opened from the header's প্রোফাইল button)
@@ -1005,9 +1112,9 @@
         </section>
 
         <section id="profile-child-section" class="space-y-2">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">অন্য সন্তানের ডায়েরি</h3>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink-500">অন্য সন্তানের ডায়েরি</h3>
           <form id="login-form-box" class="bg-white rounded-2xl border border-ink-200 p-4 grid grid-cols-2 gap-2.5">
-            <p class="col-span-2 text-xs text-ink-500">একই স্কুলে দুই সন্তান থাকলে এখান থেকে অন্যজনের ডায়েরি খুলুন।</p>
+            <p class="col-span-2 text-xs text-ink-500">একই স্কুলে দুই সন্তান থাকলে এখান থেকে অন্যজনের ডায়েরি খুলুন।</p>
             <div>
               <label for="input-school-code" class="block text-xs font-bold text-ink-600 mb-1">স্কুল কোড</label>
               <input id="input-school-code" type="text" value="KSB" class="w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold uppercase" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
@@ -1028,7 +1135,7 @@
                 <option value="৫ম শ্রেণি">৫ম শ্রেণি</option>
               </select>
             </div>
-            <button type="submit" class="col-span-2 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">এই সন্তানের ডায়েরি খুলুন</button>
+            <button type="submit" class="col-span-2 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition">এই সন্তানের ডায়েরি খুলুন</button>
           </form>
         </section>
 
@@ -1044,7 +1151,7 @@
                 </button>
                 <button type="button" data-text-size="large" class="text-size-btn icon-tile flex flex-col items-center justify-center py-2.5 rounded-2xl border border-ink-200 bg-white text-ink-700">
                   <svg class="line-icon-lg mb-1" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
-                  <span class="text-xs font-bold">বড়</span>
+                  <span class="text-xs font-bold">বড়</span>
                 </button>
               </div>
             </div>
@@ -1249,7 +1356,7 @@
         const isCurrent = card.getAttribute('data-parent-panel') === panelName;
         card.classList.toggle('tile-active', isCurrent);
       });
-      ['assignments', 'grades', 'improvement', 'topics', 'attendance'].forEach(p => {
+      ['assignments', 'grades', 'improvement', 'topics', 'attendance', 'routine'].forEach(p => {
         const panelEl = document.getElementById(`panel-parent-${p}`);
         if (panelEl) panelEl.classList.toggle('hidden', p !== panelName);
       });
@@ -1761,7 +1868,7 @@
     const bn = v => String(v).replace(/\d/g, d => BN_DIGITS[d]);
     const toAsciiDigits = v => String(v).replace(/[০-৯]/g, d => BN_DIGITS.indexOf(d));
     const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+    const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
     const BN_WEEKDAYS = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
     const BN_WEEK_HEAD = ['শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র']; // Bangladeshi week starts on Saturday
     const WEEKLY_OFF = [5]; // Friday. Add 6 here if a school also closes on Saturday.
@@ -1822,12 +1929,12 @@
 
     // ---------- Class 3 roll list (roll 01–30) ----------
     const classRoster = [
-      'আরিয়ান ইসলাম', 'মাহির তাজওয়ার', 'সাদিয়া আক্তার', 'রাইয়ান হোসেন', 'নুসরাত জাহান',
-      'তাহমিদ হাসান', 'তাসনিম জারিন', 'ফারহান আহমেদ', 'লামিয়া ইসলাম', 'রাফসান কবির',
-      'আয়েশা সিদ্দিকা', 'সিয়াম মিয়া', 'মারিয়া খাতুন', 'নাফিস ইকবাল', 'জান্নাতুল ফেরদৌস',
-      'আবির রহমান', 'তানজিলা হক', 'মেহেদী হাসান', 'সুমাইয়া আক্তার', 'রিফাত হোসেন',
-      'ইশরাত জাহান', 'সাকিবুল ইসলাম', 'প্রিয়া দাস', 'ইমরান হোসেন', 'ফাতেমা তুজ জোহরা',
-      'অর্ক দেব', 'মিম আক্তার', 'তাওসিফ আহমেদ', 'রিয়া সাহা', 'জুবায়ের হোসেন'
+      'আরিয়ান ইসলাম', 'মাহির তাজওয়ার', 'সাদিয়া আক্তার', 'রাইয়ান হোসেন', 'নুসরাত জাহান',
+      'তাহমিদ হাসান', 'তাসনিম জারিন', 'ফারহান আহমেদ', 'লামিয়া ইসলাম', 'রাফসান কবির',
+      'আয়েশা সিদ্দিকা', 'সিয়াম মিয়া', 'মারিয়া খাতুন', 'নাফিস ইকবাল', 'জান্নাতুল ফেরদৌস',
+      'আবির রহমান', 'তানজিলা হক', 'মেহেদী হাসান', 'সুমাইয়া আক্তার', 'রিফাত হোসেন',
+      'ইশরাত জাহান', 'সাকিবুল ইসলাম', 'প্রিয়া দাস', 'ইমরান হোসেন', 'ফাতেমা তুজ জোহরা',
+      'অর্ক দেব', 'মিম আক্তার', 'তাওসিফ আহমেদ', 'রিয়া সাহা', 'জুবায়ের হোসেন'
     ];
     classRoster.forEach((name, i) => { rollNames[String(i + 1).padStart(2, '0')] = name; });
     const rollLabel = r => bn(String(r).padStart(2, '0'));
@@ -1920,7 +2027,7 @@
               <span class="px-2 py-0.5 rounded-md bg-white border border-dashed border-ink-400 font-bold">${bnDate(new Date(y, mo - 1, da))}</span>
             </div>`;
           }).join('')}
-          <p class="text-[0.6875rem] text-ink-500">সেদিনের হাজিরায় আগে থেকেই ছুটি বসানো থাকবে; দরকার হলে বদলাতে পারবেন।</p>
+          <p class="text-[0.6875rem] text-ink-500">সেদিনের হাজিরায় আগে থেকেই ছুটি বসানো থাকবে; দরকার হলে বদলাতে পারবেন।</p>
         </div>` : '';
 
       const absentRolls = classRoster.map((_, i) => i + 1).filter(r => draft[r] === 'absent');
@@ -1928,9 +2035,9 @@
       if (rec && !dirty) {
         statusEl.innerHTML = `
           <div class="p-3.5 rounded-2xl bg-ink-50 border border-ink-300 space-y-1.5">
-            <div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>
+            <div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>
             <p class="text-xs text-ink-600">${absentRolls.length
-              ? `অনুপস্থিত ${bn(absentRolls.length)} জনের অভিভাবক অ্যাপে বার্তা পেয়েছেন: ${absentRolls.map(r => 'রোল ' + rollLabel(r)).join(', ')}`
+              ? `অনুপস্থিত ${bn(absentRolls.length)} জনের অভিভাবক অ্যাপে বার্তা পেয়েছেন: ${absentRolls.map(r => 'রোল ' + rollLabel(r)).join(', ')}`
               : 'আজ সবাই উপস্থিত বা ছুটিতে। কোনো অভিভাবককে বার্তা পাঠানোর দরকার নেই।'}</p>
           </div>`;
       } else {
@@ -1939,8 +2046,8 @@
       const submitBtn = document.getElementById('t-att-submit');
       submitBtn.disabled = !!rec && !dirty;
       document.getElementById('t-att-submit-label').textContent =
-        !rec ? `হাজিরা জমা দিন (${bn(classRoster.length)} জন)` : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
-      document.getElementById('t-stat-att').textContent = rec ? `জমা ${rec.submittedAt}` : 'এখনো জমা হয়নি';
+        !rec ? `হাজিরা জমা দিন (${bn(classRoster.length)} জন)` : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
+      document.getElementById('t-stat-att').textContent = rec ? `জমা ${rec.submittedAt}` : 'এখনো জমা হয়নি';
 
       if (studentAtt.view === 'month') renderTeacherMonthSheet();
     }
@@ -1990,11 +2097,11 @@
       const label = attDate.getTime() === realToday.getTime() ? 'আজ' : bnDate(attDate);
 
       if (!roll) {
-        todayLine.innerHTML = `${svg('alert')}<span>এই রোল নম্বর শ্রেণির তালিকায় নেই</span>`;
+        todayLine.innerHTML = `${svg('alert')}<span>এই রোল নম্বর শ্রেণির তালিকায় নেই</span>`;
         alertBox.classList.add('hidden');
         document.getElementById('stat-att-month').textContent = '—';
         document.getElementById('p-att-summary').innerHTML = '';
-        document.getElementById('p-att-calendar').innerHTML = '<p class="col-span-7 text-xs text-ink-500 text-center py-6">হাজিরার তথ্য পাওয়া যায়নি।</p>';
+        document.getElementById('p-att-calendar').innerHTML = '<p class="col-span-7 text-xs text-ink-500 text-center py-6">হাজিরার তথ্য পাওয়া যায়নি।</p>';
         document.getElementById('p-att-weekhead').innerHTML = '';
         document.getElementById('p-att-legend').innerHTML = '';
         return;
@@ -2003,7 +2110,7 @@
       const todayStatus = rec ? rec.statuses[roll] : null;
       todayLine.innerHTML = todayStatus
         ? `${svg(ATT_META[todayStatus].icon)}<span>${label}: ${ATT_META[todayStatus].label}</span>`
-        : `${svg('clock')}<span>${label}: হাজিরা এখনো নেওয়া হয়নি</span>`;
+        : `${svg('clock')}<span>${label}: হাজিরা এখনো নেওয়া হয়নি</span>`;
 
       if (todayStatus === 'absent' && diarySettings.absentAlerts) {
         alertBox.className = 'floating-card rounded-2xl p-4 border-gold-300 bg-gold-50/60 flex flex-wrap items-center justify-between gap-3';
@@ -2012,7 +2119,7 @@
             <div class="w-11 h-11 rounded-2xl bg-white border border-gold-200 text-gold-900 flex items-center justify-center shrink-0">${svg('alert', 'line-icon')}</div>
             <div>
               <div class="text-sm font-bold text-ink-900">${label} ${esc(appState.studentName)} স্কুলে আসেনি</div>
-              <div class="text-xs text-ink-600">শ্রেণি শিক্ষক ${rec.submittedAt}-এ হাজিরা নিয়েছেন</div>
+              <div class="text-xs text-ink-600">শ্রেণি শিক্ষক ${rec.submittedAt}-এ হাজিরা নিয়েছেন</div>
             </div>
           </div>
           <button type="button" id="btn-absent-reason" class="icon-tile px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-xs font-bold">কারণ জানান</button>`;
@@ -2071,13 +2178,13 @@
     }
 
     // ---------- Principal: class-wise student attendance ----------
-    // Only ৩য় শ্রেণি is live in this prototype; the other classes are sample rows.
+    // Only ৩য় শ্রেণি is live in this prototype; the other classes are sample rows.
     const schoolClassAttendance = [
       { cls: 'Play', total: 22, present: 20, at: 'সকাল ৮:২০' },
       { cls: 'KG', total: 23, present: 21, at: 'সকাল ৮:২৬' },
       { cls: '১ম শ্রেণি', total: 30, present: 28, at: 'সকাল ৮:৩১' },
-      { cls: '২য় শ্রেণি', total: 30, present: 27, at: 'সকাল ৮:৩৮' },
-      { cls: '৩য় শ্রেণি', live: true },
+      { cls: '২য় শ্রেণি', total: 30, present: 27, at: 'সকাল ৮:৩৮' },
+      { cls: '৩য় শ্রেণি', live: true },
       { cls: '৪র্থ শ্রেণি', total: 25, present: null },
       { cls: '৫ম শ্রেণি', total: 20, present: 19, at: 'সকাল ৮:৪০' }
     ];
@@ -2100,7 +2207,7 @@
       document.getElementById('s-att-summary').innerHTML =
         countTile('userCheck', 'উপস্থিত', `${bn(present)} জন`) +
         countTile('userX', 'অনুপস্থিত', `${bn(doneTotal - present)} জন`) +
-        countTile('classes', 'জমা হয়নি', `${bn(pending)}টি শ্রেণি`, pending > 0);
+        countTile('classes', 'জমা হয়নি', `${bn(pending)}টি শ্রেণি`, pending > 0);
       document.getElementById('s-att-rows').innerHTML = rows.map(r => {
         const submitted = r.present !== null;
         const pct = submitted ? Math.round((r.present / r.total) * 100) : 0;
@@ -2115,7 +2222,7 @@
                 <div class="text-xs font-bold text-ink-800">${bn(r.present)} / ${bn(r.total)} উপস্থিত</div>
                 <div class="w-28 h-2 bg-ink-200 rounded-full overflow-hidden mt-1 ml-auto"><div class="h-full bg-ink-800" style="width:${pct}%"></div></div>
               </div>`
-              : '<span class="px-2.5 py-1 rounded-lg bg-white border border-gold-300 text-gold-900 text-xs font-extrabold">জমা হয়নি</span>'}
+              : '<span class="px-2.5 py-1 rounded-lg bg-white border border-gold-300 text-gold-900 text-xs font-extrabold">জমা হয়নি</span>'}
           </div>`;
       }).join('');
     }
@@ -2181,12 +2288,12 @@
       }).join('');
 
       document.getElementById('s-staff-status').innerHTML = rec && !dirty
-        ? `<div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>`
+        ? `<div class="flex items-center gap-2 text-sm font-bold text-ink-900">${svg('check')}<span>${rec.submittedAt}-এ জমা হয়েছে</span></div>`
         : rec ? '<p class="text-xs font-bold text-gold-900">হাজিরা বদলেছেন। আবার জমা দিন।</p>' : '';
       const btn = document.getElementById('s-staff-submit');
       btn.disabled = !!rec && !dirty;
-      document.getElementById('s-staff-submit-label').textContent = !rec ? 'শিক্ষক হাজিরা জমা দিন' : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
-      document.getElementById('s-stat-staff').textContent = rec ? `${bn(c.present + c.late)}/${bn(staffList.length)} উপস্থিত` : 'এখনো জমা হয়নি';
+      document.getElementById('s-staff-submit-label').textContent = !rec ? 'শিক্ষক হাজিরা জমা দিন' : dirty ? 'সংশোধন জমা দিন' : 'জমা হয়েছে';
+      document.getElementById('s-stat-staff').textContent = rec ? `${bn(c.present + c.late)}/${bn(staffList.length)} উপস্থিত` : 'এখনো জমা হয়নি';
     }
 
     // ---------- Floating-card switching for the teacher and principal views ----------
@@ -2235,7 +2342,7 @@
         studentAtt.records[attKey] = { statuses: { ...studentAtt.draft }, submittedAt: bnTime(new Date()) };
         renderAllAttendance();
         const absent = countStatuses(studentAtt.draft).absent;
-        showToast(absent ? `হাজিরা জমা হয়েছে। ${bn(absent)} জন অভিভাবক অ্যাপে বার্তা পাবেন।` : 'হাজিরা জমা হয়েছে। আজ কেউ অনুপস্থিত নেই।');
+        showToast(absent ? `হাজিরা জমা হয়েছে। ${bn(absent)} জন অভিভাবক অ্যাপে বার্তা পাবেন।` : 'হাজিরা জমা হয়েছে। আজ কেউ অনুপস্থিত নেই।');
       });
 
       document.getElementById('s-staff-rows').addEventListener('click', e => {
@@ -2247,7 +2354,7 @@
       document.getElementById('s-staff-submit').addEventListener('click', () => {
         staffAtt.records[attKey] = { statuses: { ...staffAtt.draft }, submittedAt: bnTime(new Date()) };
         renderAllAttendance();
-        showToast('শিক্ষক ও স্টাফ হাজিরা জমা হয়েছে।');
+        showToast('শিক্ষক ও স্টাফ হাজিরা জমা হয়েছে।');
       });
 
       // Parent's "tomorrow's leave" quick reply becomes a leave request for the next school day.
@@ -2261,12 +2368,12 @@
           studentAtt.leaveRequests[k][roll] = true;
           if (k === attKey && !studentAtt.records[attKey]) studentAtt.draft[roll] = 'leave';
           renderAllAttendance();
-          showToast(`${bnDate(next)}-এর ছুটির আবেদন শিক্ষকের হাজিরা তালিকায় গেছে।`);
+          showToast(`${bnDate(next)}-এর ছুটির আবেদন শিক্ষকের হাজিরা তালিকায় গেছে।`);
         });
       });
 
       document.querySelectorAll('[data-feature-interest]').forEach(btn => {
-        btn.addEventListener('click', () => showToast(`${btn.getAttribute('data-feature-interest')}: আপনার আগ্রহ নোট করা হয়েছে।`));
+        btn.addEventListener('click', () => showToast(`${btn.getAttribute('data-feature-interest')}: আপনার আগ্রহ নোট করা হয়েছে।`));
       });
 
       renderAllAttendance();
@@ -2306,17 +2413,18 @@
     }
 
     function updateHeader() {
+      if (window.onDiarySessionChange) window.onDiarySessionChange(); // notices (see NOTICES & ROUTINE)
       const title = document.getElementById('school-name-display');
       const subtitle = document.getElementById('header-subtitle');
       const btn = document.getElementById('btn-profile');
       if (!session) {
-        title.textContent = 'Paperloop স্মার্ট ডায়েরি';
-        subtitle.textContent = 'অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি';
+        title.textContent = 'Paperloop স্মার্ট ডায়েরি';
+        subtitle.textContent = 'অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি';
         btn.classList.add('hidden'); btn.classList.remove('flex');
         return;
       }
       title.textContent = appState.schoolName;
-      subtitle.textContent = `Paperloop স্মার্ট ডায়েরি • ${ROLE_META[session.role].label}`;
+      subtitle.textContent = `Paperloop স্মার্ট ডায়েরি • ${ROLE_META[session.role].label}`;
       btn.classList.remove('hidden'); btn.classList.add('flex');
     }
 
@@ -2330,7 +2438,7 @@
         rows.push(['শিক্ষার্থী', appState.studentName], ['শ্রেণি', appState.studentClass], ['রোল', bn(toAsciiDigits(appState.studentRoll))], ['শ্রেণি শিক্ষক', TEACHER_NAME]);
       } else if (role === 'teacher') {
         document.getElementById('profile-title').textContent = TEACHER_NAME;
-        rows.push(['শ্রেণি', '৩য় শ্রেণি'], ['মোবাইল / আইডি', session.userId]);
+        rows.push(['শ্রেণি', '৩য় শ্রেণি'], ['মোবাইল / আইডি', session.userId]);
       } else {
         document.getElementById('profile-title').textContent = 'প্রিন্সিপাল / অ্যাডমিন';
         rows.push(['অ্যাডমিন আইডি', session.userId]);
@@ -2380,7 +2488,7 @@
       switchMainView('login');
       updateHeader();
       window.scrollTo(0, 0);
-      showToast('লগআউট হয়েছে');
+      showToast('লগআউট হয়েছে');
     }
 
     const normaliseRoll = v => toAsciiDigits(String(v).trim()).padStart(2, '0');
@@ -2442,6 +2550,434 @@
       const saved = readStore(SESSION_KEY);
       if (saved && ROLE_META[saved.role] && saved.code) startSession(saved, { restoring: true });
       else { switchMainView('login'); updateHeader(); }
+    });
+
+  </script>
+  <script>
+    // ==========================================
+    // NOTICES & ROUTINE
+    // Notices: the principal sends to everyone, parents, teachers or one class; a class teacher sends to
+    // her class's parents. Everyone signed in sees only what is meant for them, behind the header's নোটিশ
+    // button with an unread count. Which notices someone has read is remembered on the phone.
+    // Routine: the principal sets each class's periods; parents and the class teacher see it, and parents
+    // get "ব্যাগে যা দেবেন": the books and Paperloop khatas for that day.
+    // ==========================================
+    const noticeIcons = {
+      bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+      pin: '<line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>',
+      trash: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+      send: '<line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
+      all: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+      parents: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      teachers: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+      class: '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 21v-4h4v4"/>',
+      bag: '<path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 10h8"/><path d="M8 18h8"/><path d="M8 22v-6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>',
+      tiffin: '<path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/>',
+      empty: '<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>'
+    };
+    const nIcon = (name, cls = 'line-icon-sm') => `<svg class="${cls}" viewBox="0 0 24 24">${noticeIcons[name]}</svg>`;
+    const CLASSES = ['Play', 'KG', '১ম শ্রেণি', '২য় শ্রেণি', '৩য় শ্রেণি', '৪র্থ শ্রেণি', '৫ম শ্রেণি'];
+    const TEACHER_CLASS = '৩য় শ্রেণি';
+
+    // ---------- Notices ----------
+    const minutesAgo = m => new Date(Date.now() - m * 60000);
+    const notices = [
+      { id: 1, from: 'school', fromName: 'প্রিন্সিপাল', audience: 'all', important: true, at: minutesAgo(60 * 26),
+        title: 'বার্ষিক পরীক্ষা আগামী মাসের প্রথম সপ্তাহে',
+        body: 'প্রতিটি শ্রেণির পরীক্ষার রুটিন শ্রেণি শিক্ষক আগামী সপ্তাহে দেবেন। পরীক্ষার আগে বেতন ও পরীক্ষার ফি জমা দিন।' },
+      { id: 2, from: 'school', fromName: 'প্রিন্সিপাল', audience: 'parents', important: false, at: minutesAgo(60 * 50),
+        title: 'অভিভাবক সভা: শনিবার সকাল ১০টা',
+        body: 'বার্ষিক পরীক্ষার প্রস্তুতি নিয়ে আলোচনা হবে। প্রতি পরিবার থেকে অন্তত একজন আসবেন।' },
+      { id: 3, from: 'teacher', fromName: 'রাশেদা বেগম', audience: 'class', cls: '৩য় শ্রেণি', important: false, at: minutesAgo(140),
+        title: 'বৃহস্পতিবার চারুকারু ক্লাস',
+        body: 'রং পেন্সিল ও ড্রয়িং খাতা সঙ্গে দেবেন।' },
+      { id: 4, from: 'school', fromName: 'প্রিন্সিপাল', audience: 'teachers', important: false, at: minutesAgo(60 * 5),
+        title: 'শিক্ষক সভা: বৃহস্পতিবার ছুটির পর',
+        body: 'বার্ষিক পরীক্ষার প্রশ্ন জমার তারিখ ঠিক করা হবে।' }
+    ];
+    let nextNoticeId = 100;
+    const AUDIENCE = {
+      all: { label: 'সবার জন্য', icon: 'all' },
+      parents: { label: 'অভিভাবকদের জন্য', icon: 'parents' },
+      teachers: { label: 'শিক্ষকদের জন্য', icon: 'teachers' },
+      class: { label: 'একটি শ্রেণি', icon: 'class' }
+    };
+    // Bangla possessive: শ্রেণি → শ্রেণির, বুধবার → বুধবারের, Play → Play-এর
+    const possessive = w => /[\u0980-\u09FF]$/.test(w) ? (/[\u09BE-\u09CC]$/.test(w) ? w + 'র' : w + 'ের') : w + '-এর';
+    const audienceText = n => n.audience === 'class' ? `${possessive(n.cls)} অভিভাবক` : AUDIENCE[n.audience].label;
+
+    function noticesFor(s) {
+      if (!s) return [];
+      const list = notices.filter(n => {
+        if (s.role === 'school') return true;
+        if (s.role === 'teacher') return n.audience === 'all' || n.audience === 'teachers' || (n.audience === 'class' && n.cls === TEACHER_CLASS);
+        return n.audience === 'all' || n.audience === 'parents' || (n.audience === 'class' && n.cls === appState.studentClass);
+      });
+      return list.sort((a, b) => (b.important - a.important) || (b.at - a.at));
+    }
+
+    const READ_KEY = 'pl_diary_read_notices';
+    const readerKey = () => session ? [session.role, session.code, session.role === 'parent' ? `${appState.studentClass}-${toAsciiDigits(appState.studentRoll)}` : session.userId].join('|') : '';
+    function readIds() { const all = readStore(READ_KEY) || {}; return all[readerKey()] || []; }
+    function markRead(ids) {
+      const all = readStore(READ_KEY) || {};
+      all[readerKey()] = Array.from(new Set([...(all[readerKey()] || []), ...ids]));
+      writeStore(READ_KEY, all);
+    }
+    const unreadFor = s => { const seen = readIds(); return noticesFor(s).filter(n => !seen.includes(n.id)); };
+
+    function whenText(d) {
+      const day = new Date(d); day.setHours(0, 0, 0, 0);
+      const diff = Math.round((realToday - day) / 86400000);
+      const prefix = diff === 0 ? 'আজ' : diff === 1 ? 'গতকাল' : `${bn(d.getDate())} ${BN_MONTHS[d.getMonth()]}`;
+      return `${prefix}, ${bnTime(d)}`;
+    }
+
+    function noticeCard(n, { unread = false, canDelete = false } = {}) {
+      return `
+        <article class="bg-white rounded-2xl border ${unread ? 'border-gold-600' : 'border-ink-200'} p-4 space-y-2">
+          <div class="flex flex-wrap items-center gap-1.5 text-[0.6875rem] font-bold">
+            ${n.important ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gold-50 border border-gold-200 text-gold-900">${nIcon('pin', 'w-3 h-3 line-icon-sm')}গুরুত্বপূর্ণ</span>` : ''}
+            ${unread ? '<span class="px-2 py-0.5 rounded-md bg-ink-900 text-white">নতুন</span>' : ''}
+            <span class="px-2 py-0.5 rounded-md bg-ink-100 border border-ink-200 text-ink-700">${esc(audienceText(n))}</span>
+          </div>
+          <h3 class="text-sm sm:text-base font-bold text-ink-900 leading-snug">${esc(n.title)}</h3>
+          <p class="text-xs sm:text-sm text-ink-700 leading-relaxed">${esc(n.body)}</p>
+          <div class="flex items-center justify-between gap-2 pt-1">
+            <span class="text-[0.6875rem] text-ink-500">${esc(n.fromName)} • ${whenText(n.at)}</span>
+            ${canDelete ? `<button type="button" data-notice-delete="${n.id}" class="icon-tile inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-ink-200 bg-white hover:bg-ink-50 text-ink-600 text-[0.6875rem] font-bold">${nIcon('trash', 'w-3.5 h-3.5 line-icon-sm')}মুছুন</button>` : ''}
+          </div>
+        </article>`;
+    }
+
+    function refreshNotices() {
+      const btn = document.getElementById('btn-notices'), badge = document.getElementById('notice-badge');
+      btn.classList.toggle('hidden', !session); btn.classList.toggle('flex', !!session);
+      const unread = unreadFor(session);
+      badge.textContent = bn(unread.length);
+      badge.classList.toggle('hidden', !unread.length);
+      btn.setAttribute('aria-label', unread.length ? `নোটিশ, ${bn(unread.length)}টি নতুন` : 'নোটিশ');
+
+      // Parent: the newest unread notice as a slim card on the dashboard
+      const banner = document.getElementById('parent-notice-banner');
+      const top = session && session.role === 'parent' ? unread[0] : null;
+      if (top) {
+        banner.className = 'floating-card rounded-2xl p-4 flex items-center justify-between gap-3';
+        banner.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-2xl bg-gold-50 border border-gold-200 text-ink-900 flex items-center justify-center shrink-0">${nIcon('bell', 'line-icon')}</div>
+            <div class="min-w-0">
+              <div class="text-[0.6875rem] font-bold text-gold-900">নতুন নোটিশ${unread.length > 1 ? ` • আরও ${bn(unread.length - 1)}টি` : ''}</div>
+              <div class="text-sm font-bold text-ink-900 truncate">${esc(top.title)}</div>
+            </div>
+          </div>
+          <button type="button" data-open-notices class="icon-tile shrink-0 px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-xs font-bold">পড়ুন</button>`;
+      } else { banner.className = 'hidden'; banner.innerHTML = ''; }
+
+      document.querySelectorAll('[data-notice-composer]').forEach(renderComposerList);
+      const mine = r => notices.filter(n => n.from === r && (r === 'school' || n.cls === TEACHER_CLASS)).length;
+      document.getElementById('s-stat-notice').textContent = `${bn(mine('school'))}টি পাঠানো`;
+      document.getElementById('t-stat-notice').textContent = `${bn(mine('teacher'))}টি পাঠানো`;
+    }
+    window.onDiarySessionChange = () => { refreshNotices(); renderAllRoutines(); };
+
+    function openNotices() {
+      const dlg = document.getElementById('notice-dialog');
+      const list = noticesFor(session), seen = readIds();
+      document.getElementById('notice-subtitle').textContent = list.length ? `${bn(list.length)}টি নোটিশ` : '';
+      document.getElementById('notice-list').innerHTML = list.length
+        ? list.map(n => noticeCard(n, { unread: !seen.includes(n.id) })).join('')
+        : '<p class="text-sm text-ink-500 text-center py-10">এখনো কোনো নোটিশ নেই।</p>';
+      dlg.showModal();
+      markRead(list.map(n => n.id)); // they stay marked "নতুন" while this panel is open
+      refreshNotices();
+    }
+
+    // Composer, for the principal (any audience) and the class teacher (her class's parents only)
+    const NOTICE_PRESETS = {
+      school: [
+        ['ছুটির নোটিশ', 'স্কুল বন্ধ থাকবে', '___ তারিখে ___ উপলক্ষে স্কুল বন্ধ থাকবে। পরদিন যথারীতি ক্লাস হবে।'],
+        ['অভিভাবক সভা', 'অভিভাবক সভা: ___ সকাল ১০টা', '___ নিয়ে আলোচনা হবে। প্রতি পরিবার থেকে অন্তত একজন আসবেন।'],
+        ['পরীক্ষা', 'পরীক্ষা শুরু ___ তারিখে', 'পরীক্ষার রুটিন শ্রেণি শিক্ষকের কাছ থেকে নিন।'],
+        ['বেতন', 'চলতি মাসের বেতন জমা', 'চলতি মাসের বেতন ___ তারিখের মধ্যে অফিসে জমা দিন।']
+      ],
+      teacher: [
+        ['জিনিস আনবে', 'আগামীকাল ___ আনবে', 'আগামীকাল ক্লাসে ___ সঙ্গে দেবেন।'],
+        ['ক্লাস টেস্ট', 'বৃহস্পতিবার ক্লাস টেস্ট', '___ বিষয়ের ___ অধ্যায় থেকে টেস্ট হবে। খাতা দেখে বাসায় পড়াবেন।'],
+        ['পোশাক', 'স্কুলের পোশাক', 'কাল থেকে নিয়মিত স্কুলের পোশাক পরে আসবে।']
+      ]
+    };
+    const composerState = { school: { audience: 'all', cls: '৩য় শ্রেণি' }, teacher: {} };
+
+    function renderComposer(el) {
+      const role = el.getAttribute('data-notice-composer'), st = composerState[role];
+      const tile = (key) => `
+        <button type="button" data-notice-audience="${key}" aria-pressed="${st.audience === key}"
+          class="icon-tile flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border ${st.audience === key ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+          ${nIcon(AUDIENCE[key].icon, 'line-icon mb-1')}<span class="text-[0.6875rem] font-bold leading-tight text-center">${AUDIENCE[key].label}</span>
+        </button>`;
+      el.innerHTML = `
+        <form class="floating-card rounded-2xl p-5 space-y-4" data-notice-form="${role}" novalidate>
+          <div>
+            <h3 class="text-base font-bold text-ink-900">${role === 'school' ? 'নতুন নোটিশ পাঠান' : 'ক্লাসের অভিভাবকদের নোটিশ'}</h3>
+            <p class="text-xs text-ink-500">${role === 'school' ? 'যাঁদের জন্য নোটিশ, তাঁরা ডায়েরির নোটিশ বাটনে দেখবেন।' : `যাবে: ${possessive(TEACHER_CLASS)} সব অভিভাবক`}</p>
+          </div>
+          ${role === 'school' ? `
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-ink-600">কাদের জন্য</div>
+            <div class="grid grid-cols-4 gap-2">${['all', 'parents', 'teachers', 'class'].map(tile).join('')}</div>
+            <select data-notice-class class="${st.audience === 'class' ? '' : 'hidden '}w-full px-3 py-2 rounded-xl border border-ink-300 text-sm font-bold bg-white" aria-label="কোন শ্রেণি">
+              ${CLASSES.map(c => `<option${c === st.cls ? ' selected' : ''}>${c}</option>`).join('')}
+            </select>
+          </div>` : ''}
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-ink-600">তৈরি নোটিশ (ট্যাপ করে ___ জায়গা বদলান)</div>
+            <div class="flex flex-wrap gap-2">${NOTICE_PRESETS[role].map((p, i) => `<button type="button" data-notice-preset="${i}" class="icon-tile px-3 py-1.5 rounded-xl border border-ink-200 bg-ink-50 hover:bg-ink-100 text-ink-700 text-xs font-bold">+ ${p[0]}</button>`).join('')}</div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-600 mb-1" for="${role}-notice-title">শিরোনাম</label>
+            <input id="${role}-notice-title" name="title" type="text" maxlength="70" required class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold" placeholder="ছোট করে লিখুন" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-600 mb-1" for="${role}-notice-body">বিস্তারিত</label>
+            <textarea id="${role}-notice-body" name="body" rows="3" maxlength="300" required class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm" placeholder="২–৩ লাইনের বেশি নয়"></textarea>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-bold text-ink-900">গুরুত্বপূর্ণ</div>
+              <div class="text-xs text-ink-500">সবার তালিকায় ওপরে থাকবে</div>
+            </div>
+            <button type="button" role="switch" aria-checked="false" data-notice-important class="switch" aria-label="গুরুত্বপূর্ণ"></button>
+          </div>
+          <p data-notice-error class="hidden text-xs font-bold text-gold-900"></p>
+          <button type="submit" class="w-full py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">${nIcon('send')}<span>নোটিশ পাঠান</span></button>
+        </form>
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <h3 class="text-base font-bold text-ink-900">পাঠানো নোটিশ</h3>
+          <div data-notice-sent class="space-y-3"></div>
+        </div>`;
+      renderComposerList(el);
+    }
+
+    function renderComposerList(el) {
+      const role = el.getAttribute('data-notice-composer');
+      const box = el.querySelector('[data-notice-sent]');
+      if (!box) return;
+      const sent = notices.filter(n => n.from === role && (role === 'school' || n.cls === TEACHER_CLASS)).sort((a, b) => b.at - a.at);
+      box.innerHTML = sent.length ? sent.map(n => noticeCard(n, { canDelete: true })).join('') : '<p class="text-xs text-ink-500">এখনো কোনো নোটিশ পাঠানো হয়নি।</p>';
+    }
+
+    function wireComposer(el) {
+      const role = el.getAttribute('data-notice-composer');
+      el.addEventListener('click', e => {
+        const aud = e.target.closest('[data-notice-audience]');
+        if (aud) {
+          const form = el.querySelector('form'), title = form.elements.title.value, body = form.elements.body.value;
+          const important = form.querySelector('[data-notice-important]').getAttribute('aria-checked');
+          composerState[role].audience = aud.getAttribute('data-notice-audience');
+          renderComposer(el);
+          const f2 = el.querySelector('form'); f2.elements.title.value = title; f2.elements.body.value = body;
+          f2.querySelector('[data-notice-important]').setAttribute('aria-checked', important);
+          return;
+        }
+        const preset = e.target.closest('[data-notice-preset]');
+        if (preset) {
+          const [, title, body] = NOTICE_PRESETS[role][Number(preset.getAttribute('data-notice-preset'))];
+          const form = el.querySelector('form'); form.elements.title.value = title; form.elements.body.value = body; form.elements.title.focus();
+          return;
+        }
+        const imp = e.target.closest('[data-notice-important]');
+        if (imp) { imp.setAttribute('aria-checked', imp.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); return; }
+        const del = e.target.closest('[data-notice-delete]');
+        if (del) {
+          const idx = notices.findIndex(n => n.id === Number(del.getAttribute('data-notice-delete')));
+          if (idx >= 0) notices.splice(idx, 1);
+          refreshNotices();
+          showToast('নোটিশ মুছে ফেলা হয়েছে');
+        }
+      });
+      el.addEventListener('change', e => { if (e.target.matches('[data-notice-class]')) composerState[role].cls = e.target.value; });
+      el.addEventListener('submit', e => {
+        e.preventDefault();
+        const form = e.target, err = form.querySelector('[data-notice-error]');
+        const title = form.elements.title.value.trim(), body = form.elements.body.value.trim();
+        const problem = !title ? 'শিরোনাম লিখুন' : !body ? 'বিস্তারিত লিখুন' : /___/.test(title + body) ? '___ জায়গাগুলো পূরণ করুন' : '';
+        err.textContent = problem; err.classList.toggle('hidden', !problem);
+        if (problem) return;
+        const st = composerState[role];
+        notices.push({
+          id: nextNoticeId++, from: role, fromName: role === 'school' ? 'প্রিন্সিপাল' : TEACHER_NAME,
+          audience: role === 'school' ? st.audience : 'class', cls: role === 'school' ? st.cls : TEACHER_CLASS,
+          important: form.querySelector('[data-notice-important]').getAttribute('aria-checked') === 'true',
+          title, body, at: new Date()
+        });
+        markRead([nextNoticeId - 1]); // the sender has read their own notice
+        renderComposer(el);
+        refreshNotices();
+        const n = notices[notices.length - 1];
+        showToast(`নোটিশ পাঠানো হয়েছে: ${audienceText(n)}`);
+      });
+    }
+
+    // ---------- Routine ----------
+    Object.assign(subjectMeta, {
+      'বাংলাদেশ ও বিশ্বপরিচয়': { svg: `<svg class="line-icon" viewBox="0 0 24 24">${noticeIcons.all}</svg>` },
+      'ধর্ম শিক্ষা': { svg: '<svg class="line-icon" viewBox="0 0 24 24"><path d="M10 2v8l3-3 3 3V2"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>' },
+      'সাধারণ জ্ঞান': { svg: '<svg class="line-icon" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>' },
+      'চারুকারু': { svg: '<svg class="line-icon" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>' }
+    });
+    const SUBJECTS = ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা', 'সাধারণ জ্ঞান', 'চারুকারু'];
+    const SHORT_SUBJECT = { 'বাংলাদেশ ও বিশ্বপরিচয়': 'বিশ্বপরিচয়', 'সাধারণ জ্ঞান': 'সা. জ্ঞান' };
+    const shortSubject = s => SHORT_SUBJECT[s] || s;
+    // Which Paperloop khata each subject is written in
+    const SUBJECT_KHATA = { 'বাংলা': 'বাংলা দাগ খাতা', 'ইংরেজি': 'ইংরেজি ৪-দাগ খাতা', 'গণিত': 'গণিত বক্স খাতা', 'চারুকারু': 'ড্রয়িং খাতা' };
+    const khataFor = s => SUBJECT_KHATA[s] || 'বাংলা দাগ খাতা';
+
+    const SCHOOL_DAYS = [6, 0, 1, 2, 3, 4]; // Saturday → Thursday
+    const PERIODS = [['৮:৩০', '৯:১০'], ['৯:১০', '৯:৫০'], ['৯:৫০', '১০:৩০'], ['১০:৫০', '১১:৩০'], ['১১:৩০', '১২:১০']];
+    const ORDINAL = ['১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম'];
+    const TIFFIN_AFTER = 3, TIFFIN = ['১০:৩০', '১০:৫০'];
+    // routines[class][weekday] = [subject | null, ...] (one entry per period). Only ৩য় শ্রেণি is filled in this demo.
+    const routines = {
+      '৩য় শ্রেণি': {
+        6: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'ধর্ম শিক্ষা'],
+        0: ['ইংরেজি', 'গণিত', 'বাংলা', 'বাংলাদেশ ও বিশ্বপরিচয়', 'সাধারণ জ্ঞান'],
+        1: ['গণিত', 'বাংলা', 'ইংরেজি', 'বিজ্ঞান', 'ধর্ম শিক্ষা'],
+        2: ['বাংলা', 'গণিত', 'ইংরেজি', 'বাংলাদেশ ও বিশ্বপরিচয়', 'চারুকারু'],
+        3: ['ইংরেজি', 'বাংলা', 'গণিত', 'বিজ্ঞান', 'সাধারণ জ্ঞান'],
+        4: ['গণিত', 'ইংরেজি', 'বাংলা', 'বিজ্ঞান', 'চারুকারু']
+      }
+    };
+    const routineState = { parent: { day: null }, teacher: { day: null }, school: { day: null, cls: '৩য় শ্রেণি', editing: null } };
+    const nextSchoolDayFromToday = () => shiftSchoolDay(realToday, 1);
+    function defaultDay(view) {
+      // Parents plan tomorrow's bag; the teacher and principal start on today (or the next school day on a holiday)
+      if (view === 'parent') return nextSchoolDayFromToday().getDay();
+      return isSchoolDay(realToday) ? realToday.getDay() : nextSchoolDayFromToday().getDay();
+    }
+    const dayName = d => BN_WEEKDAYS[d];
+    const dayTag = d => d === realToday.getDay() && isSchoolDay(realToday) ? 'আজ' : d === nextSchoolDayFromToday().getDay() ? 'আগামীকাল' : '';
+
+    function renderRoutine(el) {
+      const view = el.getAttribute('data-routine-view'), st = routineState[view];
+      const cls = view === 'parent' ? appState.studentClass : view === 'teacher' ? TEACHER_CLASS : st.cls;
+      if (st.day === null) st.day = defaultDay(view);
+      const week = routines[cls];
+      if (!week && view !== 'school') { el.innerHTML = `<p class="text-sm text-ink-500 text-center py-6">${esc(possessive(cls))} রুটিন এখনো দেওয়া হয়নি।</p>`; return; }
+      const periods = (week && week[st.day]) || PERIODS.map(() => null);
+      const dayChips = SCHOOL_DAYS.map(d => `
+        <button type="button" data-routine-day="${d}" aria-pressed="${d === st.day}"
+          class="icon-tile flex flex-col items-center justify-center py-2 rounded-xl border ${d === st.day ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+          <span class="text-xs font-bold">${BN_WEEK_HEAD[(d + 1) % 7]}</span>
+          <span class="text-[0.5625rem] font-bold leading-none mt-0.5 ${dayTag(d) ? 'text-gold-900' : 'text-transparent'}">${dayTag(d) === 'আগামীকাল' ? 'কাল' : (dayTag(d) || '–')}</span>
+        </button>`).join('');
+      const row = (subject, i) => {
+        const meta = subject ? (subjectMeta[subject] || { svg: lineIcons.bangla }) : null;
+        const editing = view === 'school' && st.editing === i;
+        const inner = `
+          <div class="w-16 shrink-0 text-center">
+            <div class="text-[0.6875rem] font-bold text-ink-500">${ORDINAL[i]} পিরিয়ড</div>
+            <div class="text-xs font-extrabold text-ink-900">${PERIODS[i][0]}</div>
+          </div>
+          <div class="w-14 shrink-0 py-1.5 rounded-xl bg-white border border-ink-200 text-ink-800 flex flex-col items-center">
+            ${meta ? meta.svg : nIcon('empty', 'line-icon')}
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <div class="text-sm font-bold text-ink-900">${subject ? esc(subject) : 'খালি'}</div>
+            <div class="text-[0.6875rem] text-ink-500">${subject ? khataFor(subject) : (view === 'school' ? 'বিষয় বসাতে ট্যাপ করুন' : '—')}</div>
+          </div>`;
+        const base = `w-full p-3 rounded-2xl flex items-center gap-3 ${editing ? 'tile-active border' : 'bg-ink-50 border border-ink-200'}`;
+        const picker = editing ? `
+          <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 p-3 rounded-2xl bg-white border border-ink-200">
+            ${SUBJECTS.map(s => `<button type="button" data-routine-pick="${esc(s)}" class="icon-tile flex flex-col items-center justify-center py-2 rounded-xl border ${s === subject ? 'tile-active' : 'border-ink-200 bg-white text-ink-700 hover:bg-ink-50'}">${(subjectMeta[s] || {}).svg || ''}<span class="text-[0.6875rem] font-bold mt-1">${shortSubject(s)}</span></button>`).join('')}
+            <button type="button" data-routine-pick="" class="icon-tile flex flex-col items-center justify-center py-2 rounded-xl border border-dashed border-ink-400 bg-white text-ink-600">${nIcon('empty', 'line-icon')}<span class="text-[0.6875rem] font-bold mt-1">খালি</span></button>
+          </div>` : '';
+        const tiffin = i === TIFFIN_AFTER - 1 ? `
+          <div class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-ink-600">${nIcon('tiffin')}<span>টিফিন বিরতি ${TIFFIN[0]}–${TIFFIN[1]}</span></div>` : '';
+        return (view === 'school'
+          ? `<button type="button" data-routine-period="${i}" aria-expanded="${editing}" class="icon-tile ${base} hover:border-ink-300">${inner}</button>${picker}`
+          : `<div class="${base}">${inner}</div>`) + tiffin;
+      };
+      let bag = '';
+      if (view === 'parent') {
+        const subjects = Array.from(new Set(periods.filter(Boolean)));
+        const khatas = Array.from(new Set(subjects.map(khataFor)));
+        const title = dayTag(st.day) === 'আগামীকাল' ? 'আগামীকালের ব্যাগে যা দেবেন' : `${possessive(dayName(st.day))} ব্যাগে যা দেবেন`;
+        bag = subjects.length ? `
+          <div class="p-4 rounded-2xl bg-gold-50 border border-gold-200 space-y-2.5">
+            <div class="flex items-center gap-2 text-sm font-bold text-ink-900">${nIcon('bag')}<span>${title}</span></div>
+            <div>
+              <div class="text-[0.6875rem] font-bold text-ink-500 mb-1">বই</div>
+              <div class="flex flex-wrap gap-1.5">${subjects.map(s => `<span class="px-2.5 py-1 rounded-lg bg-white border border-gold-200 text-xs font-bold text-ink-800">${esc(s)}</span>`).join('')}</div>
+            </div>
+            <div>
+              <div class="text-[0.6875rem] font-bold text-ink-500 mb-1">Paperloop খাতা</div>
+              <div class="flex flex-wrap gap-1.5">${khatas.map(k => `<span class="px-2.5 py-1 rounded-lg bg-white border border-gold-200 text-xs font-bold text-ink-800">${k}</span>`).join('')}</div>
+            </div>
+          </div>` : '';
+      }
+      el.innerHTML = `
+        <div class="space-y-3">
+          <div class="grid grid-cols-6 gap-1.5">${dayChips}</div>
+          <div class="text-xs font-bold text-ink-600">${dayName(st.day)}${dayTag(st.day) ? ` (${dayTag(st.day)})` : ''} • ${esc(cls)}</div>
+          ${bag}
+          <div class="space-y-2">${periods.map(row).join('')}</div>
+        </div>`;
+    }
+
+    function renderAllRoutines() {
+      document.querySelectorAll('[data-routine-view]').forEach(renderRoutine);
+      const classes = document.getElementById('s-routine-classes');
+      classes.innerHTML = CLASSES.map(c => `
+        <button type="button" data-routine-class="${c}" aria-pressed="${c === routineState.school.cls}"
+          class="icon-tile px-3 py-1.5 rounded-xl border text-xs font-bold ${c === routineState.school.cls ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
+          ${c}${routines[c] ? '' : ' <span class="text-ink-400">• নেই</span>'}</button>`).join('');
+      document.getElementById('p-routine-class').textContent = `${appState.studentClass} • সপ্তাহে ${bn(SCHOOL_DAYS.length)} দিন, দিনে ${bn(PERIODS.length)}টি পিরিয়ড`;
+      const next = nextSchoolDayFromToday().getDay();
+      const nextCount = (week => week && week[next] ? new Set(week[next].filter(Boolean)).size : 0);
+      const pw = routines[appState.studentClass];
+      document.getElementById('stat-routine').textContent = pw ? `আগামীকাল ${bn(nextCount(pw))}টি বিষয়` : 'দেওয়া হয়নি';
+      const todayKey = isSchoolDay(realToday) ? realToday.getDay() : next;
+      const tw = routines[TEACHER_CLASS];
+      document.getElementById('t-stat-routine').textContent = tw && tw[todayKey] ? `${isSchoolDay(realToday) ? 'আজ' : 'পরের দিন'} ${bn(tw[todayKey].filter(Boolean).length)}টি ক্লাস` : '—';
+      document.getElementById('s-stat-routine').textContent = `${bn(Object.keys(routines).length)}/${bn(CLASSES.length)} শ্রেণি`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-notice-composer]').forEach(el => { renderComposer(el); wireComposer(el); });
+      document.getElementById('btn-notices').addEventListener('click', openNotices);
+      const dlg = document.getElementById('notice-dialog');
+      dlg.querySelector('[data-notice-close]').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+      document.getElementById('parent-notice-banner').addEventListener('click', e => { if (e.target.closest('[data-open-notices]')) openNotices(); });
+
+      document.querySelectorAll('[data-routine-view]').forEach(el => {
+        el.addEventListener('click', e => {
+          const view = el.getAttribute('data-routine-view'), st = routineState[view];
+          const day = e.target.closest('[data-routine-day]');
+          if (day) { st.day = Number(day.getAttribute('data-routine-day')); st.editing = null; renderRoutine(el); return; }
+          const period = e.target.closest('[data-routine-period]');
+          if (period) { const i = Number(period.getAttribute('data-routine-period')); st.editing = st.editing === i ? null : i; renderRoutine(el); return; }
+          const pick = e.target.closest('[data-routine-pick]');
+          if (pick && st.editing !== null) {
+            const subject = pick.getAttribute('data-routine-pick') || null;
+            routines[st.cls] = routines[st.cls] || Object.fromEntries(SCHOOL_DAYS.map(d => [d, PERIODS.map(() => null)]));
+            routines[st.cls][st.day][st.editing] = subject;
+            const n = st.editing; st.editing = null;
+            renderAllRoutines();
+            showToast(`${st.cls}, ${dayName(st.day)}: ${ORDINAL[n]} পিরিয়ড ${subject ? '→ ' + subject : 'খালি করা হয়েছে'}`);
+          }
+        });
+      });
+      document.getElementById('s-routine-classes').addEventListener('click', e => {
+        const b = e.target.closest('[data-routine-class]');
+        if (!b) return;
+        routineState.school.cls = b.getAttribute('data-routine-class'); routineState.school.editing = null;
+        renderAllRoutines();
+      });
+
+      refreshNotices();
+      renderAllRoutines();
     });
 
   </script>

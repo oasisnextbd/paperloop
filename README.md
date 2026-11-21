@@ -44,7 +44,10 @@ A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.
 It opens on a login page where the person chooses **অভিভাবক** (School Code + Class + Roll), **শিক্ষক** or
 **স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see; the header's
 **প্রোফাইল** button opens their details, settings (text size; absent alerts for parents; another child's
-diary) and logout. The login and settings are remembered on that phone until logout (browser storage).
+diary) and logout. Notices sit behind the header's **নোটিশ** button (with an unread count): the
+principal sends to everyone, parents, teachers or one class; a class teacher sends to her class's parents.
+The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
+khatas for that day). The login and settings are remembered on that phone until logout (browser storage).
 
 Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.

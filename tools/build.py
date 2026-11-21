@@ -159,6 +159,10 @@ def build_diary():
     html = page.read_text(encoding="utf-8")
     digest = hashlib.sha256((SRC / "diary" / "diary.css").read_bytes()).hexdigest()[:10]
     fixed = re.sub(r'diary\.css\?v=[0-9a-f]+', f"diary.css?v={digest}", html)
+    # One spelling for য় ড় ঢ়: the single code point. Text typed in different editors can come as letter +
+    # nukta instead; it looks the same but does not compare equal (a class name would then match nothing).
+    for decomposed, single in (("\u09af\u09bc", "\u09df"), ("\u09a1\u09bc", "\u09dc"), ("\u09a2\u09bc", "\u09dd")):
+        fixed = fixed.replace(decomposed, single)
     if fixed != html:
         page.write_text(fixed, encoding="utf-8")
     (OUT / "diary").mkdir(parents=True, exist_ok=True)
