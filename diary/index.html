@@ -2994,6 +2994,9 @@
       half: { label: 'অর্ধবার্ষিক পরীক্ষা', full: 100, publisher: 'school', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা'] },
       annual: { label: 'বার্ষিক পরীক্ষা', full: 100, publisher: 'school', subjects: ['বাংলা', 'ইংরেজি', 'গণিত', 'বিজ্ঞান', 'বাংলাদেশ ও বিশ্বপরিচয়', 'ধর্ম শিক্ষা'] }
     };
+    // Weekly tests are practice checks: marks only, no grades, GPA or position. Their marks count towards the
+    // monthly progress (LEARNING STANDARD). Grade sheets are for model, half-yearly and annual exams.
+    const isGraded = e => e.kind !== 'weekly';
     const rosterFor = cls => cls === TEACHER_CLASS ? classRoster : []; // only ৩য় শ্রেণি has students in this demo
     const resIcon = {
       print: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
@@ -3102,21 +3105,25 @@
       if (!list.some(e => e.id === resultsState.parentExam)) resultsState.parentExam = list[0].id;
       const exam = list.find(e => e.id === resultsState.parentExam);
       const res = computeResults(exam), me = res.rows.find(x => x.roll === roll);
-      const latest = computeResults(list[0]).rows.find(x => x.roll === roll);
-      stat.textContent = latest.letter === 'F' ? 'সর্বশেষ: F' : `সর্বশেষ: GPA ${bn(latest.gpa.toFixed(2))}`;
-      const fullTotal = exam.full * exam.subjects.length;
+      const lastGraded = list.find(isGraded), latest = lastGraded && computeResults(lastGraded).rows.find(x => x.roll === roll);
+      stat.textContent = !latest ? '—' : latest.letter === 'F' ? 'সর্বশেষ: F' : `সর্বশেষ: GPA ${bn(latest.gpa.toFixed(2))}`;
+      const fullTotal = exam.full * exam.subjects.length, graded = isGraded(exam);
       box.innerHTML = `
         <div class="space-y-4">
           <div class="flex flex-wrap gap-2">${list.slice(0, 5).map(e => `
             <button type="button" data-result-exam="${e.id}" aria-pressed="${e.id === exam.id}" class="icon-tile px-3 py-2 rounded-xl border text-left ${e.id === exam.id ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">
               <span class="block text-xs font-bold">${esc(e.name)}</span><span class="block text-[0.6875rem] text-ink-500">${bn(e.full)} নম্বর করে</span>
             </button>`).join('')}</div>
-          <div class="grid grid-cols-3 gap-3">
+          ${graded ? `<div class="grid grid-cols-3 gap-3">
             ${countTile('check', 'গ্রেড / GPA', me.letter === 'F' ? 'F' : `${me.letter} • ${bn(me.gpa.toFixed(2))}`, me.letter === 'F')}
             ${countTile('userCheck', 'মেধাক্রম', me.position ? `${posLabel(me.position)} (${bn(res.rows.length)} জনে)` : '—')}
             ${countTile('clock', 'মোট নম্বর', `${num(me.total)} / ${bn(fullTotal)}`)}
+          </div>` : `<div class="grid grid-cols-2 gap-3">
+            ${countTile('clock', 'মোট নম্বর', `${num(me.total)} / ${bn(fullTotal)}`)}
+            ${countTile('check', 'শতকরা', `${bn(Math.round((me.total / fullTotal) * 100))}%`)}
           </div>
-          ${me.failed.length ? `<p class="text-xs font-bold text-ink-900 bg-gold-50 border border-gold-200 rounded-xl px-3 py-2">${me.failed.map(esc).join(', ')}-এ পাস নম্বর (৩৩%) আসেনি। শ্রেণি শিক্ষকের সঙ্গে কথা বলুন।</p>` : ''}
+          <p class="text-xs text-ink-600">সাপ্তাহিক টেস্টে গ্রেড বা মেধাক্রম নেই; নম্বর মাসিক অগ্রগতিতে যোগ হয়।</p>`}
+          ${graded && me.failed.length ? `<p class="text-xs font-bold text-ink-900 bg-gold-50 border border-gold-200 rounded-xl px-3 py-2">${me.failed.map(esc).join(', ')}-এ পাস নম্বর (৩৩%) আসেনি। শ্রেণি শিক্ষকের সঙ্গে কথা বলুন।</p>` : ''}
           <div class="space-y-2.5">${me.subs.map(x => {
             const meta = subjectMeta[x.subject] || { svg: lineIcons.bangla };
             return `
@@ -3127,22 +3134,22 @@
                   </div>
                   <div class="min-w-0">
                     <div class="text-sm font-bold text-ink-900">${esc(x.subject)}</div>
-                    <div class="text-xs text-ink-500">ক্লাসে সর্বোচ্চ: ${num(res.highest[x.subject])}</div>
+                    ${graded ? `<div class="text-xs text-ink-500">ক্লাসে সর্বোচ্চ: ${num(res.highest[x.subject])}</div>` : ''}
                   </div>
                 </div>
                 <div class="text-right shrink-0">
                   <div class="text-sm font-extrabold text-ink-900">${x.absent ? 'অনুপস্থিত' : `${num(x.marks)} / ${bn(exam.full)}`}</div>
-                  <div class="mt-0.5">${gradePill(x.letter)}</div>
+                  ${graded ? `<div class="mt-0.5">${gradePill(x.letter)}</div>` : ''}
                 </div>
               </div>`;
           }).join('')}</div>
-          <button type="button" data-print-marksheet class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>মার্কশিট প্রিন্ট / PDF</span></button>
+          ${graded ? `<button type="button" data-print-marksheet class="icon-tile w-full py-3 rounded-2xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm flex items-center justify-center gap-2">${rIcon('print')}<span>মার্কশিট প্রিন্ট / PDF</span></button>` : ''}
         </div>`;
     }
 
     function printMarksheet() {
       const exam = exams.find(e => e.id === resultsState.parentExam), roll = currentRollNo();
-      if (!exam || !roll) return;
+      if (!exam || !roll || !isGraded(exam)) return;
       const res = computeResults(exam), me = res.rows.find(x => x.roll === roll);
       const info = `<div class="grid grid-cols-2 gap-1 text-sm mb-4">
         <div>নাম: <b>${esc(me.name)}</b></div><div>শ্রেণি: <b>${esc(exam.cls)}</b></div>
@@ -3274,6 +3281,14 @@
               <span class="font-bold text-ink-900">${esc(s)}</span>
               <span class="text-xs font-bold ${subjectDone(exam, s) ? 'text-ink-600' : 'text-gold-900'}">${subjectDone(exam, s) ? 'নম্বর দেওয়া হয়েছে' : `${bn(enteredCount(exam, s))}/${bn(roster.length)} জনের নম্বর`}</span>
             </div>`).join('')}</div>`;
+        } else if (!isGraded(exam)) {
+          const res = computeResults(exam), th = 'px-2 py-1.5 text-left font-bold text-ink-600 whitespace-nowrap border-l border-ink-200';
+          detail = `<p class="text-xs text-ink-600">সাপ্তাহিক টেস্টে গ্রেড বা মেধাক্রম নেই; নম্বর মাসিক অগ্রগতিতে যোগ হয়।</p>
+            <div class="overflow-x-auto rounded-xl border border-ink-200"><table class="text-xs min-w-full">
+              <thead class="bg-ink-50"><tr><th class="sticky left-0 bg-ink-50 px-2 py-1.5 text-left font-bold text-ink-600">রোল</th>${exam.subjects.map(s => `<th class="${th}">${shortSubject(s)}</th>`).join('')}<th class="${th}">মোট</th></tr></thead>
+              <tbody>${res.rows.map(x => `<tr class="border-t border-ink-200"><th class="sticky left-0 bg-white px-2 py-1.5 text-left font-bold text-ink-900 whitespace-nowrap">${rollLabel(x.roll)} ${esc(x.name.split(' ')[0])}</th>
+                ${x.subs.map(s => `<td class="px-2 py-1.5 border-l border-ink-200 whitespace-nowrap text-ink-700">${s.absent ? 'অনু.' : num(s.marks)}</td>`).join('')}<td class="px-2 py-1.5 border-l border-ink-200 font-bold text-ink-900">${num(x.total)}</td></tr>`).join('')}</tbody>
+            </table></div>`;
         } else {
           const views = [['merit', 'মেধাতালিকা'], ['tabulation', 'ট্যাবুলেশন'], ['failed', 'ফেল করা বিষয়'], ['summary', 'সারসংক্ষেপ']];
           detail = `
@@ -3351,7 +3366,7 @@
 
     function printSchoolView() {
       const st = resultsState.school, exam = exams.find(e => e.id === st.examId);
-      if (!exam) return;
+      if (!exam || !isGraded(exam)) return;
       const res = computeResults(exam);
       if (st.view === 'merit') {
         const ranked = res.rows.filter(x => x.position).sort((a, b) => a.position - b.position);
@@ -4346,7 +4361,7 @@
     const locative = w => /[\u0995-\u09B9\u09CE\u09DC-\u09DF]$/.test(w) ? w + 'ে' : /[\u09BE-\u09CC]$/.test(w) ? w + 'তে' : w + '-এ';
 
     function latestResultLine(s) {
-      const list = exams.filter(e => e.cls === s.cls && e.publishedAt && s.roll <= e.rosterSize).sort((a, b) => b.date - a.date);
+      const list = exams.filter(e => e.cls === s.cls && e.publishedAt && isGraded(e) && s.roll <= e.rosterSize).sort((a, b) => b.date - a.date);
       if (!list.length) return '';
       const me = computeResults(list[0]).rows.find(x => x.roll === s.roll);
       return me ? `${locative(list[0].name)} ${me.letter === 'F' ? 'সে উত্তীর্ণ হতে পারেনি' : `সে GPA ${bn(me.gpa.toFixed(2))} (${me.letter}) পেয়েছে`}। ` : '';

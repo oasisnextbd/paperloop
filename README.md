@@ -52,7 +52,8 @@ principal sends to everyone, parents, teachers or one class; a class teacher sen
 The principal sets each class's routine; parents see it with **ব্যাগে যা দেবেন** (the books and Paperloop
 khatas for that day). Results: the class teacher enters marks on one screen per subject; weekly tests are
 published by the teacher, model and term exams by the principal (Bangladesh primary grading, any F means an
-overall F, positions only for students who passed). Parents see and print the mark sheet; the principal sees
+overall F, positions only for students who passed). Weekly tests are practice checks: they show marks only (no
+grade, GPA, position or mark sheet) and count towards the monthly progress. Parents see and print the mark sheet; the principal sees
 the merit list, tabulation sheet, failed subjects and a summary, and can print the first two. Monthly progress against a common minimum (the parent's
 **উন্নতি রিপোর্ট**): the aim is not to be first in class but that every child reaches at least a minimum in each
 subject, as in outcome-based assessment. A subject's monthly level is the average of that month's published exam
