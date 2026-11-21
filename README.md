@@ -56,7 +56,12 @@ after) and prints the class list; the class teacher sees her class read-only; pa
 record in the profile panel. Sample records have no phone numbers on purpose. Fees: the principal or office collects fees (tick the months
 or fees being paid, method, optional discount or other fee) and prints a money receipt with parent and office
 copies; due list, cash book and fee settings per class, with half or full waivers. Parents see what is due and
-their receipts. There is no online payment; the method (cash, bKash, Nagad, bank) is only recorded. The login and settings are remembered on that phone until logout (browser storage).
+their receipts. There is no online payment; the method (cash, bKash, Nagad, bank) is only recorded. Printables
+(principal): student ID cards (nine per A4, blank photo box, no QR or barcode), admit cards and exam seat labels
+for model and term exams, testimonial, transfer certificate (warns about unpaid fees) and achievement
+certificates (an event, or the top three of an exam). Every printed page carries a faint "ডেমো • নমুনা" mark
+so nothing printed from the public demo can pass as a real school document; remove it (`demoMark`) only for
+a real school's own installation. The login and settings are remembered on that phone until logout (browser storage).
 
 Every name and number is sample data (the page says so), any ID and PIN are accepted, the school's data
 resets on reload, and the page asks search engines not to index it.

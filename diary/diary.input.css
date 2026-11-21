@@ -93,3 +93,5 @@
   body > *:not(#print-sheet) { display: none !important; }
   #print-sheet { display: block; color: #000; }
 }
+/* Printed cards and certificates keep their navy bands and gold lines */
+#print-sheet { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
