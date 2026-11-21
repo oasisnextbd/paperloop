@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paperloop স্মার্ট ডায়েরি</title>
-  <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন। এটি নমুনা তথ্যসহ ডেমো।" />
+  <meta name="description" content="Paperloop স্মার্ট ডায়েরি: স্কুল কোড, শ্রেণি ও রোল দিয়ে বাড়ির কাজ, হাজিরা ও ফলাফল দেখুন।" />
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#14213d" />
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
@@ -36,7 +36,7 @@
           <h1 class="text-base sm:text-lg font-bold text-ink-900 leading-tight" id="school-name-display">
             কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি
           </h1>
-          <p class="text-xs text-ink-500" id="header-subtitle">Paperloop স্মার্ট ডায়েরি • কসবা, ব্রাহ্মণবাড়িয়া</p>
+          <p class="text-xs text-ink-500" id="header-subtitle">অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@
               <line x1="15" x2="3" y1="12" y2="12"/>
             </svg>
           </div>
-          <h2 class="text-xl font-bold text-ink-900">Paperloop স্মার্ট ডায়েরিতে লগইন করুন</h2>
+          <h2 class="text-xl font-bold text-ink-900">লগইন করুন</h2>
           <p class="text-xs sm:text-sm text-ink-500">আপনার ভূমিকা (অভিভাবক, শিক্ষক অথবা স্কুল কর্তৃপক্ষ) নির্বাচন করুন</p>
         </div>
 
@@ -2414,7 +2414,7 @@
         return;
       }
       title.textContent = appState.schoolName;
-      subtitle.textContent = `Paperloop স্মার্ট ডায়েরি • ${ROLE_META[session.role].label}`;
+      subtitle.textContent = ROLE_META[session.role].label;
       btn.classList.remove('hidden'); btn.classList.add('flex');
     }
 
@@ -5133,7 +5133,7 @@
         </div>`;
       }).join('')}</div>`;
     }
-    const printFooter = () => `<p class="mt-[6mm] text-center text-[8pt]">${brand().footer ? `${esc(brand().footer)} • ` : ''}Paperloop স্মার্ট ডায়েরি</p>`;
+    const printFooter = () => brand().footer ? `<p class="mt-[6mm] text-center text-[8pt]">${esc(brand().footer)}</p>` : '';
     // A certificate template with {placeholders}; values are already-formatted HTML
     const fillTemplate = (tpl, values) => esc(tpl).replace(/\{([^{}]+)\}/g, (m, k) => (k in values ? values[k] : m)).replace(/\n/g, '<br>');
 
