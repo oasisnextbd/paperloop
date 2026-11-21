@@ -88,8 +88,9 @@
 /* Printing: only the sheet filled by printDoc() (mark sheet, merit list, tabulation) goes on paper. */
 #print-sheet { display: none; }
 @media print {
-  @page { size: A4; margin: 14mm; }
-  body { background: #fff; }
+  @page { size: A4; margin: 10mm; }
+  /* The app's full-height layout must not push an empty page after the printout */
+  html, body { height: auto !important; min-height: 0 !important; display: block !important; background: #fff; }
   body > *:not(#print-sheet) { display: none !important; }
   #print-sheet { display: block; color: #000; }
 }

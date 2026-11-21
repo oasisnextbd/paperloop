@@ -57,11 +57,24 @@ record in the profile panel. Sample records have no phone numbers on purpose. Fe
 or fees being paid, method, optional discount or other fee) and prints a money receipt with parent and office
 copies; due list, cash book and fee settings per class, with half or full waivers. Parents see what is due and
 their receipts. There is no online payment; the method (cash, bKash, Nagad, bank) is only recorded. Printables
-(principal): student ID cards (nine per A4, blank photo box, no QR or barcode), admit cards and exam seat labels
+(principal): student ID cards (nine per page, blank photo box, no QR or barcode), admit cards and exam seat labels
 for model and term exams, testimonial, transfer certificate (warns about unpaid fees) and achievement
 certificates (an event, or the top three of an exam). Every printed page carries a faint "ডেমো • নমুনা" mark
 so nothing printed from the public demo can pass as a real school document; remove it (`demoMark`) only for
 a real school's own installation. The login and settings are remembered on that phone until logout (browser storage).
+
+School design (principal, **স্কুলের ডিজাইন** card): each school sets its own letterhead once, with no code
+change: Bangla and English name, motto, address, phone, email, EIIN, year founded, logo and the head teacher's
+name and signature (photos from the phone, shrunk in the browser), the school's colour, letterhead layout
+(logo centred, logo left, name only), certificate border, paper size (A4, Letter or Legal), ID-card fields and
+validity, a footer line, and its own wording for the testimonial, transfer certificate and achievement
+certificate (`{নাম}`, `{শ্রেণি}`, `{রোল}` and the other placeholders shown under each box are filled in at print
+time; unknown ones are flagged). A live preview shows a mark sheet, receipt, testimonial or ID card. Every printout
+uses it: mark sheet, merit list, tabulation, class list, receipts, due list, cash book, ID cards, admit cards,
+seat labels and all certificates; the app's header shows the school's name and logo too. Layouts fit inside both
+A4 and Letter pages (phones often default to Letter), and the app no longer prints an empty extra page. In the
+demo the design is saved in that browser per school code (`pl_diary_brand_<code>`); the real backend keeps it on
+the school's record, with the images in file storage.
 
 Each role's dashboard opens on its cards; a card opens its section as its own page with a back button (the
 address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh work).

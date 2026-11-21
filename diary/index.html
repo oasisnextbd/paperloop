@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=e81258a5e6" />
+  <link rel="stylesheet" href="diary.css?v=a41ce50e77" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -964,6 +964,12 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Printables</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-print">৬ ধরনের</div>
           </button>
+        <button type="button" data-school-panel="brand" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+            <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">স্কুলের ডিজাইন</div>
+            <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">School design</div>
+            <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-brand">লোগো নেই</div>
+          </button>
         <button type="button" data-school-panel="diary" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">ডায়েরি আপডেট</div>
@@ -976,7 +982,7 @@
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Monitoring</div>
             <div class="mt-2 px-2.5 py-0.5 rounded-full bg-ink-100 border border-ink-200 text-[0.6875rem] font-extrabold text-ink-800" id="s-stat-cctv">চাহিদা অনুযায়ী</div>
           </button>
-        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile col-span-2 sm:col-span-1 rounded-2xl p-4 flex flex-col items-center text-center">
+        <button type="button" data-school-panel="live" class="school-floating-card floating-card icon-tile rounded-2xl p-4 flex flex-col items-center text-center">
             <div class="w-12 h-12 rounded-2xl bg-ink-100 border border-ink-200 flex items-center justify-center mb-2 text-ink-800"><svg class="line-icon-lg" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
             <div class="text-xs sm:text-sm font-extrabold text-ink-900 leading-tight">লাইভ ক্লাস</div>
             <div class="text-[0.6875rem] text-ink-500 font-medium mt-0.5">Live class</div>
@@ -1010,6 +1016,9 @@
 
       <!-- PRINCIPAL PANEL: PRINTABLES (ID card, admit card, seat plan, testimonial, transfer certificate, achievement) -->
       <div id="panel-school-print" class="school-subpanel hidden space-y-4"></div>
+
+      <!-- PRINCIPAL PANEL: SCHOOL DESIGN (logo, colours and wording used on every printout) -->
+      <div id="panel-school-brand" class="school-subpanel hidden space-y-4"></div>
 
       <!-- PRINCIPAL PANEL: TODAY'S STUDENT ATTENDANCE (class-wise) -->
       <div id="panel-school-students" class="school-subpanel space-y-4">
@@ -3089,17 +3098,15 @@
     const gradePill = (letter, big = false) => `<span class="inline-block ${big ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs'} rounded-md font-extrabold ${letter === 'F' ? 'bg-ink-900 text-white' : 'bg-gold-50 text-gold-900 border border-gold-200'}">${letter}</span>`;
 
     // ---------- Printing (mark sheet, merit list, tabulation) ----------
+    // Everything printed carries the school's own letterhead, signature and paper size (see SCHOOL DESIGN)
     function printDoc(title, inner, signatures = ['শ্রেণি শিক্ষক', 'প্রধান শিক্ষক']) {
       const sheet = document.getElementById('print-sheet');
-      sheet.innerHTML = (title === null ? '' : `
-        <div class="text-center mb-4">
-          <div class="text-xl font-bold">${esc(appState.schoolName)}</div>
-          <div class="text-sm">স্কুল কোড: ${esc(appState.schoolCode)}</div>
-          ${title ? `<div class="text-base font-bold mt-2">${title}</div>` : ''}
-        </div>`) + `
+      sheet.innerHTML = `<div class="relative mx-auto" style="width:${paperDims(false).w}mm">
+        ${title === null ? '' : letterhead(title)}
         ${inner}
-        ${signatures.length ? `<div class="mt-12 flex justify-between text-sm">${signatures.map(s => `<span class="border-t border-ink-900 pt-1 px-6">${s}</span>`).join('')}</div>` : ''}
-        <p class="mt-8 text-center text-xs">Paperloop স্মার্ট ডায়েরি • ডেমো: নমুনা তথ্য, আসল শিক্ষার্থীর নয়</p>`;
+        ${signatures.length ? `<div class="mt-[8mm] [break-inside:avoid]">${signatureBlock(signatures)}</div>` : ''}
+        ${printFooter()}</div>`;
+      setPageRule(false);
       window.print();
     }
     window.addEventListener('afterprint', () => { document.getElementById('print-sheet').innerHTML = ''; });
@@ -3924,11 +3931,11 @@
     })();
 
     // ---------- Receipt view and print ----------
-    function receiptHtml(rc, copyLabel) {
+    function receiptHtml(rc, copyLabel, forPrint = false) {
       const gross = rc.items.reduce((a, i) => a + i.amount, 0);
       return `
         <div class="space-y-3">
-          <div class="flex items-start justify-between gap-3">
+          ${forPrint ? letterhead(`টাকা জমার রসিদ${copyLabel ? ` • ${copyLabel}` : ''}`, { small: true }) : `<div class="flex items-start justify-between gap-3">
             <div>
               <div class="text-base font-bold text-ink-900">${esc(appState.schoolName)}</div>
               <div class="text-xs text-ink-500">স্কুল কোড: ${esc(appState.schoolCode)}</div>
@@ -3937,7 +3944,7 @@
               <div class="text-sm font-bold text-ink-900">টাকা জমার রসিদ</div>
               ${copyLabel ? `<div class="text-[0.6875rem] text-ink-500">${copyLabel}</div>` : ''}
             </div>
-          </div>
+          </div>`}
           <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-ink-700">
             <div>রসিদ নং: <b class="text-ink-900">${bn(rc.no)}</b></div><div class="text-right">তারিখ: <b class="text-ink-900">${bnFullDate(rc.date)}</b></div>
             <div>নাম: <b class="text-ink-900">${esc(rc.name)}</b></div><div class="text-right">আইডি: <b class="text-ink-900">${esc(rc.id)}</b></div>
@@ -3968,9 +3975,9 @@
     }
     function printReceipt(no) {
       const rc = receipts.find(r => r.no === no);
-      const sig = '<div class="mt-8 flex justify-end text-sm"><span class="border-t border-ink-900 pt-1 px-6">গ্রহণকারীর স্বাক্ষর</span></div>';
+      const sig = `<div class="mt-[2mm] flex justify-end">${signatureBlock(['গ্রহণকারীর স্বাক্ষর'], { small: true })}</div>`;
       const copies = session && session.role === 'parent' ? [''] : ['অভিভাবকের কপি', 'অফিস কপি'];
-      printDoc(null, copies.map(c => receiptHtml(rc, c) + sig).join('<div class="my-8 border-t-2 border-dashed border-ink-400"></div>'), []);
+      printDoc(null, copies.map(c => `<div class="[break-inside:avoid]">${receiptHtml(rc, c, true)}${sig}</div>`).join('<div class="my-[6mm] border-t-2 border-dashed border-ink-400"></div>'), []);
     }
 
     // ---------- Parent: fees card ----------
@@ -4285,82 +4292,85 @@
     const rollBn = r => bn(String(r).padStart(2, '0'));
     const demoMark = '<div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none"><span class="-rotate-[24deg] text-ink-900/10 font-extrabold whitespace-nowrap" style="font-size:var(--wm,28pt)">ডেমো • নমুনা</span></div>';
 
-    // ---------- Document builders (each returns an HTML string; A4 pages are 210 × 297 mm) ----------
+    // ---------- Document builders (each returns an HTML string) ----------
+    // Sizes fit inside both A4 and Letter pages (phones often default to Letter); the school's colour,
+    // logo, signature and wording come from SCHOOL DESIGN.
     function idCard(s) {
+      const b = brand(), on = inkOn(b.color);
       const row = (k, v) => `<div class="flex gap-1"><span class="text-ink-500 shrink-0">${k}:</span><span class="font-bold text-ink-900 truncate">${esc(v)}</span></div>`;
       return `
         <div class="relative w-[54mm] h-[86mm] border border-ink-400 rounded-[3mm] overflow-hidden bg-white flex flex-col text-[6.5pt] leading-tight" style="--wm:13pt">
-          <div class="bg-ink-900 text-white text-center px-[2mm] pt-[2.5mm] pb-[2mm]">
-            <div class="font-bold text-[7.5pt] leading-snug">${esc(appState.schoolName)}</div>
-            <div class="text-gold-300 text-[6pt] mt-[0.5mm]">শিক্ষার্থী পরিচয়পত্র</div>
+          <div class="text-center px-[2mm] pt-[2mm] pb-[1.8mm] flex flex-col items-center" style="background:${b.color};color:${on}">
+            ${b.logo ? `<img src="${b.logo}" alt="" class="mb-[0.8mm] rounded-[1mm] bg-white p-[0.4mm]" style="height:7mm;width:auto;max-width:16mm;object-fit:contain">` : ''}
+            <div class="font-bold text-[7.5pt] leading-snug">${esc(b.name)}</div>
+            <div class="text-[6pt] mt-[0.5mm] opacity-80">শিক্ষার্থী পরিচয়পত্র</div>
           </div>
-          <div class="mx-auto mt-[2.5mm] w-[20mm] h-[24mm] border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-ink-400 text-[6pt]">ছবি</div>
-          <div class="text-center font-bold text-[8.5pt] text-ink-900 mt-[1.5mm] px-[2mm] leading-snug">${esc(s.name)}</div>
-          <div class="px-[3.5mm] mt-[1.5mm] space-y-[0.6mm]">
+          <div class="mx-auto mt-[2mm] w-[19mm] h-[22mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-ink-400 text-[6pt]">ছবি</div>
+          <div class="text-center font-bold text-[8.5pt] text-ink-900 mt-[1.2mm] px-[2mm] leading-snug">${esc(s.name)}</div>
+          <div class="px-[3.5mm] mt-[1.2mm] space-y-[0.6mm]">
             ${row('শ্রেণি', `${s.cls} • রোল ${rollBn(s.roll)}`)}${row('আইডি', s.id)}${row('পিতা', s.father)}
-            ${row('জন্ম', bnFullDate(s.dob))}${row('রক্ত', s.blood || '—')}${row('মোবাইল', s.phone ? bn(s.phone) : '—')}
+            ${row('জন্ম', bnFullDate(s.dob))}${b.idBlood ? row('রক্ত', s.blood || '—') : ''}${b.idPhone ? row('মোবাইল', s.phone ? bn(s.phone) : '—') : ''}
           </div>
-          <div class="mt-auto px-[3.5mm] pb-[2.5mm] flex items-end justify-between text-[5.5pt]">
-            <span>মেয়াদ: ডিসেম্বর ${bn(realToday.getFullYear())}</span>
-            <span class="border-t border-ink-900 pt-[0.5mm] px-[1mm]">প্রধান শিক্ষক</span>
+          <div class="mt-auto px-[3.5mm] pb-[2mm] flex items-end justify-between gap-[1mm] text-[5.5pt]">
+            <span>মেয়াদ: ${esc(b.idValid || `ডিসেম্বর ${bn(realToday.getFullYear())}`)}</span>
+            <span class="text-center">${b.signature ? `<img src="${b.signature}" alt="" style="height:5mm;width:auto;max-width:18mm;margin:0 auto;object-fit:contain;mix-blend-mode:multiply">` : ''}<span class="block border-t border-ink-900 pt-[0.5mm] px-[1mm]">প্রধান শিক্ষক</span></span>
           </div>
-          <div class="h-[1.5mm] bg-gold-400"></div>
+          <div class="h-[1.5mm]" style="background:${b.color}"></div>
           ${demoMark}
         </div>`;
     }
     function admitCard(s, exam) {
       return `
-        <div class="relative h-[132mm] border-2 border-ink-900 rounded-[3mm] p-[7mm] flex flex-col text-[10pt] overflow-hidden" style="--wm:40pt">
-          <div class="text-center">
-            <div class="text-[15pt] font-bold">${esc(appState.schoolName)}</div>
-            <div class="text-[9pt]">স্কুল কোড: ${esc(appState.schoolCode)}</div>
-            <div class="inline-block mt-[3mm] px-[5mm] py-[1mm] border-2 border-ink-900 rounded-full font-bold">প্রবেশপত্র • ${esc(exam.name)}</div>
-          </div>
-          <div class="mt-[6mm] flex gap-[6mm]">
-            <div class="flex-1 grid grid-cols-[auto_1fr] gap-x-[3mm] gap-y-[1.5mm]">
+        <div class="relative h-[125mm] border-2 rounded-[3mm] px-[7mm] py-[5mm] flex flex-col text-[10pt] overflow-hidden" style="--wm:40pt;border-color:${brand().color}">
+          ${letterhead(`প্রবেশপত্র • ${esc(exam.name)}`, { small: true })}
+          <div class="flex gap-[6mm]">
+            <div class="flex-1 grid grid-cols-[auto_1fr] gap-x-[3mm] gap-y-[1mm]">
               <span>নাম:</span><b>${esc(s.name)}</b><span>শ্রেণি:</span><b>${esc(s.cls)}</b><span>রোল:</span><b>${rollBn(s.roll)}</b>
               <span>আইডি:</span><b>${esc(s.id)}</b><span>পিতা:</span><b>${esc(s.father)}</b><span>মাতা:</span><b>${esc(s.mother)}</b>
             </div>
-            <div class="w-[26mm] h-[32mm] border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-[8pt] text-ink-400">ছবি</div>
+            <div class="w-[24mm] h-[29mm] shrink-0 border border-dashed border-ink-400 rounded-[1.5mm] flex items-center justify-center text-[8pt] text-ink-400">ছবি</div>
           </div>
-          <div class="mt-[5mm] text-[9pt]"><b>পরীক্ষার বিষয়:</b> ${exam.subjects.map(esc).join(', ')}</div>
-          <ol class="mt-[3mm] text-[8.5pt] list-decimal pl-[5mm] space-y-[0.5mm]">
+          <div class="mt-[3mm] text-[9pt]"><b>পরীক্ষার বিষয়:</b> ${exam.subjects.map(esc).join(', ')}</div>
+          <ol class="mt-[2mm] text-[8.5pt] list-decimal pl-[5mm] space-y-[0.3mm]">
             <li>প্রতিদিন পরীক্ষায় এই প্রবেশপত্র সঙ্গে আনবে।</li>
             <li>পরীক্ষা শুরুর ১৫ মিনিট আগে নিজের আসনে বসবে।</li>
             <li>নিজের পেন্সিল, কলম, রাবার ও স্কেল আনবে; অন্যেরটা নেবে না।</li>
           </ol>
-          <div class="mt-auto flex justify-between text-[9pt]"><span class="border-t border-ink-900 pt-[1mm] px-[4mm]">শ্রেণি শিক্ষক</span><span class="border-t border-ink-900 pt-[1mm] px-[4mm]">প্রধান শিক্ষক</span></div>
+          <div class="mt-auto">${signatureBlock(['শ্রেণি শিক্ষক', 'প্রধান শিক্ষক'], { small: true })}</div>
           ${demoMark}
         </div>`;
     }
     function seatLabel(s, exam) {
+      const b = brand();
       return `
-        <div class="relative h-[36mm] border border-ink-900 rounded-[2mm] p-[3mm] flex items-center gap-[3mm] overflow-hidden" style="--wm:16pt">
+        <div class="relative h-[34mm] border rounded-[2mm] p-[3mm] flex items-center gap-[3mm] overflow-hidden" style="--wm:16pt;border-color:${b.color}">
           <div class="w-[22mm] shrink-0 text-center border-r border-ink-300 pr-[2mm]">
-            <div class="text-[7pt]">রোল</div><div class="text-[26pt] font-extrabold leading-none">${rollBn(s.roll)}</div>
+            <div class="text-[7pt]">রোল</div><div class="text-[26pt] font-extrabold leading-none" style="color:${b.color}">${rollBn(s.roll)}</div>
           </div>
-          <div class="min-w-0 text-[8pt] leading-snug">
+          <div class="min-w-0 flex-1 text-[8pt] leading-snug">
             <div class="font-bold text-[10pt] truncate">${esc(s.name)}</div>
             <div>${esc(s.cls)} • আইডি ${esc(s.id)}</div>
             <div class="truncate">${esc(exam.name)}</div>
-            <div class="text-[7pt] text-ink-600 truncate">${esc(appState.schoolName)}</div>
+            <div class="text-[7pt] text-ink-600 truncate">${esc(b.name)}</div>
           </div>
+          ${b.logo ? `<img src="${b.logo}" alt="" class="shrink-0" style="height:12mm;width:auto;max-width:16mm;object-fit:contain">` : ''}
           ${demoMark}
         </div>`;
     }
+    // Certificate borders the school can choose
+    function certFrame(inner) {
+      const b = brand(), d = paperDims(true);
+      const base = `relative flex flex-col overflow-hidden`;
+      if (b.border === 'frame') return `<div class="${base}" style="height:${d.h}mm;border:1.6mm solid ${b.color};padding:1.6mm"><div class="flex-1 flex flex-col p-[8mm]" style="border:0.5mm solid ${b.color}">${inner}</div>${demoMark}</div>`;
+      if (b.border === 'simple') return `<div class="${base} p-[10mm]" style="height:${d.h}mm;border:0.6mm solid ${b.color}">${inner}${demoMark}</div>`;
+      return `<div class="${base} p-[9mm]" style="height:${d.h}mm;border:3mm double ${b.color}">${inner}${demoMark}</div>`;
+    }
     function certificatePage(heading, serialLabel, body, signatures) {
-      return `
-        <div class="relative h-[186mm] border-[3mm] border-double border-ink-900 p-[10mm] flex flex-col overflow-hidden" style="--wm:60pt">
+      return `<div style="--wm:60pt">${certFrame(`
           <div class="flex justify-between text-[9pt]"><span>${serialLabel}</span><span>তারিখ: ${bnFullDate(realToday)}</span></div>
-          <div class="text-center mt-[2mm]">
-            <div class="text-[20pt] font-bold leading-tight">${esc(appState.schoolName)}</div>
-            <div class="text-[9pt]">স্কুল কোড: ${esc(appState.schoolCode)}</div>
-            <div class="inline-block mt-[4mm] px-[8mm] py-[1.5mm] bg-ink-900 text-white rounded-full text-[15pt] font-bold">${heading}</div>
-          </div>
-          <div class="mt-[8mm] text-[12pt] leading-[2.1] text-justify">${body}</div>
-          <div class="mt-auto flex justify-between text-[10pt]">${signatures.map(x => `<span class="border-t border-ink-900 pt-[1mm] px-[6mm]">${x}</span>`).join('')}</div>
-          ${demoMark}
-        </div>`;
+          ${letterhead(heading)}
+          <div class="text-[12pt] leading-[2] text-justify">${body}</div>
+          <div class="mt-auto">${signatureBlock(signatures)}</div>`)}</div>`;
     }
     const fill = v => `<b class="border-b border-dotted border-ink-900 px-[1mm]">${esc(v)}</b>`;
     // Bangla locative: নভেম্বর → নভেম্বরে, শ্রেণি → শ্রেণিতে, (দৌড়) → (দৌড়)-এ
@@ -4372,19 +4382,23 @@
       const me = computeResults(list[0]).rows.find(x => x.roll === s.roll);
       return me ? `${locative(list[0].name)} ${me.letter === 'F' ? 'সে উত্তীর্ণ হতে পারেনি' : `সে GPA ${bn(me.gpa.toFixed(2))} (${me.letter}) পেয়েছে`}। ` : '';
     }
+    // The wording is the school's own (SCHOOL DESIGN → certificate wording); {placeholders} take the student's details
     function testimonialBody(s, conduct) {
-      return `এই মর্মে প্রত্যয়ন করা যাচ্ছে যে, ${fill(s.name)}, পিতা: ${fill(s.father)}, মাতা: ${fill(s.mother)}, ঠিকানা: ${fill(s.address)},
-        এই বিদ্যালয়ের ${fill(possessive(s.cls))} একজন নিয়মিত শিক্ষার্থী। তার রোল নম্বর ${fill(rollBn(s.roll))}, শিক্ষার্থী আইডি ${fill(s.id)}, শিক্ষাবর্ষ ${fill(bn(realToday.getFullYear()))}।
-        ${latestResultLine(s)}বিদ্যালয়ে অধ্যয়নকালে তার চরিত্র ও আচরণ ${fill(conduct)}। আমার জানামতে সে বিদ্যালয়ের শৃঙ্খলাবিরোধী কোনো কাজে জড়িত ছিল না। আমি তার উত্তরোত্তর সাফল্য কামনা করি।`;
+      return fillTemplate(brand().templates.testimonial, {
+        'নাম': fill(s.name), 'পিতা': fill(s.father), 'মাতা': fill(s.mother), 'ঠিকানা': fill(s.address), 'শ্রেণি': fill(s.cls), 'শ্রেণির': fill(possessive(s.cls)),
+        'রোল': fill(rollBn(s.roll)), 'আইডি': fill(s.id), 'বছর': fill(bn(realToday.getFullYear())), 'ফলাফল': esc(latestResultLine(s)), 'আচরণ': fill(conduct)
+      });
     }
     function tcBody(s, leaving, reason, due) {
-      return `এই মর্মে প্রত্যয়ন করা যাচ্ছে যে, ${fill(s.name)}, পিতা: ${fill(s.father)}, মাতা: ${fill(s.mother)}, এই বিদ্যালয়ের ${fill(possessive(s.cls))} শিক্ষার্থী ছিল
-        (রোল ${fill(rollBn(s.roll))}, আইডি ${fill(s.id)}, ভর্তির বছর ${fill(bn(s.admitted))})। ${fill(bnFullDate(leaving))} তারিখে ${fill(reason)} কারণে অভিভাবকের আবেদনক্রমে তাকে এই ছাড়পত্র দেওয়া হলো।
-        ${due > 0 ? `বিদ্যালয়ে তার ${fill(taka(due))} বকেয়া রয়েছে।` : 'বিদ্যালয়ে তার কোনো বকেয়া নেই।'} ${latestResultLine(s)}আমি তার সাফল্য কামনা করি।`;
+      return fillTemplate(brand().templates.tc, {
+        'নাম': fill(s.name), 'পিতা': fill(s.father), 'মাতা': fill(s.mother), 'শ্রেণি': fill(s.cls), 'শ্রেণির': fill(possessive(s.cls)), 'রোল': fill(rollBn(s.roll)),
+        'আইডি': fill(s.id), 'ভর্তির বছর': fill(bn(s.admitted)), 'ছাড়ার তারিখ': fill(bnFullDate(leaving)), 'কারণ': fill(reason),
+        'বকেয়া': due > 0 ? `বিদ্যালয়ে তার ${fill(taka(due))} বকেয়া রয়েছে।` : 'বিদ্যালয়ে তার কোনো বকেয়া নেই।', 'ফলাফল': esc(latestResultLine(s))
+      });
     }
     function awardBody(s, event, position) {
       const pos = position === 'অংশগ্রহণ' ? `${fill(locative(event))} অংশগ্রহণের জন্য` : `${fill(locative(event))} ${fill(position)} স্থান অধিকার করায়`;
-      return `${fill(s.name)}, ${fill(s.cls)}, রোল ${fill(rollBn(s.roll))}, ${pos} তাকে এই কৃতিত্ব সনদ প্রদান করা হলো।<br>তোমার এই সাফল্যে আমরা আনন্দিত। এই সনদ তোমার আরও ভালো করার প্রেরণা হোক।`;
+      return fillTemplate(brand().templates.award, { 'নাম': fill(s.name), 'শ্রেণি': fill(s.cls), 'রোল': fill(rollBn(s.roll)), 'অনুষ্ঠান ও স্থান': pos });
     }
 
     // ---------- What is printed for the current choices ----------
@@ -4395,7 +4409,7 @@
     // Admit cards, seat plans and merit certificates are for model and term exams, not weekly class tests
     function examsFor(cls) { return exams.filter(e => e.cls === cls && e.kind !== 'weekly').sort((a, b) => b.date - a.date); }
     // One printed page; landscape pages (certificates) are wider
-    const page = (inner, landscape = false) => `<div class="relative ${landscape ? 'w-[277mm]' : 'w-[190mm]'} mx-auto [break-after:page] last:[break-after:auto]">${inner}</div>`;
+    const page = (inner, landscape = false) => `<div class="relative mx-auto [break-after:page] last:[break-after:auto]" style="width:${paperDims(landscape).w}mm">${inner}</div>`;
     const chunk = (arr, n) => arr.reduce((a, x, i) => (i % n ? a[a.length - 1].push(x) : a.push([x]), a), []);
 
     // Returns { pages: [html], landscape, count, label } or { error }
@@ -4405,13 +4419,13 @@
       const one = students[0];
       if (st.doc === 'id') {
         if (!students.length) return { error: 'এই শ্রেণির শিক্ষার্থী তালিকা ডেমোতে নেই' };
-        return { pages: chunk(students, 9).map(g => page(`<div class="grid grid-cols-3 gap-[6mm] justify-items-center">${g.map(idCard).join('')}</div>`)), count: students.length, label: 'আইডি কার্ড' };
+        return { margin: 6, pages: chunk(students, 9).map(g => page(`<div class="grid grid-cols-3 gap-x-[6mm] gap-y-[4mm] justify-items-center">${g.map(idCard).join('')}</div>`)), count: students.length, label: 'আইডি কার্ড' };
       }
       if (st.doc === 'admit' || st.doc === 'seat') {
         if (!exam) return { error: 'আগে পরীক্ষা বেছে নিন (ফলাফল কার্ড থেকে পরীক্ষা তৈরি করা যায়)' };
         const sat = students.filter(s => s.roll <= exam.rosterSize);
         if (!sat.length) return { error: 'এই পরীক্ষায় কোনো শিক্ষার্থী নেই' };
-        if (st.doc === 'admit') return { pages: chunk(sat, 2).map(g => page(`<div class="space-y-[8mm]">${g.map(s => admitCard(s, exam)).join('')}</div>`)), count: sat.length, label: 'প্রবেশপত্র' };
+        if (st.doc === 'admit') return { pages: chunk(sat, 2).map(g => page(`<div class="space-y-[6mm]">${g.map(s => admitCard(s, exam)).join('')}</div>`)), count: sat.length, label: 'প্রবেশপত্র' };
         return { pages: chunk(sat, 14).map(g => page(`<div class="grid grid-cols-2 gap-[3mm]">${g.map(s => seatLabel(s, exam)).join('')}</div>`)), count: sat.length, label: 'সিট লেবেল' };
       }
       if (st.doc === 'testimonial') {
@@ -4446,9 +4460,8 @@
 
     function printPages(doc) {
       const sheet = document.getElementById('print-sheet');
-      let size = document.getElementById('print-page-size');
-      if (!size) { size = document.createElement('style'); size.id = 'print-page-size'; document.head.appendChild(size); }
-      size.textContent = `@page { size: A4 ${doc.landscape ? 'landscape' : 'portrait'}; margin: 10mm; }`;
+      const size = pageSizeStyle();
+      size.textContent = pageRule(doc.landscape, doc.margin);
       sheet.innerHTML = doc.pages.join('');
       window.print();
     }
@@ -4525,7 +4538,7 @@
       }
       err.classList.add('hidden');
       label.textContent = `${bn(doc.count)}টি ${doc.label} প্রিন্ট / PDF (${bn(doc.pages.length)} পৃষ্ঠা)`;
-      const pageW = doc.landscape ? 277 : 190, pageH = doc.landscape ? 190 : 277; // mm inside the margins
+      const { w: pageW, h: pageH } = paperDims(doc.landscape); // mm inside the margins
       const mm = 96 / 25.4, scale = Math.min(1, (box.clientWidth || 300) / (pageW * mm));
       box.style.height = `${Math.round(pageH * mm * scale)}px`;
       box.innerHTML = `<div class="absolute left-0 top-0 origin-top-left text-ink-900" style="width:${pageW}mm;transform:scale(${scale})">${doc.pages[0].replace('[break-after:page]', '')}</div>`;
@@ -4563,6 +4576,303 @@
       renderPrintPanel();
     });
 
+  </script>
+  <script>
+    // ==========================================
+    // SCHOOL DESIGN (letterhead for everything the school prints)
+    // Each school sets its own name, contact line, logo, head teacher's signature, colour, header style,
+    // certificate border, paper size, ID-card fields and certificate wording, once, under the principal's
+    // "স্কুলের ডিজাইন" card. Every printout (mark sheet, merit list, tabulation, class list, receipt, due list,
+    // cash book, ID card, admit card, seat label, testimonial, transfer certificate, achievement certificate)
+    // is built from it. Demo: saved in this browser per school code. Real backend: the school's record, with
+    // the logo and signature in file storage.
+    // ==========================================
+    const BRAND_TEMPLATES = {
+      testimonial: 'এই মর্মে প্রত্যয়ন করা যাচ্ছে যে, {নাম}, পিতা: {পিতা}, মাতা: {মাতা}, ঠিকানা: {ঠিকানা}, এই বিদ্যালয়ের {শ্রেণির} একজন নিয়মিত শিক্ষার্থী। তার রোল নম্বর {রোল}, শিক্ষার্থী আইডি {আইডি}, শিক্ষাবর্ষ {বছর}। {ফলাফল}বিদ্যালয়ে অধ্যয়নকালে তার চরিত্র ও আচরণ {আচরণ}। আমার জানামতে সে বিদ্যালয়ের শৃঙ্খলাবিরোধী কোনো কাজে জড়িত ছিল না। আমি তার উত্তরোত্তর সাফল্য কামনা করি।',
+      tc: 'এই মর্মে প্রত্যয়ন করা যাচ্ছে যে, {নাম}, পিতা: {পিতা}, মাতা: {মাতা}, এই বিদ্যালয়ের {শ্রেণির} শিক্ষার্থী ছিল (রোল {রোল}, আইডি {আইডি}, ভর্তির বছর {ভর্তির বছর})। {ছাড়ার তারিখ} তারিখে {কারণ} কারণে অভিভাবকের আবেদনক্রমে তাকে এই ছাড়পত্র দেওয়া হলো। {বকেয়া} {ফলাফল}আমি তার সাফল্য কামনা করি।',
+      award: '{নাম}, {শ্রেণি}, রোল {রোল}, {অনুষ্ঠান ও স্থান} তাকে এই কৃতিত্ব সনদ প্রদান করা হলো।\nতোমার এই সাফল্যে আমরা আনন্দিত। এই সনদ তোমার আরও ভালো করার প্রেরণা হোক।'
+    };
+    const TEMPLATE_KEYS = {
+      testimonial: ['নাম', 'পিতা', 'মাতা', 'ঠিকানা', 'শ্রেণি', 'শ্রেণির', 'রোল', 'আইডি', 'বছর', 'ফলাফল', 'আচরণ'],
+      tc: ['নাম', 'পিতা', 'মাতা', 'শ্রেণি', 'শ্রেণির', 'রোল', 'আইডি', 'ভর্তির বছর', 'ছাড়ার তারিখ', 'কারণ', 'বকেয়া', 'ফলাফল'],
+      award: ['নাম', 'শ্রেণি', 'রোল', 'অনুষ্ঠান ও স্থান']
+    };
+    const BRAND_COLORS = ['#14213d', '#0b5d3b', '#7a1730', '#1d4e89', '#0f5e63', '#4b2a7a', '#5a3b12', '#111111'];
+    const PAPERS = { A4: 'A4', Letter: 'Letter', Legal: 'Legal' };
+    const brandKey = code => `pl_diary_brand_${code}`;
+    function brandDefaults(code) {
+      return {
+        name: schoolNamesByCode[code] || `কসবা পার্টনার স্কুল (${code})`, nameEn: '', motto: '', address: 'কসবা, ব্রাহ্মণবাড়িয়া',
+        phone: '', email: '', eiin: '', est: '', logo: '', head: '', signature: '',
+        color: '#14213d', header: 'center', border: 'double', paper: 'A4',
+        idBlood: true, idPhone: true, idValid: '', footer: '', templates: { ...BRAND_TEMPLATES }
+      };
+    }
+    function brandFor(code) {
+      const saved = readStore(brandKey(code)) || {};
+      const d = brandDefaults(code);
+      return { ...d, ...saved, templates: { ...d.templates, ...(saved.templates || {}) } };
+    }
+    let brandOverride = null; // the unsaved draft, while the design page shows its preview
+    const brand = () => brandOverride || brandFor(appState.schoolCode);
+
+    // Text colour that stays readable on the school's colour
+    function inkOn(hex) {
+      const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+      return (0.299 * r + 0.587 * g + 0.114 * b) > 160 ? '#111111' : '#ffffff';
+    }
+    // Layouts fit inside both A4 and Letter (phones often default to Letter), and Legal
+    const paperDims = landscape => brand().paper === 'Legal'
+      ? (landscape ? { w: 335, h: 190 } : { w: 190, h: 335 })
+      : (landscape ? { w: 259, h: 186 } : { w: 190, h: 259 });
+    const pageRule = (landscape, margin = 10) => `@page { size: ${PAPERS[brand().paper] || 'A4'} ${landscape ? 'landscape' : 'portrait'}; margin: ${margin}mm; }`;
+    function pageSizeStyle() {
+      let size = document.getElementById('print-page-size');
+      if (!size) { size = document.createElement('style'); size.id = 'print-page-size'; document.head.appendChild(size); }
+      return size;
+    }
+    const setPageRule = (landscape, margin) => { pageSizeStyle().textContent = pageRule(landscape, margin); };
+
+    function letterhead(title, { small = false } = {}) {
+      const b = brand();
+      const contact = [b.phone && `ফোন: ${bn(b.phone)}`, b.email, b.eiin && `EIIN: ${b.eiin}`, b.est && `স্থাপিত: ${bn(b.est)}`].filter(Boolean).join(' • ');
+      const logo = b.logo && b.header !== 'plain' ? `<img src="${b.logo}" alt="" style="height:${small ? 11 : 17}mm;width:auto;max-width:${small ? 22 : 30}mm;object-fit:contain">` : '';
+      const text = `
+        <div style="color:${b.color}" class="font-bold leading-tight ${small ? 'text-[13pt]' : 'text-[18pt]'}">${esc(b.name)}</div>
+        ${b.nameEn ? `<div class="${small ? 'text-[8pt]' : 'text-[10pt]'} font-semibold">${esc(b.nameEn)}</div>` : ''}
+        ${b.motto ? `<div class="${small ? 'text-[7.5pt]' : 'text-[9pt]'} italic">${esc(b.motto)}</div>` : ''}
+        ${b.address ? `<div class="${small ? 'text-[8pt]' : 'text-[9pt]'}">${esc(b.address)}</div>` : ''}
+        ${contact ? `<div class="${small ? 'text-[7.5pt]' : 'text-[8.5pt]'}">${esc(contact)}</div>` : ''}`;
+      const head = b.header === 'left' && logo
+        ? `<div class="flex items-center gap-[4mm]">${logo}<div class="text-left">${text}</div></div>`
+        : `<div class="text-center">${logo ? `<div class="flex justify-center mb-[1.5mm]">${logo}</div>` : ''}${text}</div>`;
+      return `
+        <div class="${small ? 'mb-[3mm]' : 'mb-[5mm]'}">
+          ${head}
+          ${title ? `<div class="text-center ${small ? 'mt-[2.5mm]' : 'mt-[4mm]'}"><span class="inline-block px-[6mm] py-[1mm] rounded-full font-bold ${small ? 'text-[10pt]' : 'text-[13pt]'}" style="background:${b.color};color:${inkOn(b.color)}">${title}</span></div>` : ''}
+        </div>`;
+    }
+    function signatureBlock(labels, { small = false } = {}) {
+      const b = brand();
+      return `<div class="flex justify-between items-start ${small ? 'text-[8.5pt]' : 'text-[10pt]'}">${labels.map(l => {
+        const isHead = l === 'প্রধান শিক্ষক';
+        return `<div class="text-center" style="min-width:38mm">
+          ${isHead && b.signature ? `<img src="${b.signature}" alt="" style="height:${small ? 9 : 13}mm;width:auto;max-width:45mm;margin:0 auto;object-fit:contain;mix-blend-mode:multiply">` : `<div style="height:${small ? 9 : 13}mm"></div>`}
+          <div class="border-t border-ink-900 pt-[1mm] px-[4mm]">${l}</div>
+          ${isHead && b.head ? `<div class="${small ? 'text-[7.5pt]' : 'text-[8.5pt]'}">${esc(b.head)}</div>` : ''}
+        </div>`;
+      }).join('')}</div>`;
+    }
+    const printFooter = () => `<p class="mt-[6mm] text-center text-[8pt]">${brand().footer ? `${esc(brand().footer)} • ` : ''}Paperloop স্মার্ট ডায়েরি • ডেমো: নমুনা তথ্য, আসল শিক্ষার্থীর নয়</p>`;
+    // A certificate template with {placeholders}; values are already-formatted HTML
+    const fillTemplate = (tpl, values) => esc(tpl).replace(/\{([^{}]+)\}/g, (m, k) => (k in values ? values[k] : m)).replace(/\n/g, '<br>');
+
+    // The school's name in the app follows the design too
+    let paperloopMark = null;
+    function applyBrandToApp() {
+      const mark = document.querySelector('header a[aria-label="Paperloop ওয়েবসাইট"]');
+      if (mark && paperloopMark === null) paperloopMark = mark.innerHTML;
+      const b = session && appState.schoolCode ? brandFor(appState.schoolCode) : null;
+      if (mark) mark.innerHTML = b && b.logo ? `<img src="${b.logo}" alt="" class="w-9 h-9 object-contain">` : paperloopMark;
+      if (!b) return;
+      appState.schoolName = b.name;
+      const title = document.getElementById('admin-school-title');
+      if (title) title.textContent = `${b.name} (কোড: ${appState.schoolCode})`;
+      const stat = document.getElementById('s-stat-brand');
+      if (stat) stat.textContent = b.logo ? 'লোগো যুক্ত' : 'লোগো নেই';
+    }
+    const prevSessionHook = window.onDiarySessionChange;
+    window.onDiarySessionChange = () => { applyBrandToApp(); if (prevSessionHook) prevSessionHook(); };
+
+    // ---------- The design page (principal) ----------
+    let brandDraft = null, brandPreviewDoc = 'marksheet';
+    function readImage(file, maxW, maxH) {
+      return new Promise((resolve, reject) => {
+        if (!file || !/^image\//.test(file.type)) return reject(new Error('type'));
+        if (file.size > 8 * 1024 * 1024) return reject(new Error('size'));
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const k = Math.min(1, maxW / img.width, maxH / img.height);
+            const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            resolve(c.toDataURL('image/png'));
+          };
+          img.onerror = () => reject(new Error('read'));
+          img.src = reader.result;
+        };
+        reader.onerror = () => reject(new Error('read'));
+        reader.readAsDataURL(file);
+      });
+    }
+    function renderBrandPanel() {
+      const el = document.getElementById('panel-school-brand');
+      brandDraft = brandDraft || JSON.parse(JSON.stringify(brandFor(appState.schoolCode)));
+      const b = brandDraft;
+      const input = (key, label, opts = '') => `<div><label for="brand-${key}" class="block text-xs font-bold text-ink-600 mb-1">${label}</label><input id="brand-${key}" data-brand="${key}" type="text" value="${esc(b[key] || '')}" ${opts} class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm" /></div>`;
+      const chips = (key, options) => `<div class="grid grid-cols-${options.length} gap-2">${options.map(([v, l]) => `<button type="button" data-brand-choice="${key}" data-value="${v}" aria-pressed="${b[key] === v}" class="icon-tile py-2 px-1 rounded-xl border text-xs font-bold ${b[key] === v ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>`;
+      const imageBox = (key, label, hint) => `
+        <div class="space-y-1.5">
+          <div class="text-xs font-bold text-ink-600">${label}</div>
+          <div class="flex items-center gap-3">
+            <div class="w-24 h-16 rounded-xl border border-dashed border-ink-300 bg-white flex items-center justify-center overflow-hidden shrink-0">${b[key] ? `<img src="${b[key]}" alt="" class="max-w-full max-h-full object-contain">` : '<span class="text-[0.6875rem] text-ink-400">নেই</span>'}</div>
+            <div class="flex flex-wrap gap-2">
+              <label class="icon-tile cursor-pointer px-3 py-2 rounded-xl border border-ink-300 bg-white hover:bg-ink-50 text-xs font-bold text-ink-800">${b[key] ? 'বদলান' : 'ছবি দিন'}<input type="file" accept="image/*" data-brand-image="${key}" class="sr-only" /></label>
+              ${b[key] ? `<button type="button" data-brand-remove="${key}" class="icon-tile px-3 py-2 rounded-xl border border-ink-200 bg-white hover:bg-ink-50 text-xs font-bold text-ink-600">সরান</button>` : ''}
+            </div>
+          </div>
+          <p class="text-[0.6875rem] text-ink-500">${hint}</p>
+        </div>`;
+      const template = (key, label) => `
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between gap-2"><label for="brand-tpl-${key}" class="text-xs font-bold text-ink-600">${label}</label>
+            <button type="button" data-brand-tpl-reset="${key}" class="text-[0.6875rem] font-bold text-ink-500 underline">আগের লেখায় ফিরুন</button></div>
+          <textarea id="brand-tpl-${key}" data-brand-tpl="${key}" rows="6" class="w-full px-3 py-2.5 rounded-xl border border-ink-300 bg-white text-sm leading-relaxed">${esc(b.templates[key])}</textarea>
+          <p data-brand-tpl-warn="${key}" class="hidden text-[0.6875rem] font-bold text-gold-900"></p>
+          <div class="flex flex-wrap gap-1.5">${TEMPLATE_KEYS[key].map(k => `<button type="button" data-brand-insert="${key}" data-token="${esc(k)}" class="px-2 py-1 rounded-lg border border-ink-200 bg-ink-50 hover:bg-white text-[0.6875rem] font-bold text-ink-700">{${esc(k)}}</button>`).join('')}</div>
+        </div>`;
+      const section = (title, inner) => `<div class="floating-card rounded-2xl p-5 space-y-3"><h3 class="text-base font-bold text-ink-900">${title}</h3>${inner}</div>`;
+      el.innerHTML = `
+        ${section('স্কুলের পরিচয়', `
+          <p class="text-xs text-ink-500">এখানে যা দেবেন, মার্কশিট, রসিদ, সনদ, আইডি কার্ডসহ স্কুলের সব প্রিন্টে তা-ই আসবে।</p>
+          ${input('name', 'স্কুলের নাম (বাংলা) *', 'maxlength="80" required')}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${input('nameEn', 'ইংরেজি নাম (থাকলে)', 'maxlength="80"')}${input('motto', 'মূলমন্ত্র (থাকলে)', 'maxlength="80"')}</div>
+          ${input('address', 'ঠিকানা', 'maxlength="120"')}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">${input('phone', 'ফোন', 'maxlength="20" inputmode="tel"')}${input('email', 'ইমেইল', 'maxlength="60" inputmode="email"')}${input('eiin', 'EIIN', 'maxlength="10" inputmode="numeric"')}${input('est', 'স্থাপিত (সাল)', 'maxlength="4" inputmode="numeric"')}</div>`)}
+        ${section('লোগো ও স্বাক্ষর', `
+          ${imageBox('logo', 'স্কুলের লোগো', 'ফোনের গ্যালারি থেকে লোগোর ছবি দিন। স্বচ্ছ (PNG) হলে সবচেয়ে ভালো দেখায়।')}
+          ${input('head', 'প্রধান শিক্ষকের নাম', 'maxlength="60"')}
+          ${imageBox('signature', 'প্রধান শিক্ষকের স্বাক্ষর', 'সাদা কাগজে কালো কালিতে সই করে ছবি তুলে দিন। সনদ, প্রবেশপত্র ও মার্কশিটে বসবে।')}`)}
+        ${section('রং ও নকশা', `
+          <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">স্কুলের রং</div>
+            <div class="flex flex-wrap items-center gap-2">${BRAND_COLORS.map(c => `<button type="button" data-brand-color="${c}" aria-label="রং ${c}" aria-pressed="${b.color === c}" class="w-9 h-9 rounded-full border-2 ${b.color === c ? 'border-gold-600 ring-2 ring-gold-400' : 'border-white ring-1 ring-ink-200'}" style="background:${c}"></button>`).join('')}
+              <label class="flex items-center gap-2 text-xs font-bold text-ink-600">নিজের রং <input type="color" data-brand-custom-color value="${b.color}" class="w-9 h-9 rounded-lg border border-ink-200 bg-white p-0.5" /></label></div></div>
+          <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">মাথার অংশ (লেটারহেড)</div>${chips('header', [['center', 'লোগো মাঝখানে'], ['left', 'লোগো বাঁয়ে'], ['plain', 'শুধু নাম']])}</div>
+          <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">সনদের বর্ডার</div>${chips('border', [['double', 'দুই রেখা'], ['frame', 'ফ্রেম'], ['simple', 'সাধারণ']])}</div>
+          <div class="space-y-1.5"><div class="text-xs font-bold text-ink-600">কাগজের মাপ</div>${chips('paper', [['A4', 'A4'], ['Letter', 'Letter'], ['Legal', 'Legal']])}
+            <p class="text-[0.6875rem] text-ink-500">প্রিন্টের সময় ফোনে কাগজের মাপ এটাই বেছে নিন। A4 ও Letter দুটোতেই লেআউট ঠিক থাকে।</p></div>`)}
+        ${section('আইডি কার্ড', `
+          <label class="flex items-center justify-between gap-3 text-sm font-bold text-ink-900">রক্তের গ্রুপ দেখাবে<button type="button" role="switch" aria-checked="${b.idBlood}" data-brand-switch="idBlood" class="switch"></button></label>
+          <label class="flex items-center justify-between gap-3 text-sm font-bold text-ink-900">অভিভাবকের মোবাইল দেখাবে<button type="button" role="switch" aria-checked="${b.idPhone}" data-brand-switch="idPhone" class="switch"></button></label>
+          ${input('idValid', 'মেয়াদ (খালি রাখলে: ডিসেম্বর ' + bn(realToday.getFullYear()) + ')', 'maxlength="30"')}`)}
+        ${section('সনদের ভাষা', `
+          <p class="text-xs text-ink-500">নিজের স্কুলের ভাষায় লিখুন। {বন্ধনীর} শব্দগুলো প্রিন্টের সময় শিক্ষার্থীর তথ্যে বদলে যাবে; নিচের বোতাম চেপে বসাতে পারেন।</p>
+          ${template('testimonial', 'প্রশংসাপত্র')}${template('tc', 'ছাড়পত্র')}${template('award', 'কৃতিত্ব সনদ')}`)}
+        ${section('নিচের লেখা', input('footer', 'প্রতিটি প্রিন্টের নিচে (যেমন: “শিক্ষাই আলো”)', 'maxlength="80"'))}
+        <div class="floating-card rounded-2xl p-5 space-y-3">
+          <h3 class="text-base font-bold text-ink-900">নমুনা দেখুন</h3>
+          <div class="grid grid-cols-4 gap-2">${[['marksheet', 'মার্কশিট'], ['receipt', 'রসিদ'], ['testimonial', 'প্রশংসাপত্র'], ['id', 'আইডি কার্ড']].map(([k, l]) => `<button type="button" data-brand-preview="${k}" aria-pressed="${k === brandPreviewDoc}" class="icon-tile py-2 rounded-xl border text-xs font-bold ${k === brandPreviewDoc ? 'tile-active' : 'border-ink-200 bg-white text-ink-600 hover:bg-ink-50'}">${l}</button>`).join('')}</div>
+          <div data-brand-preview-box class="relative rounded-xl border border-ink-200 bg-white overflow-hidden"></div>
+          <p data-brand-error class="hidden text-xs font-bold text-gold-900"></p>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button type="button" data-brand-reset class="icon-tile py-3 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-700 font-bold text-xs">সব আগের মতো</button>
+            <button type="button" data-brand-save class="col-span-2 py-3 rounded-2xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm shadow-sm">ডিজাইন সংরক্ষণ করুন</button>
+          </div>
+        </div>`;
+      updateBrandPreview();
+    }
+
+    function openBrandPanel() { brandDraft = null; renderBrandPanel(); }
+    function sampleDoc(kind) {
+      const s = recordsByClass[TEACHER_CLASS][6] || recordsByClass[TEACHER_CLASS][0];
+      if (kind === 'id') return { w: 190, h: 100, html: `<div class="flex justify-center pt-[4mm]">${idCard(s)}</div>` };
+      if (kind === 'receipt') {
+        const rc = receipts.find(r => r.roll === s.roll) || receipts[0];
+        return { w: 190, h: 130, html: rc ? receiptHtml(rc, 'অভিভাবকের কপি', true) : '' };
+      }
+      if (kind === 'testimonial') {
+        const d = paperDims(true);
+        return { w: d.w, h: d.h, html: certificatePage('প্রশংসাপত্র', 'ক্রমিক নং: প্র-০০১', testimonialBody(s, 'ভালো'), ['শ্রেণি শিক্ষক', 'প্রধান শিক্ষক']) };
+      }
+      const rows = [['বাংলা', '৮৮', 'A+'], ['ইংরেজি', '৭৯', 'A'], ['গণিত', '৯২', 'A+']];
+      return { w: 190, h: 160, html: letterhead('মার্কশিট') + printTable(['বিষয়', 'প্রাপ্ত নম্বর', 'গ্রেড'], rows) + `<div class="mt-[6mm]">${signatureBlock(['শ্রেণি শিক্ষক', 'প্রধান শিক্ষক'])}</div>` + printFooter() };
+    }
+    // {words} that are not on the list stay as typed in the printout; say so while the principal edits
+    const unknownTokens = (key, text) => [...new Set((text.match(/\{[^{}]*\}/g) || []).filter(t => !TEMPLATE_KEYS[key].includes(t.slice(1, -1))))];
+    function updateBrandPreview() {
+      const box = document.querySelector('#panel-school-brand [data-brand-preview-box]');
+      if (!box || !brandDraft) return;
+      Object.keys(TEMPLATE_KEYS).forEach(k => {
+        const warn = document.querySelector(`#panel-school-brand [data-brand-tpl-warn="${k}"]`), bad = unknownTokens(k, brandDraft.templates[k]);
+        if (!warn) return;
+        warn.textContent = bad.length ? `${bad.join(', ')}: এই শব্দ তালিকায় নেই, তাই প্রিন্টে যেমন লেখা তেমনই থাকবে। নিচের বোতাম থেকে বেছে নিন।` : '';
+        warn.classList.toggle('hidden', !bad.length);
+      });
+      brandOverride = brandDraft;
+      try {
+        const d = sampleDoc(brandPreviewDoc);
+        const mm = 96 / 25.4, scale = Math.min(1, (box.clientWidth || 300) / (d.w * mm));
+        box.style.height = `${Math.round(d.h * mm * scale) + 8}px`;
+        box.innerHTML = `<div class="absolute left-0 top-0 origin-top-left text-ink-900 p-[4mm]" style="width:${d.w}mm;transform:scale(${scale})">${d.html}</div>`;
+      } finally { brandOverride = null; }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('panel-school-brand');
+      const err = () => el.querySelector('[data-brand-error]');
+      el.addEventListener('input', e => {
+        const t = e.target;
+        if (t.matches('[data-brand]')) brandDraft[t.getAttribute('data-brand')] = oneSpelling(t.value);
+        else if (t.matches('[data-brand-tpl]')) brandDraft.templates[t.getAttribute('data-brand-tpl')] = oneSpelling(t.value);
+        else if (t.matches('[data-brand-custom-color]')) { brandDraft.color = t.value; }
+        else return;
+        updateBrandPreview();
+      });
+      el.addEventListener('change', async e => {
+        const t = e.target;
+        if (t.matches('[data-brand-custom-color]')) { brandDraft.color = t.value; renderBrandPanel(); return; }
+        if (!t.matches('[data-brand-image]')) return;
+        const key = t.getAttribute('data-brand-image');
+        try {
+          brandDraft[key] = await readImage(t.files[0], key === 'logo' ? 320 : 520, key === 'logo' ? 320 : 200);
+          renderBrandPanel();
+        } catch (x) {
+          err().textContent = x.message === 'size' ? 'ছবিটি ৮ MB-এর চেয়ে বড়; ছোট ছবি দিন।' : 'এই ফাইলটি ছবি হিসেবে পড়া গেল না।';
+          err().classList.remove('hidden');
+        }
+      });
+      el.addEventListener('click', e => {
+        const t = e.target;
+        const choice = t.closest('[data-brand-choice]');
+        if (choice) { brandDraft[choice.getAttribute('data-brand-choice')] = choice.getAttribute('data-value'); renderBrandPanel(); return; }
+        const color = t.closest('[data-brand-color]');
+        if (color) { brandDraft.color = color.getAttribute('data-brand-color'); renderBrandPanel(); return; }
+        const sw = t.closest('[data-brand-switch]');
+        if (sw) { const k = sw.getAttribute('data-brand-switch'); brandDraft[k] = !brandDraft[k]; sw.setAttribute('aria-checked', brandDraft[k]); updateBrandPreview(); return; }
+        const rm = t.closest('[data-brand-remove]');
+        if (rm) { brandDraft[rm.getAttribute('data-brand-remove')] = ''; renderBrandPanel(); return; }
+        const pv = t.closest('[data-brand-preview]');
+        if (pv) { brandPreviewDoc = pv.getAttribute('data-brand-preview'); renderBrandPanel(); return; }
+        const reset = t.closest('[data-brand-tpl-reset]');
+        if (reset) { const k = reset.getAttribute('data-brand-tpl-reset'); brandDraft.templates[k] = BRAND_TEMPLATES[k]; renderBrandPanel(); return; }
+        const ins = t.closest('[data-brand-insert]');
+        if (ins) {
+          const k = ins.getAttribute('data-brand-insert'), area = el.querySelector(`[data-brand-tpl="${k}"]`), token = `{${ins.getAttribute('data-token')}}`;
+          const at = area.selectionStart ?? area.value.length;
+          area.value = area.value.slice(0, at) + token + area.value.slice(area.selectionEnd ?? at);
+          area.focus(); area.selectionStart = area.selectionEnd = at + token.length;
+          brandDraft.templates[k] = area.value; updateBrandPreview();
+          return;
+        }
+        if (t.closest('[data-brand-reset]')) {
+          if (!confirm('স্কুলের ডিজাইন শুরুর অবস্থায় ফিরবে (লোগো ও স্বাক্ষরও মুছে যাবে)। নিশ্চিত?')) return;
+          brandDraft = JSON.parse(JSON.stringify(brandDefaults(appState.schoolCode)));
+          renderBrandPanel();
+          return;
+        }
+        if (t.closest('[data-brand-save]')) {
+          if (!brandDraft.name.trim()) { err().textContent = 'স্কুলের নাম লিখুন'; err().classList.remove('hidden'); el.querySelector('#brand-name').focus(); return; }
+          try { localStorage.setItem(brandKey(appState.schoolCode), JSON.stringify(brandDraft)); }
+          catch (x) { err().textContent = 'সংরক্ষণ করা গেল না: ছবিগুলো অনেক বড়। ছোট লোগো বা স্বাক্ষর দিন।'; err().classList.remove('hidden'); return; }
+          err().classList.add('hidden');
+          applyBrandToApp(); updateHeader(); renderBrandPanel();
+          showToast('স্কুলের ডিজাইন সংরক্ষণ হয়েছে। এখন থেকে সব প্রিন্টে এটি আসবে।');
+        }
+      });
+      // (opening the card goes through SECTION PAGES, which calls openBrandPanel)
+      applyBrandToApp();
+    });
   </script>
   <script>
     // ==========================================
@@ -4629,6 +4939,7 @@
       bar.querySelector('[data-section-title]').focus({ preventScroll: true });
       // Sections that size themselves to the panel's width need a second look once it is visible
       if (name === 'print' && typeof updatePreview === 'function') requestAnimationFrame(updatePreview);
+      if (name === 'brand' && typeof openBrandPanel === 'function') requestAnimationFrame(openBrandPanel);
     }
 
     function routeFromHash() {
