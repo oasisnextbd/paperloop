@@ -147,3 +147,6 @@
 #view-parent[data-mode="section"] > :not(.section-bar):not(.parent-subpanel),
 #view-teacher[data-mode="section"] > :not(.section-bar):not(.teacher-subpanel),
 #view-school[data-mode="section"] > :not(.section-bar):not(.school-subpanel) { display: none; }
+
+/* Guest mode's guided tour: everything but the part being shown is dimmed (see GUEST MODE in index.html) */
+.tour-spot { box-shadow: 0 0 0 9999px rgb(var(--ink-900) / 0.55); }

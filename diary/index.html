@@ -11,7 +11,7 @@
   <link rel="preload" href="../assets/fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/baloo-da-2-bengali.woff2" as="font" type="font/woff2" crossorigin />
   <!-- diary.css is generated from diary.input.css by Tailwind (see README.md → Smart diary). Do not edit it by hand. -->
-  <link rel="stylesheet" href="diary.css?v=3bda8acb9e" />
+  <link rel="stylesheet" href="diary.css?v=eae86ab051" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -33,10 +33,8 @@
           <svg class="paperloop-mark" viewBox="-51.3 -35.4 132.4 70.7" aria-hidden="true" focusable="false"><path class="pl-a" d="M0 0L-14.14 -14.14A20.00 20.00 0 1 0 -14.14 14.14Z"/><path class="pl-b" d="M0 0L22.88 -22.88A32.36 32.36 0 1 1 22.88 22.88Z"/></svg>
         </a>
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-ink-900 leading-tight" id="school-name-display">
-            কসবা আইডিয়াল প্রি-ক্যাডেট একাডেমি
-          </h1>
-          <p class="text-xs text-ink-500" id="header-subtitle">অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি</p>
+          <h1 class="text-base sm:text-lg font-bold text-ink-900 leading-tight" id="school-name-display">Paperloop</h1>
+          <p class="text-xs text-ink-500 empty:hidden" id="header-subtitle"></p>
         </div>
       </div>
 
@@ -60,67 +58,74 @@
          0. DEDICATED LOGIN PAGE (PARENT / TEACHER / SCHOOL SECTIONS)
          ========================================== -->
     <section id="view-login" class="space-y-5">
-      <div class="bg-white rounded-2xl border border-ink-200 p-6 shadow-sm space-y-6">
-        <div class="text-center space-y-1.5">
-          <div class="w-14 h-14 rounded-2xl bg-ink-100 border border-ink-300 text-ink-800 flex items-center justify-center mx-auto">
-            <svg class="line-icon-lg" viewBox="0 0 24 24">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-              <polyline points="10 17 15 12 10 7"/>
-              <line x1="15" x2="3" y1="12" y2="12"/>
-            </svg>
+      <div class="bg-white rounded-2xl border border-ink-200 p-5 sm:p-6 shadow-sm">
+        <!-- LOGIN, step 1: who are you? (see LOGIN STEPS) -->
+        <div id="login-step-who" class="space-y-5">
+          <svg hidden aria-hidden="true"><symbol id="pl-mascot-art" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="12" width="34" height="44" rx="7"/><path d="M24 7v9M33 7v9M42 7v9"/><path d="M26 44c4 4 10 4 14 0"/><path d="M16 36c-5-1-9-5-9-10"/><path d="M50 40c4 1 7 4 7 8"/></g><circle cx="27" cy="31" r="2.6" fill="currentColor"/><circle cx="39" cy="31" r="2.6" fill="currentColor"/></symbol></svg>
+          <div class="flex items-center justify-center gap-3">
+            <svg class="w-16 h-16 text-ink-900" aria-hidden="true"><use href="#pl-mascot-art"/></svg>
+            <h2 class="text-xl font-extrabold text-ink-900">আপনি কে?</h2>
           </div>
-          <h2 class="text-xl font-bold text-ink-900">লগইন করুন</h2>
-          <p class="text-xs sm:text-sm text-ink-500">আপনার ভূমিকা (অভিভাবক, শিক্ষক অথবা স্কুল কর্তৃপক্ষ) নির্বাচন করুন</p>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" data-login-pick="student" class="login-role-card icon-tile min-h-[9rem] flex flex-col items-center justify-center gap-3 p-4 rounded-3xl border-2 border-ink-200 bg-white text-ink-800 hover:bg-ink-50 text-center">
+              <span class="w-16 h-16 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-center"><svg class="w-9 h-9 line-icon" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+              <span class="text-base font-extrabold text-ink-900">শিক্ষার্থী</span>
+            </button>
+            <button type="button" data-login-role="parent" class="login-role-card icon-tile min-h-[9rem] flex flex-col items-center justify-center gap-3 p-4 rounded-3xl border-2 border-ink-200 bg-white text-ink-800 hover:bg-ink-50 text-center">
+              <span class="w-16 h-16 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-center"><svg class="w-9 h-9 line-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <span class="text-base font-extrabold text-ink-900">অভিভাবক</span>
+            </button>
+            <button type="button" data-login-role="teacher" class="login-role-card icon-tile min-h-[9rem] flex flex-col items-center justify-center gap-3 p-4 rounded-3xl border-2 border-ink-200 bg-white text-ink-800 hover:bg-ink-50 text-center">
+              <span class="w-16 h-16 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-center"><svg class="w-9 h-9 line-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+              <span class="text-base font-extrabold text-ink-900">শিক্ষক</span>
+            </button>
+            <button type="button" data-login-role="school" class="login-role-card icon-tile min-h-[9rem] flex flex-col items-center justify-center gap-3 p-4 rounded-3xl border-2 border-ink-200 bg-white text-ink-800 hover:bg-ink-50 text-center">
+              <span class="w-16 h-16 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-center"><svg class="w-9 h-9 line-icon" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M14 9h1"/><path d="M9 13h1"/><path d="M14 13h1"/><path d="M10 21v-4h4v4"/></svg></span>
+              <span class="text-base font-extrabold text-ink-900">প্রতিষ্ঠান</span>
+            </button>
+          </div>
         </div>
 
-        <!-- 3 Role Selector Tiles -->
-        <div class="grid grid-cols-3 gap-3">
-          <button type="button" data-login-role="parent" class="login-role-card icon-tile tile-active flex flex-col items-center justify-center p-4 rounded-2xl border-2 text-center">
-            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            <span class="text-xs sm:text-sm font-bold">অভিভাবক লগইন</span>
-            <span class="text-[0.6875rem] text-ink-500 mt-0.5">স্কুল কোড ও রোল</span>
-          </button>
-
-          <button type="button" data-login-role="teacher" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
-            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            <span class="text-xs sm:text-sm font-bold">শিক্ষক লগইন</span>
-            <span class="text-[0.6875rem] text-ink-500 mt-0.5">শিক্ষক আইডি ও পিন</span>
-          </button>
-
-          <button type="button" data-login-role="school" class="login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center">
-            <svg class="line-icon-lg mb-2" viewBox="0 0 24 24">
-              <path d="M3 21h18"/>
-              <path d="M5 21V7l7-4 7 4v14"/>
-              <path d="M9 9h1"/><path d="M14 9h1"/>
-              <path d="M9 13h1"/><path d="M14 13h1"/>
-              <path d="M10 21v-4h4v4"/>
-            </svg>
-            <span class="text-xs sm:text-sm font-bold">স্কুল লগইন</span>
-            <span class="text-[0.6875rem] text-ink-500 mt-0.5">প্রিন্সিপাল ও অ্যাডমিন</span>
-          </button>
+        <!-- Step 2: sign in, or look around as a guest -->
+        <div id="login-step-how" class="hidden space-y-5">
+          <div class="flex items-center gap-3">
+            <button type="button" data-login-back="who" aria-label="ফিরে যান" class="icon-tile w-11 h-11 shrink-0 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-800 flex items-center justify-center"><svg class="line-icon-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+            <span class="w-11 h-11 shrink-0 rounded-2xl bg-ink-50 border border-ink-200 flex items-center justify-center" data-login-how-icon></span>
+            <h2 class="text-lg font-bold text-ink-900" data-login-how-title></h2>
+          </div>
+          <div class="grid grid-cols-2 gap-3" data-login-how-options>
+            <button type="button" data-login-how="signin" class="icon-tile min-h-[9rem] p-4 rounded-3xl bg-ink-900 hover:bg-ink-800 text-white flex flex-col items-center justify-center gap-3">
+              <svg class="w-10 h-10 line-icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+              <span class="text-base font-extrabold">সাইন ইন</span>
+            </button>
+            <button type="button" data-login-how="guest" class="icon-tile min-h-[9rem] p-4 rounded-3xl border-2 border-ink-900 bg-white hover:bg-ink-50 text-ink-900 flex flex-col items-center justify-center gap-3">
+              <svg class="w-10 h-10 line-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+              <span class="text-base font-extrabold">ঘুরে দেখুন</span>
+              <span class="text-[0.6875rem] text-ink-500 -mt-2">গেস্ট</span>
+            </button>
+          </div>
+          <p class="hidden text-[0.6875rem] text-ink-500 text-center" data-login-signin-hint></p>
+          <div class="hidden flex flex-col items-center gap-2 py-6 text-center" data-login-student-note>
+            <svg class="w-20 h-20 text-ink-900" aria-hidden="true"><use href="#pl-mascot-art"/></svg>
+            <p class="text-base font-extrabold text-ink-900">শীঘ্রই আসছে</p>
+          </div>
         </div>
 
+        <!-- Step 3: the sign-in form for that role -->
+        <div id="login-step-form" class="hidden space-y-5">
+          <div class="flex items-center gap-3">
+            <button type="button" data-login-back="how" aria-label="ফিরে যান" class="icon-tile w-11 h-11 shrink-0 rounded-2xl border border-ink-200 bg-white hover:bg-ink-50 text-ink-800 flex items-center justify-center"><svg class="line-icon-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+            <h2 class="text-lg font-bold text-ink-900" data-login-form-title></h2>
+          </div>
         <!-- SECTION A: PARENT LOGIN FORM -->
-        <form id="form-login-parent" class="space-y-4 pt-2 border-t border-ink-100">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">অভিভাবক ও শিক্ষার্থী প্রবেশ</span>
-            <span class="text-xs text-ink-500">পাসওয়ার্ডের প্রয়োজন নেই</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <form id="form-login-parent" class="space-y-4">
+          <div id="login-p-grid" class="grid grid-cols-2 gap-3">
             <div>
-              <label for="login-p-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড (খাতার পেছনে লেখা)</label>
-              <input id="login-p-code" type="text" value="" placeholder="৩ অক্ষর" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase focus:outline-none focus:border-ink-800" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
+              <label for="login-p-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড</label>
+              <input id="login-p-code" type="text" value="" placeholder="খাতার পেছনে লেখা" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold uppercase focus:outline-none focus:border-ink-800" required pattern="[A-Za-z]{3}" maxlength="3" autocomplete="off" data-invalid="খাতার পেছনে লেখা ৩ অক্ষরের স্কুল কোড দিন (যেমন KSB)" />
             </div>
             <div>
-              <label for="login-p-class" class="block text-xs font-bold text-ink-700 mb-1">শ্রেণি নির্বাচন করুন</label>
+              <label for="login-p-class" class="block text-xs font-bold text-ink-700 mb-1">শ্রেণি</label>
               <select id="login-p-class" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold bg-white focus:outline-none focus:border-ink-800">
                 <option value="Play">Play / প্লে</option>
                 <option value="KG">KG / কেজি</option>
@@ -132,21 +137,18 @@
               </select>
             </div>
             <div>
-              <label for="login-p-roll" class="block text-xs font-bold text-ink-700 mb-1">শিক্ষার্থীর রোল নম্বর</label>
+              <label for="login-p-roll" class="block text-xs font-bold text-ink-700 mb-1">রোল নম্বর</label>
               <input id="login-p-roll" type="text" value="" placeholder="রোল" class="w-full px-3.5 py-2.5 rounded-xl border border-ink-300 text-sm font-bold focus:outline-none focus:border-ink-800" required pattern="[0-9০-৯]{1,3}" maxlength="3" inputmode="numeric" autocomplete="off" data-invalid="শিক্ষার্থীর রোল নম্বর দিন (শুধু সংখ্যা)" />
             </div>
           </div>
           <button type="submit" class="w-full py-3 rounded-xl bg-ink-900 hover:bg-ink-800 text-white font-bold text-sm transition flex items-center justify-center gap-2">
             <svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            <span>অভিভাবক ড্যাশবোর্ডে প্রবেশ করুন</span>
+            <span>প্রবেশ করুন</span>
           </button>
         </form>
 
         <!-- SECTION B: TEACHER LOGIN FORM -->
-        <form id="form-login-teacher" class="hidden space-y-4 pt-2 border-t border-ink-100">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">শ্রেণি শিক্ষক প্রবেশ</span>
-          </div>
+        <form id="form-login-teacher" class="hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="login-t-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড</label>
@@ -168,10 +170,7 @@
         </form>
 
         <!-- SECTION C: SCHOOL ADMIN / PRINCIPAL LOGIN FORM -->
-        <form id="form-login-school" class="hidden space-y-4 pt-2 border-t border-ink-100">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-ink-500">স্কুল প্রিন্সিপাল ও অ্যাডমিন প্রবেশ</span>
-          </div>
+        <form id="form-login-school" class="hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="login-s-code" class="block text-xs font-bold text-ink-700 mb-1">স্কুল কোড / EIIN</label>
@@ -191,6 +190,7 @@
             <span>স্কুল অ্যাডমিন প্যানেলে প্রবেশ করুন</span>
           </button>
         </form>
+        </div>
       </div>
     </section>
 
@@ -477,7 +477,7 @@
          ========================================== -->
     <section id="view-teacher" class="hidden space-y-5">
 
-      <div class="bg-ink-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div id="teacher-banner" class="bg-ink-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
             <svg class="line-icon" viewBox="0 0 24 24">
@@ -1268,7 +1268,11 @@
     // subjectteacher or parent (?demo=login: demo data, normal login page). Demo data never mixes with a real school's: in demo every saved value (login,
     // settings, design, messages) goes to separate browser storage under "demo:".
     // ==========================================
-    const DEMO_AS = new URLSearchParams(location.search).get('demo');
+    // ?guest=parent|teacher|school (the login page's "গেস্ট হিসেবে ঘুরে দেখুন"): the same sample school, with a
+    // short tour, and nothing can be saved or sent (see GUEST MODE)
+    const GUEST_AS = { parent: 'parent', teacher: 'classteacher', school: 'principal' };
+    const GUEST = GUEST_AS[new URLSearchParams(location.search).get('guest')] ? new URLSearchParams(location.search).get('guest') : null;
+    const DEMO_AS = new URLSearchParams(location.search).get('demo') || (GUEST ? GUEST_AS[GUEST] : null);
     const DEMO = !!DEMO_AS;
     if (DEMO) {
       const P = Storage.prototype, get = P.getItem, set = P.setItem, del = P.removeItem;
@@ -1623,16 +1627,11 @@
       });
 
       // Login Page Role Section Switcher
-      document.querySelectorAll('.login-role-card').forEach(card => {
+      // A role card picks that role's sign-in form (the steps themselves: LOGIN STEPS)
+      document.querySelectorAll('.login-role-card[data-login-role]').forEach(card => {
         card.addEventListener('click', () => {
           const role = card.getAttribute('data-login-role');
           appState.loginSection = role;
-          document.querySelectorAll('.login-role-card').forEach(c => {
-            const active = c.getAttribute('data-login-role') === role;
-            c.className = active
-              ? 'login-role-card icon-tile tile-active flex flex-col items-center justify-center p-4 rounded-2xl border-2 text-center'
-              : 'login-role-card icon-tile flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-ink-200 bg-white text-ink-600 hover:bg-ink-50 text-center';
-          });
           document.getElementById('form-login-parent').classList.toggle('hidden', role !== 'parent');
           document.getElementById('form-login-teacher').classList.toggle('hidden', role !== 'teacher');
           document.getElementById('form-login-school').classList.toggle('hidden', role !== 'school');
@@ -2368,8 +2367,8 @@
       const subtitle = document.getElementById('header-subtitle');
       const btn = document.getElementById('btn-profile');
       if (!session) {
-        title.textContent = 'Paperloop স্মার্ট ডায়েরি';
-        subtitle.textContent = 'অভিভাবক, শিক্ষক ও স্কুলের ডিজিটাল ডায়েরি';
+        title.textContent = 'Paperloop';
+        subtitle.textContent = '';
         btn.classList.add('hidden'); btn.classList.remove('flex');
         return;
       }
@@ -6286,11 +6285,10 @@
         note.id = 'db-restore-note'; note.className = 'hidden text-sm text-ink-500 text-center';
         note.textContent = 'আপনার স্কুলের ডায়েরি খোলা হচ্ছে…';
         document.getElementById('form-login-school').before(note);
-        document.querySelector('[data-login-role="teacher"] span.text-ink-500').textContent = 'Gmail দিয়ে';
         // Teachers and the principal: one Google button instead of code, ID and PIN
         [['form-login-teacher', 'শিক্ষক'], ['form-login-school', 'প্রিন্সিপাল']].forEach(([id, who]) => {
           const form = document.getElementById(id);
-          [...form.children].slice(1).forEach(el => { el.hidden = true; el.classList.add('hidden'); el.querySelectorAll('[required]').forEach(i => i.removeAttribute('required')); });
+          [...form.children].forEach(el => { el.hidden = true; el.classList.add('hidden'); el.querySelectorAll('[required]').forEach(i => i.removeAttribute('required')); });
           const box = document.createElement('div');
           box.className = 'space-y-3';
           box.innerHTML = `
@@ -6298,7 +6296,6 @@
               <svg class="line-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12h8"/><path d="M12 7v10"/></svg>
               <span>Google দিয়ে প্রবেশ করুন</span>
             </button>
-            <p class="text-xs text-ink-500">${who === 'শিক্ষক' ? 'প্রিন্সিপাল যে Gmail যোগ করেছেন, সেটি দিয়ে প্রবেশ করুন।' : 'Paperloop-কে দেওয়া Gmail দিয়ে প্রবেশ করুন।'}</p>
             <p data-google-status class="hidden text-sm text-ink-600"></p>
             <p data-google-error class="hidden text-sm font-bold text-ink-900"></p>`;
           form.append(box);
@@ -6809,11 +6806,10 @@
         ];
         forms.forEach(([formId, pinId, codeId, classId, rollId, cls]) => {
           const form = document.getElementById(formId), submit = form.querySelector('button[type=submit]');
-          submit.before(pinField(pinId, cls));
+          if (formId === 'form-login-parent') document.getElementById('login-p-grid').append(pinField(pinId, cls)); else submit.before(pinField(pinId, cls));
           const err = document.createElement('p');
           err.className = `hidden text-sm font-bold text-ink-900 ${cls}`;
           submit.after(err);
-          document.querySelector('[data-login-role="parent"] span.text-ink-500').textContent = 'কোড, রোল ও পিন';
           form.addEventListener('submit', async e => {
             e.preventDefault(); e.stopImmediatePropagation();
             const code = document.getElementById(codeId).value.trim().toUpperCase(), klass = document.getElementById(classId).value;
@@ -6829,6 +6825,204 @@
             finally { submit.disabled = false; }
           }, true);
         });
+      });
+    }
+  </script>
+  <script>
+    // ==========================================
+    // LOGIN STEPS
+    // 1 who: four big cards (শিক্ষার্থী, অভিভাবক, শিক্ষক, প্রতিষ্ঠান); 2 how: sign in, or look around as a guest;
+    // 3 the role's sign-in form. The student's part is planned (only a note for now).
+    // ==========================================
+    const LOGIN_ROLES = {
+      student: { title: 'শিক্ষার্থী' },
+      parent: { title: 'অভিভাবক', hint: DEMO ? 'কোড • শ্রেণি • রোল' : 'কোড • শ্রেণি • রোল • পিন' },
+      teacher: { title: 'শিক্ষক', hint: DEMO ? 'নাম • পিন' : 'Gmail' },
+      school: { title: 'প্রতিষ্ঠান', hint: DEMO ? 'আইডি • পিন' : 'Gmail' }
+    };
+    const loginState = { role: null };
+    function showLoginStep(step) {
+      ['who', 'how', 'form'].forEach(s => document.getElementById('login-step-' + s).classList.toggle('hidden', s !== step));
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      const view = document.getElementById('view-login');
+      view.addEventListener('click', e => {
+        const card = e.target.closest('.login-role-card');
+        if (card) {
+          const role = card.getAttribute('data-login-role') || card.getAttribute('data-login-pick'), meta = LOGIN_ROLES[role];
+          loginState.role = role;
+          view.querySelector('[data-login-how-icon]').innerHTML = card.querySelector('svg').outerHTML;
+          view.querySelector('[data-login-how-title]').textContent = meta.title;
+          view.querySelector('[data-login-how-options]').classList.toggle('hidden', role === 'student');
+          view.querySelector('[data-login-student-note]').classList.toggle('hidden', role !== 'student');
+          view.querySelector('[data-login-signin-hint]').textContent = meta.hint || '';
+          view.querySelector('[data-login-signin-hint]').classList.toggle('hidden', role === 'student');
+          showLoginStep('how');
+          return;
+        }
+        const how = e.target.closest('[data-login-how]');
+        if (how && how.getAttribute('data-login-how') === 'signin') {
+          view.querySelector('[data-login-form-title]').textContent = LOGIN_ROLES[loginState.role].title;
+          showLoginStep('form');
+          const first = view.querySelector(`#login-step-form form:not(.hidden) input:not([type=hidden]), #login-step-form form:not(.hidden) [data-google]`);
+          if (first && first.tagName === 'INPUT') first.focus();
+          return;
+        }
+        if (how) { location.href = `${location.pathname}?guest=${loginState.role}`; return; }
+        const back = e.target.closest('[data-login-back]');
+        if (back) showLoginStep(back.getAttribute('data-login-back'));
+      });
+    });
+    // Logged out: back to the four cards
+    const prevLoginStepHook = window.onDiarySessionChange;
+    window.onDiarySessionChange = () => { if (prevLoginStepHook) prevLoginStepHook(); if (!session) showLoginStep('who'); };
+  </script>
+  <script>
+    // ==========================================
+    // GUEST MODE (?guest=parent|teacher|school)
+    // The sample school as that role, a short guided tour of the main parts, then free browsing. Nothing can be
+    // saved, sent or changed: those buttons and fields say "সাইন ইন করে ব্যবহার করুন" instead.
+    // ==========================================
+    if (GUEST) {
+      const GUEST_BLOCK = ['[data-att-roll]', '#t-att-submit', '#s-staff-submit', '[data-staff]', '[data-brand-save]', '[data-brand-reset]',
+        '[data-fee-save]', '[data-fee-waiver]', '[data-mark-absent]', '[data-notice-delete]', '[data-pin-make]', '[data-routine-pick]',
+        '[data-sres-create]', '[data-sres-publish]', '[data-student-photo-remove]', '[data-tmarks-new]', '[data-tmarks-publish]', '[data-tmarks-send]',
+        '[data-tstd-fill]', '[data-tstd-remove-topic]', '[data-tstd-save-note]', '[data-tstd-step]', '[data-chat-quick]', '[data-hw-toggle]',
+        'input[type=file]', 'label:has(input[type=file])'].join(', ');
+      const GUEST_SELECTS = '[data-assign-class-teacher], [data-assign-subject]';
+      let lastNo = 0;
+      const guestNo = () => { if (Date.now() - lastNo > 1500) { lastNo = Date.now(); showToast('গেস্ট মোড • ব্যবহার করতে সাইন ইন করুন'); } };
+      const outsideLogin = el => !el.closest('#view-login');
+      document.addEventListener('click', e => {
+        if (e.target.closest(GUEST_BLOCK) && outsideLogin(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); guestNo(); }
+      }, true);
+      document.addEventListener('submit', e => {
+        if (outsideLogin(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); guestNo(); }
+      }, true);
+      // Fields can be looked at, not typed into (searching the student list still works)
+      document.addEventListener('focusin', e => {
+        const el = e.target;
+        if (el.matches('input:not([type=file]):not([data-records-search]), textarea') && outsideLogin(el)) el.readOnly = true;
+      }, true);
+      document.addEventListener('keydown', e => { if (e.target.readOnly && outsideLogin(e.target) && e.key.length === 1) guestNo(); }, true);
+      document.addEventListener('mousedown', e => { if (e.target.closest(GUEST_SELECTS)) { e.preventDefault(); guestNo(); } }, true);
+      document.addEventListener('change', e => {
+        if (e.target.closest(GUEST_SELECTS)) { e.stopImmediatePropagation(); guestNo(); if (typeof renderAssignPanel === 'function') renderAssignPanel(); }
+      }, true);
+
+      // The header says so
+      const plainHeader = updateHeader;
+      updateHeader = function () {
+        plainHeader();
+        if (session) document.getElementById('header-subtitle').textContent += ' • গেস্ট মোড';
+      };
+
+      // ---------- The guided tour ----------
+      const TOURS = {
+        parent: [
+          ['#view-parent > div:first-child', 'আজকের খবর', 'হাজিরা এক নজরে'],
+          ['#view-parent [data-open-notices]', 'নোটিশ', 'স্কুলের খবর'],
+          ['.floating-card[data-parent-panel="assignments"]', 'বাড়ির কাজ', 'করা হলে টিক'],
+          ['.floating-card[data-parent-panel="grades"]', 'ফলাফল', 'মার্কশিট ও গ্রেড'],
+          ['.floating-card[data-parent-panel="improvement"]', 'অগ্রগতি', 'প্রতি মাসে, প্রতি বিষয়ে'],
+          ['#btn-chat-fab', 'মেসেজ', 'শিক্ষকের সাথে কথা'],
+          ['#btn-menu', 'মেনু', 'সব এক জায়গায়']
+        ],
+        teacher: [
+          ['#teacher-banner', 'আপনার শ্রেণি', 'বিষয় ও শিক্ষার্থী'],
+          ['.floating-card[data-teacher-panel="attendance"]', 'হাজিরা', 'অনুপস্থিতের রোলে ট্যাপ'],
+          ['.floating-card[data-teacher-panel="homework"]', 'বাড়ির কাজ', 'এক ট্যাপে পাঠান'],
+          ['.floating-card[data-teacher-panel="marks"]', 'নম্বর', 'লিখলেই সংরক্ষণ'],
+          ['.floating-card[data-teacher-panel="standard"]', 'অগ্রগতি', 'টপিক যাচাই ও রিপোর্ট'],
+          ['#btn-chat-fab', 'মেসেজ', 'অভিভাবকের প্রশ্ন']
+        ],
+        school: [
+          ['.floating-card[data-school-panel="students"]', 'হাজিরা', 'সব শ্রেণি একসাথে'],
+          ['.floating-card[data-school-panel="staff"]', 'শিক্ষক', 'কে কী পড়াবেন'],
+          ['.floating-card[data-school-panel="records"]', 'শিক্ষার্থী', 'ভর্তি, ছবি, পিন'],
+          ['.floating-card[data-school-panel="results"]', 'ফলাফল', 'যাচাই করে প্রকাশ'],
+          ['.floating-card[data-school-panel="fees"]', 'বেতন', 'আদায় ও রসিদ'],
+          ['.floating-card[data-school-panel="brand"]', 'ডিজাইন', 'স্কুলের লোগো ও রং'],
+          ['#btn-menu', 'মেনু', 'সব এক জায়গায়']
+        ]
+      };
+      function runTour() {
+        const steps = (TOURS[GUEST] || []).map(([sel, title, text]) => [document.querySelector(sel), title, text]).filter(([el]) => el && el.getClientRects().length);
+        if (!steps.length) return;
+        let i = 0;
+        const box = document.createElement('div');
+        box.id = 'guest-tour';
+        box.className = 'fixed inset-0 z-[70]';
+        box.innerHTML = `
+          <div class="tour-spot fixed rounded-2xl pointer-events-none transition-all duration-200"></div>
+          <div class="tour-card fixed left-4 right-4 sm:left-auto sm:right-auto sm:w-72 bg-white rounded-3xl border border-ink-200 p-4 shadow-lg" role="dialog" aria-live="polite">
+            <div class="flex items-center gap-3">
+              <svg class="w-14 h-14 shrink-0 text-ink-900" aria-hidden="true"><use href="#pl-mascot-art"/></svg>
+              <div class="min-w-0">
+                <h3 class="text-lg font-extrabold text-ink-900 leading-tight" data-tour-title></h3>
+                <p class="text-sm text-ink-600" data-tour-text></p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2 mt-3">
+              <span class="flex gap-1" data-tour-dots></span>
+              <div class="flex gap-2">
+                <button type="button" data-tour-skip aria-label="বাদ দিন" class="w-9 h-9 rounded-xl border border-ink-300 bg-white text-ink-700 flex items-center justify-center"><svg class="line-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                <button type="button" data-tour-prev aria-label="আগের" class="w-9 h-9 rounded-xl border border-ink-300 bg-white text-ink-800 flex items-center justify-center"><svg class="line-icon-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+                <button type="button" data-tour-next class="h-9 px-4 rounded-xl bg-ink-900 text-white text-xs font-bold flex items-center justify-center"></button>
+              </div>
+            </div>
+          </div>`;
+        document.body.append(box);
+        const spot = box.querySelector('.tour-spot'), card = box.querySelector('.tour-card');
+        const place = () => {
+          const el = steps[i][0], r = el.getBoundingClientRect(), pad = 6;
+          Object.assign(spot.style, { top: `${r.top - pad}px`, left: `${r.left - pad}px`, width: `${r.width + pad * 2}px`, height: `${r.height + pad * 2}px` });
+          const below = r.bottom + 12 + card.offsetHeight < innerHeight;
+          card.style.top = below ? `${r.bottom + 12}px` : `${Math.max(12, r.top - 12 - card.offsetHeight)}px`;
+          if (innerWidth >= 640) card.style.left = `${Math.min(Math.max(16, r.left), innerWidth - card.offsetWidth - 16)}px`;
+        };
+        const show = () => {
+          const [el, title, text] = steps[i];
+          box.querySelector('[data-tour-dots]').innerHTML = steps.map((_, k) => `<span class="w-2 h-2 rounded-full ${k === i ? 'bg-ink-900' : 'bg-ink-200'}"></span>`).join('');
+          box.querySelector('[data-tour-title]').textContent = title;
+          box.querySelector('[data-tour-text]').textContent = text;
+          box.querySelector('[data-tour-prev]').classList.toggle('invisible', i === 0);
+          box.querySelector('[data-tour-next]').innerHTML = i === steps.length - 1 ? 'শুরু করুন' : '<svg class="line-icon-sm" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>';
+          box.querySelector('[data-tour-next]').setAttribute('aria-label', i === steps.length - 1 ? 'শুরু করুন' : 'পরের');
+          if (getComputedStyle(el).position !== 'fixed') el.scrollIntoView({ block: 'center' });
+          requestAnimationFrame(place);
+        };
+        const end = () => { box.remove(); removeEventListener('resize', place); removeEventListener('scroll', place); window.scrollTo(0, 0); }; 
+        box.addEventListener('click', e => {
+          if (e.target.closest('[data-tour-next]')) { if (i === steps.length - 1) end(); else { i += 1; show(); } }
+          else if (e.target.closest('[data-tour-prev]') && i > 0) { i -= 1; show(); }
+          else if (e.target.closest('[data-tour-skip]')) end();
+        });
+        addEventListener('resize', place); addEventListener('scroll', place, { passive: true });
+        show();
+        box.querySelector('[data-tour-next]').focus();
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        // The menu: see the tour again, or leave guest mode (back to the login page)
+        const exit = document.querySelector('[data-demo-exit]');
+        exit.querySelector('span').textContent = 'গেস্ট মোড শেষ';
+        const again = document.createElement('button');
+        again.type = 'button';
+        again.className = 'icon-tile w-full py-3 rounded-2xl border border-ink-300 bg-white hover:bg-ink-50 text-ink-900 font-bold text-sm';
+        again.textContent = 'ট্যুর আবার দেখুন';
+        again.addEventListener('click', () => { document.getElementById('menu-dialog').close(); setTimeout(runTour, 150); });
+        exit.before(again);
+        document.querySelector('#menu-dialog [data-menu-logout]').classList.add('hidden'); // "গেস্ট মোড শেষ" does it
+      });
+      // The guest's automatic login says nothing (the tour starts instead)
+      let quiet = true;
+      const plainToast = showToast;
+      showToast = text => { if (!quiet) plainToast(text); };
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => { quiet = false; }, 600);
+        setTimeout(() => { if (session) runTour(); }, 700);
       });
     }
   </script>

@@ -43,8 +43,11 @@ domain, change `site.json → base_url`.
 ## Smart diary (`diary/`)
 
 A demo of the Paperloop smart diary for schools, at `https://oasisnextbd.github.io/paperloop/diary/`.
-It opens on a login page where the person chooses **অভিভাবক** (School Code + Class + Roll), **শিক্ষক** or
-**স্কুল** (code, ID and 4-digit PIN). The role chosen there is the only dashboard they see. The header scrolls away with the page;
+It opens on a login page with four big cards, **শিক্ষার্থী**, **অভিভাবক**, **শিক্ষক** and **প্রতিষ্ঠান**, and a
+small line-drawn mascot (a khata, `#pl-mascot-art`). A card leads to two choices, **সাইন ইন** (that role's form:
+guardians code + class + roll + PIN, teachers and the institution Google) or **ঘুরে দেখুন** (guest mode, below);
+the student's part is planned and shows "শীঘ্রই আসছে" (see LOGIN STEPS). Little text, big pictures. The role chosen
+is the only dashboard they see. The header scrolls away with the page;
 a floating three-line **মেনু** button stays in the corner (with the unread-notice count) and opens a menu with
 notices, profile and settings, every section of that dashboard, the Paperloop website and logout; its cross closes
 it back to the button. Parents and class teachers also get a floating **মেসেজ** button (with the unread
@@ -121,7 +124,11 @@ address ends in `#name`, e.g. `#fees`, so the phone's back button and a refresh 
 and staff, assigns classes and subjects, admits students, sets fees and the school's design). The sample school
 KSB with its students, marks, notices, receipts and messages appears only in demo mode, opened from Paperloop Admin
 → Simulator: `diary/?demo=principal`, `classteacher`, `subjectteacher` or `parent` logs straight in as that person;
-`diary/?demo=login` keeps the login page (the test scripts use it). **ডেমো শেষ করুন** in the menu ends a demo: it
+`diary/?demo=login` keeps the login page (the test scripts use it). **Guest mode** (`diary/?guest=parent`, `teacher`
+or `school`, from the login page) opens the same sample school with a short guided tour (the mascot points at the main
+cards, a few words each); afterwards the guest can look around, but nothing can be saved, sent or typed in: those
+buttons say "গেস্ট মোড • ব্যবহার করতে সাইন ইন করুন" (see GUEST MODE). **গেস্ট মোড শেষ** in the menu goes back to the
+login page, and **ট্যুর আবার দেখুন** replays the tour. **ডেমো শেষ করুন** in the menu ends a demo: it
 deletes everything the demo saved in that browser and opens the clean diary. In demo every saved value goes to separate
 browser storage (keys prefixed `demo:`), so demo use never touches a real school's. Every sample record is behind
 `DEMO` in `diary/index.html` (see REAL OR DEMO at the top of its scripts).
